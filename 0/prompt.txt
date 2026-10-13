@@ -1,0 +1,14 @@
+Stage only these three files:
+
+.codex/hooks.json
+.entire/.gitignore
+.entire/settings.json
+
+Create a Git commit with the message:
+chore: configure Entire session capture
+
+Before committing, verify that only these three files are staged.
+
+Do not modify any files or push to GitHub.
+
+Show me the commit ID and Git status.
