@@ -1,0 +1,12 @@
+Delete only the temporary file capture-test.md.
+
+Do not modify any other files.
+
+Stage only the deletion of capture-test.md and verify the staged changes.
+
+Create a Git commit with this exact message:
+chore: remove temporary capture test
+
+Do not push to GitHub.
+
+Show me the commit ID and final Git status.
