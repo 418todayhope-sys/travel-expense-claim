@@ -1,3 +1,5 @@
-Create a file named capture-test.md in the repository root containing only the text "Project D Entire capture verification."
+Stage only capture-test.md and create a Git commit with the message `test: verify Entire session capture`.
 
-Do not modify any other files. Do not commit or push anything. Show me the file you created and the Git working-tree status.
+Do not stage `.codex/`, `.entire/`, or any other files. Do not push yet.
+
+Show me the commit result and Git status.
