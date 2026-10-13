@@ -1,0 +1,500 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Travel claim batch state",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "run_id",
+    "batch_id",
+    "predecessor",
+    "source_binding",
+    "claims",
+    "requests",
+    "travel_cancellations",
+    "admitted_event_ids",
+    "issues"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "travel-claim-snapshot/2"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "batch_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "predecessor": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "path",
+            "sha256"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        }
+      ]
+    },
+    "source_binding": {
+      "type": "object",
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "claim_id",
+          "revision",
+          "trip_id",
+          "trip_revision",
+          "status",
+          "lines",
+          "allowed_cents",
+          "paid_cents",
+          "balance_cents",
+          "decision_ids",
+          "next_owner",
+          "reason"
+        ],
+        "properties": {
+          "claim_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "trip_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "held",
+              "ready",
+              "closed-reimbursed",
+              "closed-no-payment",
+              "rejected",
+              "withdrawn"
+            ]
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "cost_id",
+                "source_ids",
+                "status",
+                "allowed_cents",
+                "reason"
+              ],
+              "properties": {
+                "cost_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "source_ids": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "uniqueItems": true
+                },
+                "status": {
+                  "enum": [
+                    "supported",
+                    "excluded",
+                    "unresolved"
+                  ]
+                },
+                "allowed_cents": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ],
+                  "minimum": 0
+                },
+                "reason": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "allowed_cents": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "paid_cents": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "balance_cents": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "decision_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "next_owner": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "trip_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Exact trip revision from the supplied trip source, independent of claim revision."
+          }
+        }
+      }
+    },
+    "requests": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "request_id",
+          "claim_id",
+          "revision",
+          "amount_cents",
+          "payee",
+          "currency",
+          "status",
+          "decision_ids"
+        ],
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "claim_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "amount_cents": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "payee": {
+            "type": "string",
+            "minLength": 1
+          },
+          "currency": {
+            "const": "EUR"
+          },
+          "status": {
+            "enum": [
+              "proposed",
+              "accepted",
+              "dispatched",
+              "cancel-pending",
+              "cancelled",
+              "settled",
+              "held"
+            ]
+          },
+          "decision_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "admitted_event_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "description": "Admitted Finance activity IDs only. Travel cancellation activity IDs belong exclusively in travel_cancellations[].admitted_cancellation_event_ids; neither kind may invent the other kind of effect."
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "record_id",
+          "reason",
+          "owner",
+          "resolution_needed"
+        ],
+        "properties": {
+          "record_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "resolution_needed": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "travel_cancellations": {
+      "type": "array",
+      "description": "One current row per valid observed cancellation_id, including processes without any claim. Confirmation and financial resolution are separate facts. Invalid orphan deliveries remain in issues and retained sources until a valid initiation establishes a process.",
+      "items": {
+        "type": "object",
+        "required": [
+          "cancellation_id",
+          "target_type",
+          "trip_id",
+          "trip_revision",
+          "permit_id",
+          "permit_revision",
+          "status",
+          "admitted_cancellation_event_ids",
+          "requested_at",
+          "confirmed_at",
+          "effective_at",
+          "affected_claim_ids",
+          "original_request_ids",
+          "financial_status",
+          "next_owner",
+          "reason",
+          "issue_record_ids"
+        ],
+        "properties": {
+          "cancellation_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target_type": {
+            "enum": [
+              "trip",
+              "permit"
+            ]
+          },
+          "trip_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "trip_revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "permit_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "permit_revision": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1
+          },
+          "status": {
+            "enum": [
+              "requested",
+              "confirmed"
+            ]
+          },
+          "admitted_cancellation_event_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true,
+            "minItems": 1,
+            "description": "Only lawfully admitted Travel cancellations activity IDs, retaining initiation/confirmation identity and authority through the bound source records."
+          },
+          "requested_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "confirmed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "effective_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "affected_claim_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "original_request_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "financial_status": {
+            "enum": [
+              "no-financial-effect",
+              "unresolved",
+              "resolved"
+            ]
+          },
+          "next_owner": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "minLength": 1
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          },
+          "issue_record_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "requested"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "confirmed_at": {
+                  "type": "null"
+                },
+                "effective_at": {
+                  "type": "null"
+                },
+                "next_owner": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "confirmed_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "effective_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "permit_id": {
+                  "type": "null"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "permit_revision": {
+                  "type": "null"
+                },
+                "target_type": {
+                  "const": "trip"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "permit_revision": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
