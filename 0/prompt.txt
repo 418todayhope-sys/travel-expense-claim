@@ -1,0 +1,3 @@
+Create a file named capture-test.md in the repository root containing only the text "Project D Entire capture verification."
+
+Do not modify any other files. Do not commit or push anything. Show me the file you created and the Git working-tree status.
