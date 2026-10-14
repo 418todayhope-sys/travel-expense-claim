@@ -45,6 +45,8 @@ travel-claim offline-replay artifacts/runs/<retained-run-id>
 
 This command does **not** make native-source requests. It checks that parsed records bind the current `sources.json`, integrates arrival batches in numeric order, and writes immutable `batches/arrival-NNN.json` snapshots linked by predecessor hashes. It writes the latest `claims.csv`, `repair-queue.json`, `offline-replay-state.json`, and `report.md` alongside that run's retained inputs. The report, sidecar, and each snapshot label the result as an offline replay. Existing batch chains or output files are never overwritten; start a separately identified retained run to create a new chain. When the case clock is unresolved, snapshots retain the blocker and are only structural replay projections; no clock-dependent, policy-dependent, approval, or entitlement result is inferred.
 
+The report separates open claim repairs and trip/permit repairs by responsible owner from run-level external blockers. Each repair retains its subject, revision, source references, opening run/batch, and next action. Resolved items remain in the full queue history. Independent valid records continue processing while other claims remain unresolved.
+
 Once authorized batch state has been processed, pass only evidence-derived state to the snapshot sealer. The first batch has no predecessor; every later batch references the previous snapshot and exact SHA-256. Binding paths are relative to the run directory (`sources.json`, `batches/<prior-batch>.json`).
 
 ```bash

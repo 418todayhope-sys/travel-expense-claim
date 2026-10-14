@@ -66,24 +66,41 @@ def _report(
         "",
         "Each snapshot retains the observed claim revision and matching decision IDs. Decisions are not treated as proof of policy compliance. Finance event identities and supported confirmed cash are retained; no obligation or entitlement is inferred. Claim monetary entitlement and balance remain null when unsupported.",
         "",
-        "## Outstanding work by owner",
-        "",
-        f"Full item-level queue and history: `{output_paths['queue'].name}`. Local request drafts are unsent.",
+        "Independent valid records continue through the replay while unresolved claims remain pending. External blockers prevent authoritative live-run conclusions, not retention of independent evidence or partial progress.",
         "",
     ])
     queue = latest["domain"]["repair_queue"]
-    for owner, items in owner_grouped_view(queue).items():
-        lines.append(f"### {owner}")
-        lines.append("")
-        for item in items:
-            lines.append(
-                f"- `{item['item_id']}` — {item['subject_type']} `{item['subject_id']}` r{item['revision']}: "
-                f"{item['missing_or_return_reason']}. Next: {item['next_action']} "
-                f"(opened `{item['run_id']}` / `{item['batch_id']}`; sources: {', '.join(item['source_refs']) or 'not available'})."
-            )
-        lines.append("")
+    for title, subject_types in (
+        ("Claim-specific actionable repairs by owner", {"claim"}),
+        ("Trip and permit actionable repairs by owner", {"trip", "permit"}),
+    ):
+        open_queue = {"items": {
+            key: item for key, item in queue["items"].items()
+            if item["status"] == "open" and item["subject_type"] in subject_types
+        }}
+        lines.extend([
+            f"## {title}", "",
+            f"{len(open_queue['items'])} open items. Full item-level queue and history: `{output_paths['queue'].name}`. Local request drafts are unsent.",
+            "",
+        ])
+        if not open_queue["items"]:
+            lines.extend(["No open repair items in this category; this does not establish policy readiness or closure.", ""])
+        for owner, items in owner_grouped_view(open_queue).items():
+            lines.extend([f"### {owner}", ""])
+            for item in items:
+                lines.extend([
+                    f"- Repair `{item['item_id']}` — subject {item['subject_type']} `{item['subject_id']}`, revision {item['revision']} (**open**).",
+                    f"  - Reason: {item['missing_or_return_reason']}.",
+                    f"  - Next action: {item['next_action']}.",
+                    f"  - Opened in run `{item['run_id']}`, batch `{item['batch_id']}`.",
+                    "  - Retained source references: " + "; ".join(
+                        f"`{ref}`" for ref in item['source_refs']
+                    ) if item['source_refs'] else "  - Retained source references: unavailable; obtain authoritative evidence.",
+                ])
+            lines.append("")
     lines.extend([
-        "### Scenario-level blockers",
+        "## Run-level external blockers", "",
+        "These retained policy and clock issues apply to the run as a whole and are separate from claim repairs. They remain unresolved in this offline replay; no case-clock date or policy rule is inferred.",
         "",
     ])
     for blocker in parsed.get("unresolved_issues", []):
@@ -100,7 +117,7 @@ def _report(
         f"- Full integration state and source-linked histories: `{output_paths['state'].name}`.",
         f"- Repair queue: `{output_paths['queue'].name}` (grouped by owner, item identity retained).",
         "",
-        "Resume only after obtaining the authoritative case clock and an accessible native reimbursement policy, then perform fresh reads of all five source locations. This replay does not modify source content or send requests.",
+        "For an authoritative live-source run, resume only after obtaining the authoritative case clock and an accessible native reimbursement policy, then perform fresh reads of all five source locations. This replay does not modify source content or send requests.",
         "",
     ])
     return "\n".join(lines)

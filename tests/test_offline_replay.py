@@ -171,3 +171,67 @@ def test_offline_replay_cli_refuses_to_overwrite_outputs(tmp_path):
     first = (run_dir / "batches/arrival-001.json").read_bytes()
     assert main(["offline-replay", str(run_dir), "--schema", str(SCHEMA)]) == 1
     assert (run_dir / "batches/arrival-001.json").read_bytes() == first
+
+
+def test_report_separates_owner_grouped_open_repairs_and_external_blockers(tmp_path):
+    from travel_claim.offline_replay import _report, run_offline_replay
+    from travel_claim.outputs import add_repair_item
+
+    run_dir, _ = _capture(tmp_path)
+    parsed_path = run_dir / "parsed-records.json"
+    parsed = json.loads(parsed_path.read_text())
+    # A second claim has an unresolved trip binding. The first claim's cash
+    # evidence and both revisions must still survive the complete replay.
+    independent = json.loads(json.dumps(parsed["records"]["claim_revisions"][0]))
+    independent["fields"][0]["value"] = "C-UNRESOLVED"
+    independent["fields"][3]["value"] = "T-MISSING"
+    parsed["records"]["claim_revisions"].append(independent)
+    parsed_path.write_text(json.dumps(parsed))
+    result = run_offline_replay(run_dir, schema_path=SCHEMA)
+    claims = {row["claim_id"]: row for row in result["state"]["snapshot"]["claims"]}
+    assert set(claims) == {"C-SYN-RUN", "C-UNRESOLVED"}
+    assert claims["C-SYN-RUN"]["revision"] == 2
+    assert claims["C-SYN-RUN"]["paid_cents"] == 1250
+    assert claims["C-SYN-RUN"]["allowed_cents"] is None
+    queue = result["state"]["domain"]["repair_queue"]
+    report = result["outputs"]["report"].read_text()
+    claim_section = report.split("## Claim-specific actionable repairs by owner\n", 1)[1].split("## Trip and permit", 1)[0]
+    blockers = report.split("## Run-level external blockers\n", 1)[1].split("## Outputs", 1)[0]
+    assert "offline replay" in blockers
+    assert "scenario-case-clock" in blockers
+    assert "reimbursement-policy-pol-2026-2" in blockers
+    assert "scenario-case-clock" not in claim_section
+    assert "reimbursement-policy-pol-2026-2" not in claim_section
+    assert "Independent valid records continue" in report
+    for item in queue["items"].values():
+        if item["subject_type"] != "claim" or item["status"] != "open":
+            continue
+        owner_section = claim_section.split(f"### {item['owner']}\n", 1)[1].split("\n### ", 1)[0]
+        assert f"Repair `{item['item_id']}`" in owner_section
+        assert f"subject claim `{item['subject_id']}`, revision {item['revision']}" in owner_section
+        assert f"Next action: {item['next_action']}" in owner_section
+        assert f"run `{item['run_id']}`, batch `{item['batch_id']}`" in owner_section
+        for ref in item["source_refs"]:
+            assert f"`{ref}`" in owner_section
+    assert claim_section.count("### ") == len({item["owner"] for item in queue["items"].values() if item["subject_type"] == "claim" and item["status"] == "open"})
+
+    # Report filtering must leave persisted queue history untouched and must
+    # keep non-claim repairs in their own section, even with the same owner.
+    resolved_id = next(iter(queue["items"]))
+    queue["items"][resolved_id]["status"] = "resolved"
+    add_repair_item(
+        queue, item_id="permit-repair", subject_type="permit", subject_id="P-SYN",
+        revision=1, source_refs=["retained-permit@hash#row 2"],
+        missing_or_return_reason="missing permit evidence", owner="Travel Administration Lead",
+        next_action="obtain permit evidence", run_id=parsed["run_id"], batch_id="arrival-002",
+    )
+    rendered = _report(run_id=parsed["run_id"], parsed=parsed,
+                       snapshots=result["snapshots"], latest=result["state"],
+                       output_paths=result["outputs"])
+    assert f"Repair `{resolved_id}`" not in rendered
+    assert queue["items"][resolved_id]["status"] == "resolved"
+    claim_section = rendered.split("## Claim-specific", 1)[1].split("## Trip and permit", 1)[0]
+    permit_section = rendered.split("## Trip and permit", 1)[1].split("## Run-level", 1)[0]
+    assert "permit-repair" not in claim_section
+    assert "subject permit `P-SYN`, revision 1" in permit_section
+    assert "Next action: obtain permit evidence" in permit_section
