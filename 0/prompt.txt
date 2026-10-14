@@ -77,3 +77,36 @@ Regenerate the offline replay outputs in a new retained-input run without overwr
 Implement the code now, not just a plan.
 
 Do not commit or push yet. Report the files changed, test results, generated draft count, and remaining blockers.
+
+---
+
+Preserve the completed Project D owner-specific follow-up draft milestone in Git and Entire.io.
+
+    Inspect git status and the exact source diff.
+
+    Stage ONLY:
+
+        README.md
+
+        src/travel_claim/follow_up.py
+
+        src/travel_claim/offline_replay.py
+
+        tests/test_follow_up.py
+
+        tests/test_offline_replay.py
+
+    Do NOT stage artifacts/runs/ or unrelated files.
+
+Run git diff --cached --check and the complete pytest suite.
+
+If validation passes, commit with the message:
+feat: generate owner-specific Project D follow-up drafts
+
+Push the commit to origin main, allowing the existing Entire.io hooks to run.
+
+Verify the remote main commit and the Entire.io checkpoint references.
+
+Do not rewrite history, force-push, or alter retained source artifacts.
+
+Report the commit hash, test results, push status, and any warnings.
