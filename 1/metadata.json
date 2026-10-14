@@ -1,0 +1,178 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "01M4X4X7VR3NGD79SS373686G7",
+  "session_id": "01a139c9-256b-73d2-b559-bdb14329e346",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-14T12:06:39.746513328Z",
+  "branch": "main",
+  "checkpoints_count": 13,
+  "save_step_count": 13,
+  "files_touched": [
+    "README.md",
+    "artifacts/verification/project-d-incremental-verification-20261014.md",
+    "pyproject.toml",
+    "skills/travel-expense-claim/SKILL.md",
+    "src/travel_claim/__init__.py",
+    "src/travel_claim/cli.py",
+    "src/travel_claim/outputs.py",
+    "src/travel_claim/parsing.py",
+    "src/travel_claim/snapshots.py",
+    "src/travel_claim/sources.py",
+    "src/travel_claim/workflow.py",
+    "tests/test_parsing.py",
+    "tests/test_project_d_foundation.py",
+    "tests/test_workflow_structure.py"
+  ],
+  "agent": "Codex",
+  "model": "gpt-6-luna",
+  "turn_id": "9700aedadb20",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 456173,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 17983488,
+    "output_tokens": 137790,
+    "api_call_count": 210,
+    "subagent_tokens_complete": true
+  },
+  "session_metrics": {
+    "turn_count": 13
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-14T12:06:39.476118258Z",
+    "agent_lines": 2042,
+    "agent_removed": 9,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 6,
+    "total_committed": 2042,
+    "total_lines_changed": 2057,
+    "agent_percentage": 99.70831307729703,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 555,
+      "user_lines_removed": 5,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".gitignore": 4,
+        "README.md": 47,
+        "pyproject.toml": 23,
+        "skills/travel-expense-claim/SKILL.md": 353,
+        "src/main.py": 7,
+        "src/travel_claim/__init__.py": 2,
+        "src/travel_claim/cli.py": 71,
+        "tests/test_validate_snapshot.py": 48
+      },
+      "user_removed_per_file": {
+        "README.md": 5
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 555,
+      "agent_lines_removed": 5
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 555,
+      "agent_lines_removed": 5
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 555,
+      "agent_lines_removed": 5
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 555,
+      "agent_lines_removed": 5
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 555,
+      "agent_lines_removed": 5
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 555,
+      "agent_lines_removed": 5
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 8151,
+      "agent_lines_removed": 14
+    },
+    {
+      "checkpoint_number": 9,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 8151,
+      "agent_lines_removed": 14
+    },
+    {
+      "checkpoint_number": 10,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 8151,
+      "agent_lines_removed": 14
+    },
+    {
+      "checkpoint_number": 11,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 215526,
+      "agent_lines_removed": 14
+    },
+    {
+      "checkpoint_number": 12,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 215526,
+      "agent_lines_removed": 14
+    },
+    {
+      "checkpoint_number": 13,
+      "user_lines_added": 25,
+      "user_lines_removed": 1,
+      "agent_lines_added": 216171,
+      "agent_lines_removed": 14,
+      "user_added_per_file": {
+        "artifacts/runs/source-capture-20261014T100034Z/parsed-records.json": 25
+      },
+      "user_removed_per_file": {
+        "artifacts/runs/source-capture-20261014T100034Z/parsed-records.json": 1
+      }
+    },
+    {
+      "checkpoint_number": 14,
+      "user_lines_added": 25,
+      "user_lines_removed": 1,
+      "agent_lines_added": 216216,
+      "agent_lines_removed": 14,
+      "user_added_per_file": {
+        "artifacts/runs/source-capture-20261014T100034Z/parsed-records.json": 25
+      },
+      "user_removed_per_file": {
+        "artifacts/runs/source-capture-20261014T100034Z/parsed-records.json": 1
+      }
+    }
+  ]
+}
