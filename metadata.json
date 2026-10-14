@@ -1,0 +1,33 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "01M4Y6E03V0MWHYHYH7XTYVZWS",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "README.md",
+    "src/travel_claim/expenses.py",
+    "src/travel_claim/integration.py",
+    "src/travel_claim/ordinary.py",
+    "tests/fixtures/POL-2026.2-browser-copy.txt",
+    "tests/test_expenses.py",
+    "tests/test_ordinary.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 1560454,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 52733056,
+    "output_tokens": 218549,
+    "api_call_count": 351,
+    "subagent_tokens_complete": true
+  }
+}

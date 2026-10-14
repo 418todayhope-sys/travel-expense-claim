@@ -1,0 +1,94 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "01M4Y6E03V0MWHYHYH7XTYVZWS",
+  "session_id": "01a13bd1-7420-72c0-963e-58742d1be7bf",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-14T21:52:32.312604866Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 2,
+  "files_touched": [
+    "README.md",
+    "src/travel_claim/expenses.py",
+    "src/travel_claim/integration.py",
+    "src/travel_claim/ordinary.py",
+    "tests/fixtures/POL-2026.2-browser-copy.txt",
+    "tests/test_expenses.py",
+    "tests/test_ordinary.py"
+  ],
+  "agent": "Codex",
+  "model": "gpt-6.1-sol",
+  "turn_id": "6352903b0b60",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 1560454,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 52733056,
+    "output_tokens": 218549,
+    "api_call_count": 351,
+    "subagent_tokens_complete": true
+  },
+  "session_metrics": {
+    "turn_count": 21
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-14T21:52:31.799097806Z",
+    "agent_lines": 566,
+    "agent_removed": 78,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 566,
+    "total_lines_changed": 644,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 299304,
+      "user_lines_removed": 0,
+      "agent_lines_added": 3055503,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-001.json": 3722,
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-002.json": 3870,
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-003.json": 4487,
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-004.json": 4624,
+        "artifacts/runs/source-capture-20261014T100034Z/claims.csv": 122,
+        "artifacts/runs/source-capture-20261014T100034Z/offline-replay-state.json": 63725,
+        "artifacts/runs/source-capture-20261014T100034Z/parsed-records.json": 207028,
+        "artifacts/runs/source-capture-20261014T100034Z/repair-queue.json": 4875,
+        "artifacts/runs/source-capture-20261014T100034Z/report.md": 209,
+        "artifacts/runs/source-capture-20261014T100034Z/sources.json": 74,
+        "artifacts/runs/source-capture-20261014T100034Z/sources/claim-updates-binder.pdf": 236,
+        "artifacts/runs/source-capture-20261014T100034Z/sources/initial-claim-binder.pdf": 3072,
+        "artifacts/runs/source-capture-20261014T100034Z/sources/receipt-binder.pdf": 3227,
+        "user-provided-sources/step-167/POL-2026.2-browser-copy.txt": 33
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 299304,
+      "user_lines_removed": 0,
+      "agent_lines_added": 3056069,
+      "agent_lines_removed": 78,
+      "user_added_per_file": {
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-001.json": 3722,
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-002.json": 3870,
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-003.json": 4487,
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-004.json": 4624,
+        "artifacts/runs/source-capture-20261014T100034Z/claims.csv": 122,
+        "artifacts/runs/source-capture-20261014T100034Z/offline-replay-state.json": 63725,
+        "artifacts/runs/source-capture-20261014T100034Z/parsed-records.json": 207028,
+        "artifacts/runs/source-capture-20261014T100034Z/repair-queue.json": 4875,
+        "artifacts/runs/source-capture-20261014T100034Z/report.md": 209,
+        "artifacts/runs/source-capture-20261014T100034Z/sources.json": 74,
+        "artifacts/runs/source-capture-20261014T100034Z/sources/claim-updates-binder.pdf": 236,
+        "artifacts/runs/source-capture-20261014T100034Z/sources/initial-claim-binder.pdf": 3072,
+        "artifacts/runs/source-capture-20261014T100034Z/sources/receipt-binder.pdf": 3227,
+        "user-provided-sources/step-167/POL-2026.2-browser-copy.txt": 33
+      }
+    }
+  ]
+}
