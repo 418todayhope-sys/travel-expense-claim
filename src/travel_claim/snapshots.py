@@ -139,6 +139,7 @@ def seal_batch_snapshot(
     issues: list[dict],
     schema_path: Path,
     predecessor_path: Path | None = None,
+    allow_unconfirmed_case_clock: bool = False,
 ) -> Path:
     """Seal one batch. Binding paths are relative to the run directory.
 
@@ -161,7 +162,7 @@ def seal_batch_snapshot(
     manifest = json.loads(source_path.read_text(encoding="utf-8"))
     if manifest.get("run_id") != run_id:
         raise ValueError("Snapshot run_id must match sources.json run_id")
-    if not manifest.get("case_clock"):
+    if not manifest.get("case_clock") and not allow_unconfirmed_case_clock:
         raise ValueError("Cannot consume a batch without the supplied scenario case_clock")
     existing_snapshots = list(batches_dir.glob("*.json"))
     if existing_snapshots and predecessor_path is None:

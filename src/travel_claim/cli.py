@@ -10,6 +10,7 @@ from pathlib import Path
 from jsonschema import Draft202012Validator, FormatChecker
 
 from .outputs import write_claims_csv
+from .offline_replay import run_offline_replay
 from .parsing import parse_retained_run
 from .snapshots import seal_batch_snapshot, verify_snapshot
 from .sources import capture_sources, verify_source_manifest
@@ -84,6 +85,13 @@ def build_parser() -> argparse.ArgumentParser:
     csv_cmd = commands.add_parser("write-claims-csv", help="write the exact current-claim CSV contract")
     csv_cmd.add_argument("claims_json", type=Path, help="JSON array of current claim summary objects")
     csv_cmd.add_argument("output", type=Path)
+
+    replay = commands.add_parser(
+        "offline-replay",
+        help="replay verified retained records in arrival order without fresh native-source reads",
+    )
+    replay.add_argument("run_dir", type=Path, help="existing retained-source run directory")
+    replay.add_argument("--schema", type=Path, default=_default_schema_path(), help="snapshot schema path")
     return parser
 
 
@@ -171,6 +179,18 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Could not write claims CSV: {exc}", file=sys.stderr)
             return 1
         print(f"Wrote claims CSV: {args.output}")
+        return 0
+    if args.command == "offline-replay":
+        try:
+            result = run_offline_replay(args.run_dir, schema_path=args.schema)
+        except (OSError, KeyError, json.JSONDecodeError, ValueError, FileExistsError) as exc:
+            print(f"Offline replay failed: {exc}", file=sys.stderr)
+            return 1
+        print(f"OFFLINE REPLAY complete: {result['run_id']} (no fresh native-source reads)")
+        for snapshot in result["snapshots"]:
+            print(f"Snapshot: {snapshot}")
+        for label, output in result["outputs"].items():
+            print(f"{label}: {output}")
         return 0
     return 2
 

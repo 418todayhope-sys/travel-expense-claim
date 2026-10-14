@@ -35,6 +35,16 @@ When source access is partial, record usable pieces as `read` and inaccessible p
 
 `parse-retained` first verifies the manifest and retained-byte hashes, then writes `parsed-records.json`. PDF text stays grouped by page, workbook data stays grouped by tab and row, and every extracted record includes its source ID, SHA-256 and page/row locator. This is a transcription layer; it does not evaluate policy or infer claim outcomes. Its exit status is `2` for partial inputs or an unavailable case clock and `1` for a verification or parsing error.
 
+### Explicit offline replay
+
+When source retrieval is unavailable, replay only the previously retained and hash-verified inputs with an explicit offline command:
+
+```bash
+travel-claim offline-replay artifacts/runs/<retained-run-id>
+```
+
+This command does **not** make native-source requests. It checks that parsed records bind the current `sources.json`, integrates arrival batches in numeric order, and writes immutable `batches/arrival-NNN.json` snapshots linked by predecessor hashes. It writes the latest `claims.csv`, `repair-queue.json`, `offline-replay-state.json`, and `report.md` alongside that run's retained inputs. The report, sidecar, and each snapshot label the result as an offline replay. Existing batch chains or output files are never overwritten; start a separately identified retained run to create a new chain. When the case clock is unresolved, snapshots retain the blocker and are only structural replay projections; no clock-dependent, policy-dependent, approval, or entitlement result is inferred.
+
 Once authorized batch state has been processed, pass only evidence-derived state to the snapshot sealer. The first batch has no predecessor; every later batch references the previous snapshot and exact SHA-256. Binding paths are relative to the run directory (`sources.json`, `batches/<prior-batch>.json`).
 
 ```bash
@@ -71,6 +81,6 @@ travel-claim validate-snapshot artifacts/runs/<run-id>/batches/<batch-id>.json
 
 ## Current implementation boundary
 
-This foundation implements fresh source capture, byte-bound manifests, loss-aware source transcription, schema/hash-checked snapshot sealing, exact CSV output, and local owner-grouped repair tracking. It does not yet process scenario batches, decide claim status, perform policy/approval calculations, determine reimbursement entitlement or final readiness, reconcile Finance activity, import human replies, or produce the complete operations report. Do not treat source transcription by itself as a consumed batch or as a completed claim run.
+The implementation supports fresh source capture, byte-bound manifests, loss-aware transcription, schema/hash-checked snapshots, policy-neutral arrival-ordered replay, source-classified Finance reconciliation, exact CSV output, and local owner-grouped repair tracking. `offline-replay` is a structural replay only: the inaccessible reimbursement policy and unconfirmed case clock keep policy conclusions, approval readiness, entitlement, and closure unresolved. Human replies are not imported automatically, and the command never sends repair drafts or moves money. Do not treat an offline replay as a fresh source read or completed claim processing.
 
 If native evidence is unavailable or a business definition conflicts, record the affected scope and escalate to the exercise operator. People retain approval, exception, and payment authority. This tooling never sends requests, books travel, or moves money.
