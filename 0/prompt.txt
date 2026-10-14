@@ -606,3 +606,29 @@ Report any remaining ambiguity rather than inventing facts.
 Do not commit or push yet.
 
 Stop after implementation, tests and a concise change summary.
+
+---
+
+Project D — Step 172: Commit and push the verified event-integrity fixes.
+
+Before committing:
+
+    Verify the current branch, Git status and diff.
+
+    Confirm the changes are limited to Step 171 Finance event integrity, cancellation validation, supporting fixtures and regression tests.
+
+    Run the complete test suite again and git diff --check.
+
+    Verify the original policy, interview, prior snapshots and retained outputs remain unchanged.
+
+    Stage only the reviewed Step 171 implementation and test files. Do not stage unrelated untracked artifacts or audit reports.
+
+    Commit with message: fix: preserve admitted finance and cancellation event integrity
+
+Push normally to the existing GitHub main branch. Do not force-push.
+
+Verify the remote commit matches the local commit and confirm the Entire.io checkpoint references were pushed.
+
+Report the full commit SHA, number of passing tests, changed files, remote verification and Entire.io checkpoint status.
+
+If any verification fails, stop without pushing and explain the issue.
