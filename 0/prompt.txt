@@ -441,3 +441,46 @@ Do not overwrite earlier runs or modify the original interview. Do not invent po
 Do not commit or push yet.
 
 Report changed files, native source access results, test count, and remaining blockers.
+
+---
+
+Preserve the completed Project D Step 162 fresh native-source execution milestone.
+
+    Inspect git status, all source diffs, and the staging area.
+
+    Stage ONLY these implementation files, if present and changed:
+
+        README.md
+
+        skills/travel-expense-claim/SKILL.md
+
+        src/travel_claim/cli.py
+
+        src/travel_claim/sources.py
+
+        src/travel_claim/parsing.py
+
+        src/travel_claim/readiness.py
+
+        src/travel_claim/live_run.py
+
+        The changed or newly created test/helper files for this milestone, after listing their exact paths and verifying their contents.
+
+    Do not stage artifacts/runs/, artifacts/verification/, the original interview, or unrelated files.
+
+    Run git diff --cached --check and the complete pytest suite.
+
+Verify the new live-source manifest and retained response evidence.
+
+If validation passes, commit with:
+feat: capture and validate fresh native source runs
+
+Push to origin main, allowing the existing Entire.io hooks to run.
+
+Verify the exact remote main commit and Entire.io checkpoint references.
+
+Confirm the original interview and all 104 previously retained files remain unchanged.
+
+Do not force-push, rewrite history, or modify retained artifacts.
+
+Report the exact committed files, commit hash, test count, source-verification results, push verification, and warnings.
