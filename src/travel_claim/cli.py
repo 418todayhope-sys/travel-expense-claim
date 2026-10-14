@@ -11,6 +11,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 
 from .outputs import write_claims_csv
 from .offline_replay import run_offline_replay
+from .readiness import readiness_summary, validate_readiness, write_readiness_reports
 from .parsing import parse_retained_run
 from .snapshots import seal_batch_snapshot, verify_snapshot
 from .sources import capture_sources, verify_source_manifest
@@ -92,11 +93,30 @@ def build_parser() -> argparse.ArgumentParser:
     )
     replay.add_argument("run_dir", type=Path, help="existing retained-source run directory")
     replay.add_argument("--schema", type=Path, default=_default_schema_path(), help="snapshot schema path")
+    readiness = commands.add_parser("validate-readiness", help="check local submission evidence; PASS/BLOCKED/FAIL, never live compliance")
+    readiness.add_argument("run_dir", type=Path)
+    readiness.add_argument("--schema", type=Path, default=_default_schema_path())
+    readiness.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[2])
+    readiness.add_argument("--output-dir", type=Path, required=True, help="new directory for readiness.json and readiness.md")
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if args.command == "validate-readiness":
+        try:
+            run_root = args.run_dir.resolve()
+            output_root = args.output_dir.resolve()
+            if output_root == run_root or output_root.is_relative_to(run_root):
+                raise ValueError("Readiness outputs must be outside the retained run directory")
+            report = validate_readiness(args.run_dir, schema_path=args.schema, repo_dir=args.repo)
+            write_readiness_reports(report, args.output_dir)
+        except (OSError, ValueError) as exc:
+            print(f"Could not validate readiness: {exc}", file=sys.stderr)
+            return 1
+        print(readiness_summary(report))
+        print(f"Readiness reports: {args.output_dir}")
+        return {"PASS": 0, "BLOCKED": 2, "FAIL": 1}[report["status"]]
     if args.command == "validate-snapshot":
         errors = validate_snapshot(args.snapshot, args.schema)
         if errors:

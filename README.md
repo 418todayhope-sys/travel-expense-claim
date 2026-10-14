@@ -81,6 +81,16 @@ travel-claim validate-snapshot artifacts/runs/<run-id>/batches/<batch-id>.json
 
 `verify-batch` also checks the source-manifest bytes, predecessor bytes, and cancellation-to-issue references. Do not overwrite a sealed snapshot; create a new run with a documented link if later processing changes its content.
 
+## Submission-readiness validation
+
+```bash
+travel-claim validate-readiness artifacts/runs/<run-id> --output-dir artifacts/verification/<new-validation-id>
+```
+
+This read-only command writes `readiness.json` and `readiness.md` in a new directory outside the retained run. It checks source scope and byte hashes, input bindings, the complete snapshot chain, required files, the exact CSV contract, evidence-derived report/queue/draft traceability, and local Entire.io checkpoint references for HEAD. It does not contact native sources or verify remote synchronization. Existing validation directories are never overwritten.
+
+Each check is `PASS`, `BLOCKED`, or `FAIL`; exit codes are 0, 2, and 1 respectively. Integrity failures take precedence over blockers. Missing policy content and an unconfirmed authoritative case clock remain `BLOCKED`, even when retained artifacts are intact. An offline replay always remains blocked for final live-source submission. This validator covers the retained repository requirements and never certifies policy eligibility, approvals, financial closure, full native assignment compliance, or fresh execution from replay artifacts.
+
 ## Current implementation boundary
 
 The implementation supports fresh source capture, byte-bound manifests, loss-aware transcription, schema/hash-checked snapshots, policy-neutral arrival-ordered replay, source-classified Finance reconciliation, exact CSV output, and local owner-grouped repair tracking. `offline-replay` is a structural replay only: the inaccessible reimbursement policy and unconfirmed case clock keep policy conclusions, approval readiness, entitlement, and closure unresolved. Human replies are not imported automatically, and the command never sends repair drafts or moves money. Do not treat an offline replay as a fresh source read or completed claim processing.

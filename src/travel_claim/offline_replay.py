@@ -35,6 +35,11 @@ def _report(
     output_paths: dict[str, Path],
 ) -> str:
     manifest_hash = hashlib.sha256((snapshots[0].parents[1] / "sources.json").read_bytes()).hexdigest()
+    clock_issue = parsed.get("case_clock_issue") or {}
+    policy_retained = any(
+        row.get("source_id") == "policy-pol-2026-2" and row.get("status") == "read" and not row.get("missing_scope")
+        for row in json.loads((snapshots[0].parents[1] / "sources.json").read_text())["files"]
+    )
     lines = [
         "# Project D operations handoff — OFFLINE REPLAY",
         "",
@@ -44,8 +49,12 @@ def _report(
         "- Mode: `offline-replay`",
         "- Fresh native reads in this run: **no**",
         f"- Retained `sources.json` SHA-256: `{manifest_hash}`",
-        f"- Case clock: **unresolved** ({parsed.get('case_clock_issue', {}).get('owner', 'Exercise facilitator')}; {parsed.get('case_clock_issue', {}).get('next_action', 'obtain authoritative case clock')})",
-        "- Reimbursement policy POL-2026.2: **unavailable**; eligibility, entitlement, caps, readiness, and final closure remain unresolved.",
+        (f"- Case clock: **supplied** (`{parsed['case_clock']}`; supplied authority remains subject to human review)."
+         if parsed.get("case_clock") else
+         f"- Case clock: **unresolved** ({clock_issue.get('owner', 'Exercise facilitator')}; {clock_issue.get('next_action', 'obtain authoritative case clock')})"),
+        ("- Reimbursement policy POL-2026.2: **retained**; eligibility, entitlement, caps, readiness, and final closure remain unresolved."
+         if policy_retained else
+         "- Reimbursement policy POL-2026.2: **unavailable**; eligibility, entitlement, caps, readiness, and final closure remain unresolved."),
         f"- Parsed input: `{OUTPUT_NAME}` SHA-256 `{hashlib.sha256((snapshots[0].parents[1] / OUTPUT_NAME).read_bytes()).hexdigest()}`; parsed source content remains in that file.",
         "- Retained source observations: " + "; ".join(
             f"`{row['source_id']}`={row['status']}" for row in json.loads(
