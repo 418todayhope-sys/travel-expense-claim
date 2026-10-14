@@ -74,6 +74,7 @@ def _finance(row, event_id, claim_id, batch, event_type, *, amount=None, obligat
         "Finance officer": "FIN-SYN-01",
         "Payee ID": "EMP-SYN-01",
         "Currency": "EUR",
+        "Activity time (UTC)": "2026-09-02T12:00:00",
         "Reason": f"SYNTHETIC Finance fixture: {event_type}",
     }
     if amount is not None:
@@ -94,14 +95,14 @@ def _cancel(row, event_id, cancellation_id, action, subject_type, *, batch, init
         "Trip revision": 1,
         "Permit reference": "P-SYN-01",
         "Permit revision": 1,
-        "Acting employee or supervisor": "EMP-SYN-01",
+        "Acting employee or supervisor": "EMP-SYN-01" if action == "requested" else "SUP-SYN-01",
         "Activity time (UTC)": f"2026-09-0{batch}T09:00:00",
         "Arrival batch": batch,
         "Business reason": "SYNTHETIC client rescheduling",
     }
     if action == "confirmed":
         values["Initiation activity reference"] = initiation
-        values["Effective time (UTC)"] = f"2026-09-0{batch}T09:30:00"
+        values["Effective time (UTC)"] = f"2026-09-0{batch}T09:00:00"
     return _row(row, "synthetic-travel-register", "Travel cancellations", **values)
 
 
@@ -109,6 +110,7 @@ def _parsed_fixture():
     return {
         "run_id": "run-synthetic-integration",
         "case_clock": None,
+        "event_clock": "2026-09-15T12:00:00Z",  # explicit synthetic admission cutoff
         "unresolved_issues": [
             {
                 "record_id": "scenario-case-clock",
@@ -132,6 +134,12 @@ def _parsed_fixture():
             },
         ],
         "records": {
+            "people": [_row(1, "synthetic-directory", "People", **{"Employee ID": employee,
+                "Payee ID": "EMP-SYN-01", "Finance officer": "FIN-SYN-01", "Supervisor": "SUP-SYN-01"})
+                for employee in ("EMP-SYN-01", "EMP-SYN-02")],
+            "reimbursement_requests": [_row(1, "synthetic-requests", "Requests", **{"Claim reference": claim,
+                "Revision": 1, "Arrival batch": 1, "Request reference": f"REQ-{claim}", "Payee ID": "EMP-SYN-01", "Currency": "EUR"})
+                for claim in ("C-SYN-01", "C-SYN-02")],
             "claim_revisions": [
                 _claim("C-SYN-01", 1, trip_id="T-SYN-01", batch=1),
                 _claim("C-SYN-02", 1, trip_id="T-SYN-02", batch=1, employee="EMP-SYN-02"),
@@ -139,11 +147,11 @@ def _parsed_fixture():
             ],
             "trips": [
                 _row(6, "synthetic-travel-register", "Trips", **{
-                    "Trip reference": "T-SYN-01", "Trip revision": 1,
+                    "Trip reference": "T-SYN-01", "Trip revision": 1, "Employee ID": "EMP-SYN-01",
                     "Permit reference": "P-SYN-01", "Permit revision": 1,
                 }),
                 _row(7, "synthetic-travel-register", "Trips", **{
-                    "Trip reference": "T-SYN-02", "Trip revision": 1,
+                    "Trip reference": "T-SYN-02", "Trip revision": 1, "Employee ID": "EMP-SYN-02",
                     "Permit reference": "P-SYN-02", "Permit revision": 1,
                 }),
             ],

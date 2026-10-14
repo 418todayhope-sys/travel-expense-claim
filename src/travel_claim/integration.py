@@ -12,6 +12,7 @@ from copy import deepcopy
 from typing import Any
 
 from .finance import reconcile_finance_events
+from .event_validation import finance_context
 from .ordinary import connect_claim, fields, table
 from .revalidation import record_executed_rechecks
 from .outputs import add_repair_item, new_repair_queue, update_repair_item, record_evidence_validation
@@ -144,7 +145,7 @@ def _sync_finance_repairs(domain: dict[str, Any], reconciliations: dict[str, Any
     for claim_id, result in reconciliations.items():
         for issue in result["repair_issues"]:
             item_id = f"finance:{issue['record_id']}"
-            refs = [_ref_text(ref) for ref in issue.get("source_refs", []) if isinstance(ref, dict)]
+            refs = list(dict.fromkeys(_ref_text(ref) for ref in issue.get("source_refs", []) if isinstance(ref, dict)))
             if item_id in queue["items"]:
                 item = queue["items"][item_id]
                 changes = {key: value for key, value in {
@@ -262,14 +263,18 @@ def _material_correction_tasks(
 def _cancellation_rows(
     domain: dict[str, Any], *, history: dict[str, Any], run_id: str, batch_id: str, parsed: dict[str, Any],
 ) -> list[dict[str, Any]]:
-    reduced = reduce_cancellation_activities(domain["cancellation_records"])
+    reduced = reduce_cancellation_activities(domain["cancellation_records"],
+        trips=parsed.get("records", {}).get("trips", []), people=table(parsed, "people", "People"),
+        clock=parsed.get("event_clock") or parsed.get("case_clock"), arrival_batch=domain["processed_batches"][-1],
+        previous_state=domain.get("cancellation_state"))
     domain["cancellation_state"] = reduced
     raw_by_id = {}
     for record in domain["cancellation_records"]:
         raw_by_id.setdefault(row_values(record).get("Cancellation activity reference"), record)
     domain["cancellation_evidence"] = {}
     for index, issue in enumerate(reduced["issues"]):
-        event = raw_by_id.get(issue.get("event_id"))
+        event = next((r for r in domain["cancellation_records"] if _ref(r) == issue.get("source_ref")),
+                     raw_by_id.get(issue.get("event_id")))
         value = row_values(event) if event else {}
         kind = value.get("Cancelled subject")
         subject = value.get("Trip reference") if kind == "trip" else value.get("Permit reference")
@@ -280,6 +285,13 @@ def _cancellation_rows(
                 reason=issue["reason"], owner="Travel Administration Lead",
                 next_action="Obtain a consistent employee initiation and linked supervisor confirmation with explicit UTC times",
                 run_id=run_id, batch_id=batch_id)
+    current_invalid = {i.get('event_id') for i in reduced['issues']}
+    for item_id, item in domain['repair_queue']['items'].items():
+        if item_id.startswith('cancellation-evidence:'):
+            for event_id, record in reduced['admitted_records'].items():
+                if item_id.startswith(f'cancellation-evidence:{event_id}:') and event_id not in current_invalid:
+                    record_evidence_validation(domain['repair_queue'], item_id=item_id, supported=True,
+                        source_refs=[_ref_text(_ref(record))], run_id=run_id, batch_id=batch_id)
     claim_revisions = _subject_claim_revisions(history)
     snapshot_rows = []
     for cancellation_id, process in sorted(reduced["processes"].items()):
@@ -526,7 +538,7 @@ def integrate_arrival_batch(
         "source_classifications": source_classifications or {},
         "trip_reference_records": parsed.get("records", {}).get("trips", []),
         "unresolved_issues": parsed.get("unresolved_issues", []),
-        "ordinary_evidence": {key: parsed.get(key) for key in ("records", "workbook_sheets", "case_clock", "evidence_mode")},
+        "ordinary_evidence": {key: parsed.get(key) for key in ("records", "workbook_sheets", "case_clock", "event_clock", "evidence_mode")},
         "source_observations": source_observations or [],
     })
     previous_domain = deepcopy(prior_result["domain"]) if prior_result else _domain_seed()
@@ -596,6 +608,7 @@ def integrate_arrival_batch(
             revision_history=record_set["revisions"],
             previous_reconciliation=prior_finance,
             source_classifications=domain["source_classifications"],
+            event_context=finance_context(parsed, record_set["revisions"], domain["finance_records"], claim_id, arrival_batch),
         )
         workflow = connect_claim(parsed=parsed, claim=claim_revision, decisions=domain["decision_records"],
             finance_events=domain["finance_records"], finance=finance_results[claim_id],
@@ -703,18 +716,14 @@ def integrate_arrival_batch(
         unique_issues.setdefault(issue["record_id"], issue)
     schema_issues = list(unique_issues.values())
 
-    finance_ids = []
-    unresolved_ids = set()
-    conflicting_ids = set()
-    for result in finance_results.values():
-        unresolved_ids.update(result["unresolved_event_ids"])
-        conflicting_ids.update(issue["event_id"] for issue in result["conflicting_events"])
-        for event in result["event_history"]:
-            event_id = event["event_id"]
-            if (event_id and event_id not in unresolved_ids and event_id not in conflicting_ids
-                    and event["classification"] not in {"unresolved", "conflicting_event_id", "missing_event_id"}):
-                finance_ids.append(event_id)
-    finance_ids = list(dict.fromkeys(event_id for event_id in finance_ids if event_id not in unresolved_ids | conflicting_ids))
+    finance_ids = list(dict.fromkeys(event_id for result in finance_results.values()
+                                     for event_id in result['admitted_event_ids']))
+    domain['unmatched_finance_records'] = [deepcopy(r) for r in domain['finance_records']
+        if row_values(r).get('Claim reference') not in current_claims]
+    for record in domain['unmatched_finance_records']:
+        schema_issues.append({'record_id': f"finance-unmatched:{_digest(record)[:16]}",
+            'reason': 'Finance event has no matching claim; retained without admission', 'owner': 'Finance',
+            'resolution_needed': 'Resolve source claim/request identity before admission', 'source_ref': _ref(record)})
 
     snapshot = {
         "schema_version": "travel-claim-snapshot/2",

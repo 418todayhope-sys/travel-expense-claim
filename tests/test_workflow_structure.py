@@ -67,10 +67,12 @@ def _cancellation_row(row, *, event_id, cancellation_id, action, target_type="pe
             "Cancelled subject": target_type,
             "Trip reference": "T-SYN-01",
             "Trip revision": 1,
-            "Permit reference": target_id if target_type == "permit" else None,
-            "Permit revision": target_revision if target_type == "permit" else None,
+            "Permit reference": target_id if target_type == "permit" else "P-SYN-01",
+            "Permit revision": target_revision if target_type == "permit" else 1,
             "Initiation activity reference": initiation,
             "Arrival batch": batch,
+            "Acting employee or supervisor": "EMP-SYN-01" if action == "requested" else "SUP-SYN-01",
+            "Activity time (UTC)": "2026-11-13T08:00:00" if action == "requested" else "2026-11-14T08:00:00",
             "Effective time (UTC)": effective,
         },
     )
@@ -116,9 +118,13 @@ def test_cancellation_state_machine_keeps_trip_and_permit_processes_independent(
                           action="requested", target_type="trip", target_id="T-SYN-01", batch=1),
         _cancellation_row(8, event_id="TC-SYN-P-CFM", cancellation_id="TC-SYN-P",
                           action="confirmed", target_type="permit", target_id="P-SYN-01", batch=2,
-                          initiation="TC-SYN-P-REQ", effective="2026-11-16T09:00:00+01:00"),
+                          initiation="TC-SYN-P-REQ", effective="2026-11-14T08:00:00Z"),
     ]
-    result = reduce_cancellation_activities(events)
+    result = reduce_cancellation_activities(events,
+        trips=[_workbook_record(1, **{"Trip reference": "T-SYN-01", "Trip revision": 1,
+            "Employee ID": "EMP-SYN-01", "Permit reference": "P-SYN-01", "Permit revision": 1})],
+        people=[_workbook_record(1, **{"Employee ID": "EMP-SYN-01", "Supervisor": "SUP-SYN-01"})],
+        clock={"date": "2026-11-15", "timezone": "Europe/Amsterdam"})
     assert result["processes"]["TC-SYN-P"]["state"] == "confirmed"
     assert result["processes"]["TC-SYN-T"]["state"] == "requested"
     assert result["processes"]["TC-SYN-T"]["next_action"] == "await a linked confirmation activity"
@@ -169,7 +175,10 @@ def test_actual_retained_activity_replays_are_deduplicated_and_cancellation_ids_
     assert finance["duplicates"][0]["event_id"] == "F-C01-1"
     assert finance["duplicates"][0]["delivery_batches"] == [2.0, 4.0]
 
-    cancellations = reduce_cancellation_activities(parsed["records"]["cancellation_activities"])
+    cancellations = reduce_cancellation_activities(parsed["records"]["cancellation_activities"],
+        trips=parsed['records']['trips'],
+        people=next(s['records'] for s in parsed['workbook_sheets'] if s['name'] == 'People'),
+        clock={'date': '2026-11-15', 'timezone': 'Europe/Amsterdam'})
     assert len(cancellations["duplicate_events"]) == 1
     assert cancellations["duplicate_events"][0]["event_id"] == "TC122-confirmed"
     assert len(cancellations["processes"]) == 4

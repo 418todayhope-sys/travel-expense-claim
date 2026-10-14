@@ -14,7 +14,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def native():
-    return json.loads((Path(__file__).parent / 'fixtures/ordinary_claim_c01.json').read_text())
+    parsed = json.loads((Path(__file__).parent / 'fixtures/ordinary_claim_c01.json').read_text())
+    parsed['event_clock'] = {'date': '2026-11-15', 'timezone': 'Europe/Amsterdam'}  # policy line 3; no instant invented
+    return parsed
 
 
 def row(source, locator, **values):
@@ -26,6 +28,7 @@ def synthetic():
     # Every changed record is explicitly a synthetic source with its own ID.
     parsed = json.loads(json.dumps(native()).replace('C01', 'SYN-C01'))
     parsed.update(evidence_mode='synthetic-test', case_clock='2026-09-15T12:00:00Z', unresolved_issues=[])
+    parsed['event_clock'] = parsed['case_clock']
     records = parsed['records']
     all_rows = [r for rows in records.values() for r in rows] + [r for s in parsed['workbook_sheets'] for r in s['records']]
     for r in all_rows:
@@ -182,6 +185,8 @@ def test_unrelated_cancellation_does_not_block_independent_claim_closure():
     parsed = synthetic()
     native_cancellations = json.loads((Path(__file__).parent / 'fixtures/retained_finance_records.json').read_text())['records']['cancellation_activities']
     parsed['records']['cancellation_activities'] = [r for r in native_cancellations if r['values']['Cancellation reference']['value'] == 'TC122']
+    from test_retained_finance import _fixture
+    parsed['records']['trips'] += [r for r in _fixture()['records']['trips'] if r['values']['Trip reference']['value'] == 'T122']
     final = batches(parsed)[-1]
     assert workflow(final)['status'] == 'closed-reimbursed'
     cancellation = final['snapshot']['travel_cancellations'][0]

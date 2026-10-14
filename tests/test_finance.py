@@ -2,7 +2,15 @@
 
 from copy import deepcopy
 
-from travel_claim.finance import reconcile_finance_events
+from travel_claim.finance import reconcile_finance_events as _reconcile
+
+
+def reconcile_finance_events(*args, **kwargs):
+    # Independent synthetic request/directory evidence, not inferred from events.
+    kwargs.setdefault('event_context', {'requests': {'REQ-SYN': {'claim_id': 'C-SYN-01',
+        'payee_id': 'EMP-SYN', 'actor': 'FIN-SYN-01', 'currency': 'EUR'}},
+        'clock': '2026-11-15T12:00:00Z'})
+    return _reconcile(*args, **kwargs)
 
 
 def _finance_row(row, event_id, event_type, *, batch=1, claim="C-SYN-01", amount=None,
@@ -13,6 +21,8 @@ def _finance_row(row, event_id, event_type, *, batch=1, claim="C-SYN-01", amount
         "Activity type": event_type,
         "Claim reference": claim,
         "Currency": currency,
+        "Request reference": "REQ-SYN", "Payee ID": "EMP-SYN", "Finance officer": "FIN-SYN-01",
+        "Activity time (UTC)": "2026-09-01T12:00:00",
         "Reason": f"SYNTHETIC fixture {event_type}",
     }
     if amount is not None:
@@ -94,7 +104,7 @@ def test_conflicting_duplicate_ids_and_unknown_events_open_owner_grouped_issues(
     )
     assert result["conflicting_events"][0]["event_id"] == "F-SYN-CONFLICT"
     assert len(result["conflicting_events"][0]["source_refs"]) == 2
-    assert result["confirmed_payment_cents"] == 0
+    assert result["confirmed_payment_cents"] == 1000
     assert result["balance_cents"] is None
     assert result["unresolved_event_ids"] == ["F-SYN-UNKNOWN"]
     assert list(result["repair_issues_by_owner"]) == ["FIN-SYN-01"]
@@ -122,12 +132,8 @@ def test_refund_must_link_to_known_payment_and_cannot_exceed_it():
 
 
 def test_revision_correction_preserves_history_invalidates_prior_and_rejects_stale_authorization():
-    prior = {
-        "claim_revision": 1,
-        "net_confirmed_cents": 10_000,
-        "balance_cents": 5_000,
-        "event_history": [{"event_id": "F-SYN-PAY", "source_ref": "prior"}],
-    }
+    prior = reconcile_finance_events([_finance_row(1, "F-SYN-PAY", "settled", amount=100.00)],
+        claim_id="C-SYN-01", current_revision=1, authorized_obligation=_obligation())
     prior_copy = deepcopy(prior)
     revisions = [
         {"revision": 1, "source_ref": "synthetic:claim#1"},

@@ -4,14 +4,26 @@ from copy import deepcopy
 import json
 from pathlib import Path
 
-from travel_claim.finance import reconcile_finance_events
+from travel_claim.finance import reconcile_finance_events as _reconcile
+
+
+def reconcile_finance_events(*args, **kwargs):
+    kwargs.setdefault('event_context', {'requests': {'REQ-C01': {'claim_id': 'C01',
+        'payee_id': 'EMP-01', 'actor': 'FIN-01', 'currency': 'EUR'}},
+        'clock': {'date': '2026-11-15', 'timezone': 'Europe/Amsterdam'}})
+    return _reconcile(*args, **kwargs)
 from travel_claim.integration import integrate_arrival_batch
 
 FIXTURE = Path(__file__).parent / "fixtures/retained_finance_records.json"
 
 
 def _fixture():
-    return json.loads(FIXTURE.read_text())
+    parsed = json.loads(FIXTURE.read_text())
+    # Exact retained directory records extend the selected-record test fixture.
+    ordinary = json.loads((FIXTURE.parent / 'ordinary_claim_c01.json').read_text())
+    parsed['records']['people'] = next(s['records'] for s in ordinary['workbook_sheets'] if s['name'] == 'People')
+    parsed['event_clock'] = {'date': '2026-11-15', 'timezone': 'Europe/Amsterdam'}  # verified POL-2026.2 line 3
+    return parsed
 
 
 def _batches(parsed):
@@ -179,9 +191,10 @@ def test_cash_request_mismatch_keeps_ledger_difference_unresolved_with_owned_rep
         if row['values']['Activity reference']['value'] == 'F-C01-1':
             row['values']['Request reference']['value'] = 'SYNTHETIC-WRONG-REQUEST'
     final = _batches(parsed)[-1]['finance_reconciliations']['C01']
-    assert final['net_confirmed_cents'] == 10000  # still an observed claim payment
+    assert final['net_confirmed_cents'] == 0  # unmatched delivery retained, never admitted
     assert final['recorded_ledger_balance_cents'] is None
-    assert 'finance-recorded-cash-link:C01:1' in {i['record_id'] for i in final['repair_issues']}
+    assert 'F-C01-1' in final['unresolved_event_ids']
+    assert len([e for e in final['event_history'] if e['event_id'] == 'F-C01-1']) == 2
 
 
 def test_queue_updates_missing_evidence_question_without_erasing_its_history():

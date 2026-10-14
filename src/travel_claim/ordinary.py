@@ -267,7 +267,7 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
         authorization = dict(amount_cents=allowed, claim_revision=revision, source_refs=request_refs + review_refs + policy_refs)
         finance = reconcile_finance_events(finance_events, claim_id=claim_id, current_revision=revision,
             revision_history=finance['revision_history'], previous_reconciliation=prior_finance,
-            authorized_obligation=authorization, source_classifications=source_classifications)
+            authorized_obligation=authorization, source_classifications=source_classifications, event_context=finance.get("event_context"))
     reconciled = finance.get('recorded_ledger_balance_cents') is not None and not finance['unresolved_event_ids'] and not finance['conflicting_events']
     stage('financial_reconciliation', reconciled,
           [ref(e) for e in finance_events if fields(e).get('Claim reference') == claim_id],

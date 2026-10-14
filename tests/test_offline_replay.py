@@ -151,7 +151,7 @@ def test_offline_replay_cli_seals_ordered_batches_and_writes_traceable_outputs(t
         assert rows[0]["claim_id"] == "C-SYN-RUN"
         assert rows[0]["revision"] == "2"
         assert rows[0]["allowed_cents"] == ""
-        assert rows[0]["paid_cents"] == "1250"
+        assert rows[0]["paid_cents"] == "0"
         assert rows[0]["balance_cents"] == ""
     report = (run_dir / "report.md").read_text(encoding="utf-8")
     assert "OFFLINE REPLAY" in report
@@ -188,7 +188,7 @@ def test_report_separates_owner_grouped_open_repairs_and_external_blockers(tmp_p
     claims = {row["claim_id"]: row for row in result["state"]["snapshot"]["claims"]}
     assert set(claims) == {"C-SYN-RUN", "C-UNRESOLVED"}
     assert claims["C-SYN-RUN"]["revision"] == 2
-    assert claims["C-SYN-RUN"]["paid_cents"] == 1250
+    assert claims["C-SYN-RUN"]["paid_cents"] == 0
     assert claims["C-SYN-RUN"]["allowed_cents"] is None
     queue = result["state"]["domain"]["repair_queue"]
     report = result["outputs"]["report"].read_text()

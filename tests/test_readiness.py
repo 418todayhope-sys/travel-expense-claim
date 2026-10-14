@@ -133,7 +133,11 @@ def test_tampered_evidence_fails(tmp_path, target, expected):
         path.write_text(path.read_text().replace("claim_id,revision", "revision,claim_id", 1))
     elif target == "csv-money":
         path = run / "claims.csv"
-        path.write_text(path.read_text().replace("1250", "9999"))
+        import csv, io
+        stream = io.StringIO(path.read_text()); reader = csv.DictReader(stream)
+        rows = list(reader); rows[0]['paid_cents'] = '9999'
+        with path.open('w') as output:
+            writer = csv.DictWriter(output, fieldnames=reader.fieldnames); writer.writeheader(); writer.writerows(rows)
     elif target == "report":
         path = run / "report.md"
         path.write_text(path.read_text().replace("Exercise facilitator", "Invented owner"))

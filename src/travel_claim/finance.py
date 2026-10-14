@@ -11,6 +11,7 @@ from collections import defaultdict
 from copy import deepcopy
 from decimal import Decimal, InvalidOperation
 from datetime import datetime
+from .event_validation import finance_errors, utc_time
 from typing import Any
 
 
@@ -147,6 +148,7 @@ def reconcile_finance_events(
     previous_reconciliation: dict[str, Any] | None = None,
     owner: str = "Finance",
     source_classifications: dict[str, str] | None = None,
+    event_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Reconcile source events for a claim without making policy decisions.
 
@@ -160,6 +162,10 @@ def reconcile_finance_events(
         raise ValueError("claim_id and a positive current_revision are required")
     if not owner:
         raise ValueError("owner is required for reconciliation issues")
+    if (previous_reconciliation and 'admitted_events' not in previous_reconciliation
+            and any(previous_reconciliation.get(k) for k in ('confirmed_payment_event_ids', 'confirmed_refund_event_ids',
+                'confirmed_payment_cents', 'confirmed_refund_cents', 'net_confirmed_cents'))):
+        raise ValueError('Legacy admission state requires explicit verified migration; refusing to erase or invent admitted money')
 
     classes = dict(_NATIVE_EVENT_CLASSES)
     if source_classifications:
@@ -174,6 +180,14 @@ def reconcile_finance_events(
                 raise ValueError(f"unsupported source event classification: {event_type!r} -> {classification!r}")
             classes[event_type] = classification
 
+    # Accept full-history or delta calls without dropping earlier raw deliveries.
+    retained = [{**deepcopy(h['source_ref']), 'values': {k: {'value': v} for k, v in h['source_record'].items()}}
+                for h in (previous_reconciliation or {}).get('event_history', []) if isinstance(h.get('source_ref'), dict) and 'source_record' in h]
+    deliveries = []
+    for record in retained + events:
+        if not any(_source_ref(r) == _source_ref(record) and _values(r) == _values(record) for r in deliveries):
+            deliveries.append(record)
+    events = deliveries
     by_id: dict[str, list[dict[str, Any]]] = defaultdict(list)
     missing_id_records: list[dict[str, Any]] = []
     for record in events:
@@ -184,112 +198,101 @@ def reconcile_finance_events(
         else:
             by_id[event_id].append(record)
 
-    relevant_occurrences: list[tuple[str | None, dict[str, Any], dict[str, Any], bool]] = []
-    duplicate_events = []
-    conflicting_events = []
+    prior = deepcopy((previous_reconciliation or {}).get('admitted_events', {}))
+    admitted = deepcopy(prior)
+    history, duplicate_events, conflicting_events, unresolved = [], [], [], []
+    event_issue_by_id = {}
+
+    def item_for(record):
+        values = _values(record)
+        return {"event_id": values.get("Activity reference"), "source_ref": _source_ref(record),
+                "source_record": deepcopy(values), "event_type": values.get("Activity type"),
+                "classification": classes.get(values.get("Activity type"), "unresolved"),
+                "amount_cents": _cents(values.get("Amount (EUR)")),
+                "obligation_cents": _cents(values.get("Obligation (EUR)")),
+                "currency": values.get("Currency"), "original_activity_id": values.get("Original activity reference")}
+
     for event_id, occurrences in by_id.items():
-        relevant = [record for record in occurrences if _values(record).get("Claim reference") == claim_id]
-        if not relevant:
+        relevant = [r for r in occurrences if _values(r).get('Claim reference') == claim_id]
+        if not relevant and event_id not in prior:
             continue
-        payloads = [_payload(_values(record)) for record in occurrences]
-        conflict = any(payload != payloads[0] for payload in payloads[1:])
-        for record in relevant:
-            relevant_occurrences.append((event_id, record, _values(record), conflict))
+        payloads = [_payload(_values(r)) for r in occurrences]
+        if event_id in prior:
+            payloads.append(_payload(prior[event_id]['source_record']))
+        conflict = any(v != payloads[0] for v in payloads[1:])
         if conflict:
-            conflicting_events.append({
-                "event_id": event_id,
-                "source_refs": [_source_ref(record) for record in occurrences],
-                "payloads": payloads,
-            })
+            conflicting_events.append({'event_id': event_id, 'source_refs': [_source_ref(r) for r in occurrences], 'payloads': payloads})
+            event_issue_by_id[event_id] = {
+                'record_id': f'finance-event-conflict:{event_id}', 'event_id': event_id,
+                'subject_type': 'claim', 'subject_id': claim_id, 'revision': current_revision,
+                'missing_or_return_reason': 'Conflicting immutable event replay; admitted history retained, new payload held',
+                'source_refs': [_source_ref(r) for r in occurrences], 'owner': owner,
+                'next_action': 'Finance to resolve the conflicting delivery without erasing admitted money'}
         elif len(occurrences) > 1:
-            duplicate_events.append({
-                "event_id": event_id,
-                "source_refs": [_source_ref(record) for record in occurrences],
-                "delivery_batches": [_values(record).get("Arrival batch") for record in occurrences],
-            })
-    relevant_occurrences.extend((None, record, _values(record), True) for record in missing_id_records)
-    relevant_occurrences.sort(key=lambda row: (
-        _positive_integer(row[2].get("Arrival batch")) or 0,
-        int(row[1].get("row") or 0),
-        row[0] or "",
-    ))
-
-    history = []
-    event_issue_by_id: dict[str, dict[str, Any]] = {}
-    typed = []
-    unresolved = []
-    for event_id, record, values, conflict in relevant_occurrences:
-        event_type = values.get("Activity type")
-        classification = classes.get(event_type, "unresolved")
-        item = {
-            "event_id": event_id,
-            "source_ref": _source_ref(record),
-            "source_record": deepcopy(values),
-            "event_type": event_type,
-            "classification": (
-                "conflicting_event_id" if conflict and event_id else
-                "missing_event_id" if conflict else classification
-            ),
-            "amount_cents": _cents(values.get("Amount (EUR)")),
-            "obligation_cents": _cents(values.get("Obligation (EUR)")),
-            "currency": values.get("Currency"),
-            "original_activity_id": values.get("Original activity reference"),
-        }
-        history.append(item)
-        if conflict:
-            if event_id:
-                event_issue_by_id[event_id] = {
-                    "record_id": f"finance-event-conflict:{event_id}",
-                    "event_id": event_id,
-                    "subject_type": "claim",
-                    "subject_id": claim_id,
-                    "revision": current_revision,
-                    "missing_or_return_reason": "same Finance event ID has conflicting source content; none of its occurrences were counted",
-                    "source_refs": [_source_ref(row) for row in by_id[event_id]],
-                    "owner": owner,
-                    "next_action": "Finance to resolve the source record conflict",
-                }
-            else:
-                event_issue_by_id[f"missing:{record.get('locator')}"] = {
-                    "record_id": f"finance-event-missing-id:{record.get('row') or len(event_issue_by_id) + 1}",
-                    "event_id": None,
-                    "subject_type": "claim",
-                    "subject_id": claim_id,
-                    "revision": current_revision,
-                    "missing_or_return_reason": "Finance event has no activity reference and cannot be safely deduplicated or counted",
-                    "source_refs": [_source_ref(record)],
-                    "owner": owner,
-                    "next_action": "Finance to identify this ledger event and provide its native activity reference",
-                }
-            continue
-        if classification == "unresolved":
-            unresolved.append(item)
-            continue
-        if classification in {"confirmed_payment", "confirmed_refund"}:
-            if values.get("Currency") != "EUR" or item["amount_cents"] is None:
-                unresolved.append(item)
-                continue
-        typed.append(item)
-
-    payments = {item["event_id"]: item for item in typed if item["classification"] == "confirmed_payment"}
-    confirmed_refunds: list[dict[str, Any]] = []
-    refund_candidates = list({item["event_id"]: item for item in typed if item["classification"] == "confirmed_refund"}.values())
-    refund_groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
+            duplicate_events.append({'event_id': event_id, 'source_refs': [_source_ref(r) for r in occurrences],
+                                     'delivery_batches': [_values(r).get('Arrival batch') for r in occurrences]})
+        if event_id not in admitted:
+            batches = [_positive_integer(_values(r).get('Arrival batch')) for r in occurrences]
+            first_batch = min((v for v in batches if v is not None), default=None)
+            first = [r for r in occurrences if first_batch is not None and _positive_integer(_values(r).get('Arrival batch')) == first_batch]
+            if not first:
+                candidate = item_for(relevant[0])
+                candidate['validation_errors'] = ['missing or invalid positive integer arrival batch']
+                unresolved.append(candidate)
+            # Same-batch conflicting payloads have no supplied authority order.
+            if first and all(_payload(_values(r)) == _payload(_values(first[0])) for r in first):
+                candidate = item_for(first[0])
+                values = candidate['source_record']
+                reasons = finance_errors(values, candidate['classification'], event_context, _cents)
+                if candidate['classification'] == 'unresolved':
+                    reasons.append('unknown Finance event vocabulary')
+                if values.get('Claim reference') == claim_id and not reasons:
+                    candidate['validation_context'] = deepcopy(event_context)
+                    admitted[event_id] = candidate
+                elif values.get('Claim reference') == claim_id:
+                    candidate['validation_errors'] = reasons
+                    unresolved.append(candidate)
+        for record in relevant:
+            item = item_for(record)
+            canonical = admitted.get(event_id)
+            same = canonical is not None and _payload(item['source_record']) == _payload(canonical['source_record'])
+            item['admission_status'] = 'admitted-or-exact-replay' if same else 'held'
+            if not same:
+                item['classification'] = 'conflicting_event_id' if conflict else 'unresolved'
+            history.append(item)
+    for record in missing_id_records:
+        item = item_for(record); item['classification'] = 'missing_event_id'
+        item['validation_errors'] = ['immutable event identity missing']; history.append(item); unresolved.append(item)
+    # Previously admitted facts remain observable even on a delta-only invocation.
+    for event_id, item in prior.items():
+        if not any(h['event_id'] == event_id and _payload(h['source_record']) == _payload(item['source_record']) for h in history):
+            history.append(deepcopy(item))
+    typed = list(admitted.values())
+    payments = {item['event_id']: item for item in typed if item['classification'] == 'confirmed_payment'}
+    confirmed_refunds = [deepcopy(item) for item in prior.values() if item['classification'] == 'confirmed_refund']
+    recovered = defaultdict(int)
+    for item in confirmed_refunds:
+        recovered[item['original_activity_id']] += item['amount_cents']
+    refund_candidates = [item for item in typed if item['classification'] == 'confirmed_refund' and item['event_id'] not in prior]
+    refund_candidates.sort(key=lambda h: (_positive_integer(h['source_record'].get('Arrival batch')) or 0,
+                                         utc_time(h['source_record']['Activity time (UTC)']), h['event_id']))
     for item in refund_candidates:
-        original_id = item["original_activity_id"]
-        original = payments.get(original_id) if isinstance(original_id, str) else None
-        if original is None or original.get("currency") != item.get("currency"):
-            unresolved.append(item)
-            continue
-        refund_groups[original_id].append(item)
-    for original_id, refunds in refund_groups.items():
-        original = payments[original_id]
-        refund_total = sum(item["amount_cents"] for item in refunds)
-        if refund_total > original["amount_cents"]:
-            unresolved.extend(refunds)
-            continue
-        confirmed_refunds.extend(refunds)
-
+        original = payments.get(item['original_activity_id'])
+        valid = original is not None and all(item['source_record'].get(k) == original['source_record'].get(k)
+                                             for k in ('Request reference', 'Payee ID', 'Currency', 'Claim reference'))
+        if valid:
+            valid = (utc_time(item['source_record']['Activity time (UTC)']) >= utc_time(original['source_record']['Activity time (UTC)'])
+                     and recovered[item['original_activity_id']] + item['amount_cents'] <= original['amount_cents'])
+        if not valid:
+            item['validation_errors'] = ['refund lacks matching settled request/payee/time or exceeds unrecovered transfer']
+            unresolved.append(item); admitted.pop(item['event_id'], None)
+        else:
+            confirmed_refunds.append(item); recovered[item['original_activity_id']] += item['amount_cents']
+    typed = list(admitted.values())
+    invalid_ids = {item['event_id'] for item in unresolved}
+    for item in history:
+        if item['event_id'] in invalid_ids and item['event_id'] not in admitted:
+            item['classification'] = 'unresolved'; item['admission_status'] = 'held'
     invalid_payments = [item for item in payments.values() if item["amount_cents"] is None]
     unresolved.extend(invalid_payments)
     confirmed_payment_cents = sum(item["amount_cents"] for item in payments.values() if item["amount_cents"] is not None)
@@ -307,7 +310,7 @@ def reconcile_finance_events(
             "revision": current_revision,
             "source_refs": [item["source_ref"]],
             "missing_or_return_reason": (
-                f"Finance event {item['event_id']!r} is not sufficiently classified or linked for cash reconciliation"
+                f"Finance event {item['event_id']!r} held: {', '.join(item.get('validation_errors', ['unmatched event']))}"
             ),
             "owner": owner,
             "next_action": "Finance to confirm event meaning, amount, currency, or refund link from the native ledger",
@@ -404,6 +407,9 @@ def reconcile_finance_events(
     if invalidated is not None:
         revalidation_history.append(deepcopy(invalidated))
     return {
+        "admitted_events": deepcopy(admitted),
+        "event_context": deepcopy(event_context),
+        "admitted_event_ids": list(admitted),
         "claim_id": claim_id,
         "claim_revision": current_revision,
         "revision_history": deepcopy(revision_history or []),
