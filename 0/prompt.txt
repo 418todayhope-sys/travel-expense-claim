@@ -440,3 +440,24 @@ Inspect the generated files and report their exact paths and validation results.
 Do not commit or push yet.
 
 Implement the smallest working end-to-end slice first. Keep your final response concise to conserve usage.
+
+---
+
+Preserve the completed Project D offline-replay milestone in Git.
+
+First inspect git status and the exact diff. Stage only these five files:
+- README.md
+- src/travel_claim/cli.py
+- src/travel_claim/snapshots.py
+- src/travel_claim/offline_replay.py
+- tests/test_offline_replay.py
+
+Do not stage artifacts/runs/, source PDFs, spreadsheets, generated reports, credentials, or unrelated files.
+
+Run git diff --cached --check and the full pytest suite. If both pass, commit with:
+
+feat: add verified Project D offline batch replay
+
+Push main to origin using the existing Entire.io-enabled Git workflow. Verify the remote main commit and checkpoint synchronization.
+
+Report the exact commit hash, test results, and remote verification. Do not begin another implementation stage.
