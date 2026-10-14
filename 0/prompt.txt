@@ -1,0 +1,43 @@
+Read `README.md`, `snapshot.schema.json`, `skills/travel-expense-claim/SKILL.md`, and the original interview under `interviews/`.
+
+We are implementing Project D — Travel Expense Claim for Alderbridge Consulting.
+
+Before writing code:
+
+1. Inspect the existing repository and identify the required deliverables.
+2. Review the Skill instructions against the repository requirements.
+3. Propose a Python project structure for source retrieval, parsing, policy validation, claim processing, Finance reconciliation, snapshots, replay, and reporting.
+4. Identify dependencies and potential implementation risks.
+5. Explain the implementation order.
+
+**Do not write or modify any files yet. Do not commit or push anything.**
+
+Present your plan for my approval before implementing it.
+
+---
+
+I approve the overall architecture with the following conditions:
+
+    Keep the existing interview and snapshot schema unchanged.
+
+    Follow the complete Project D task requirements, not just the README and Skill draft. Identify any requirements that still need verification.
+
+    Do not invent missing source data or business decisions.
+
+    Implement incrementally, with tests at each stage.
+
+    Do not commit or push without my permission.
+
+For this first implementation stage only:
+
+Create the Python project package and CLI foundation.
+
+Implement a validate-snapshot command that reads a JSON snapshot and validates it against the existing snapshot.schema.json.
+
+Add automated tests for a valid snapshot, an invalid snapshot, and a missing snapshot file.
+
+Document the exact installation and test commands.
+
+Do not implement business source retrieval or claim calculations yet.
+
+After implementation, run the tests and report which files changed, the results, and any limitations. Stop for my review before continuing.

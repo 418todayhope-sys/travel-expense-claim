@@ -1,0 +1,58 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "01M4X4X7VR3NGD79SS373686G7",
+  "session_id": "01a139c1-35c5-7573-9f1c-3ea441d862e0",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-14T12:06:35.355151298Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    ".gitignore",
+    "README.md",
+    "pyproject.toml",
+    "src/main.py",
+    "src/travel_claim/__init__.py",
+    "src/travel_claim/cli.py",
+    "tests/test_validate_snapshot.py"
+  ],
+  "agent": "Codex",
+  "model": "gpt-6-luna",
+  "turn_id": "2076249237ff",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 90676,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 804096,
+    "output_tokens": 9898,
+    "api_call_count": 27,
+    "subagent_tokens_complete": true
+  },
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-14T12:06:35.307617328Z",
+    "agent_lines": 325,
+    "agent_removed": 14,
+    "human_added": 1923,
+    "human_modified": 1,
+    "human_removed": 0,
+    "total_committed": 2249,
+    "total_lines_changed": 2263,
+    "agent_percentage": 14.980114891736632,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 353,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "skills/travel-expense-claim/SKILL.md": 353
+      }
+    }
+  ]
+}
