@@ -1,0 +1,79 @@
+Continue implementing Project D in the existing ~/travel-expense-claim repository.
+
+The previous milestone is committed and pushed as 65ee4f0. The offline replay already generates four linked batch snapshots, claims.csv, report.md, repair-queue.json, and offline-replay-state.json.
+
+Implement the next milestone now, not just a plan:
+
+Inspect the current offline replay report generation, repair queue, and related tests.
+
+Improve report.md to clearly separate:
+
+Claim-specific actionable repair items, grouped by responsible owner, with traceable claim/subject/revision/source references and next actions.
+
+Run-level external blockers, including the inaccessible native Notion reimbursement policy and the unconfirmed authoritative case clock.
+
+Clearly label this output as an offline replay of retained evidence, not a fresh live-source run.
+
+Preserve partial progress: unresolved claims must not prevent independent valid records from being processed.
+
+Do not invent policy rules, eligibility amounts, approvals, payment confirmations, or case-clock  dates.
+
+Add or update automated tests for the report sections, grouping, traceability, and unresolved blockers.
+
+Run the complete test suite and git diff --check.
+
+Regenerate the offline replay outputs and summarize the actual results.
+
+Do not commit or push yet. Show me the files changed, tests passed, and any remaining blockers. Preserve all existing Git and Entire.io history.
+
+---
+
+Preserve the completed Project D report-separation milestone in Git and Entire.io.
+
+1. Inspect `git status` and the exact diff.
+2. Stage ONLY these three source files:
+   - `README.md`
+   - `src/travel_claim/offline_replay.py`
+   - `tests/test_offline_replay.py`
+3. Do NOT stage `artifacts/runs/` or unrelated files.
+4. Run `git diff --cached --check` and the complete pytest suite.
+5. If validation passes, commit with the message:
+   `feat: separate Project D repairs and run blockers`
+6. Push the commit to `origin main`, allowing the existing Entire.io hooks to run.
+7. Verify the remote main commit and report whether the Entire.io checkpoint references were pushed.
+
+Do not rewrite history, force-push, or modify retained source artifacts.
+
+Report the commit hash, test results, push status, and any warnings.
+
+---
+
+Continue implementing Project D in ~/travel-expense-claim.
+
+The latest verified GitHub commit is 0f0acf3. Implement the next coding milestone: owner-specific follow-up drafts based on the existing repair queue.
+
+Inspect the current repair-queue schema, report generation, and tests.
+
+Generate a new artifact, follow-up-drafts.md, from unresolved repair items only.
+
+Group draft messages by responsible owner, preserving claim IDs, revisions, evidence references, unresolved questions, and specific requested next actions.
+
+Clearly distinguish claim-specific repairs, trip/permit repairs, and external run-level blockers.
+
+Do not generate messages for resolved items.
+
+Treat all messages as drafts requiring human review. Do not send emails or contact anyone.
+
+Do not invent email addresses, deadlines, reimbursement rules, approval decisions, payment events, or missing evidence.
+
+Preserve independent claim processing and existing immutable snapshot history.
+
+Add automated tests for grouping, traceability, resolved-item exclusion, and human-review labeling.
+
+Run the complete test suite and git diff --check.
+
+Regenerate the offline replay outputs in a new retained-input run without overwriting prior artifacts.
+
+Implement the code now, not just a plan.
+
+Do not commit or push yet. Report the files changed, test results, generated draft count, and remaining blockers.
