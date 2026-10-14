@@ -235,3 +235,33 @@ def test_report_separates_owner_grouped_open_repairs_and_external_blockers(tmp_p
     assert "permit-repair" not in claim_section
     assert "subject permit `P-SYN`, revision 1" in permit_section
     assert "Next action: obtain permit evidence" in permit_section
+
+
+def test_replay_writes_human_review_drafts_linked_from_report(tmp_path):
+    from travel_claim.offline_replay import run_offline_replay
+
+    run_dir, attempts = _capture(tmp_path)
+    before = list(attempts)
+    result = run_offline_replay(run_dir, schema_path=SCHEMA)
+    assert attempts == before
+    draft_path = result["outputs"]["drafts"]
+    assert draft_path.name == "follow-up-drafts.md"
+    drafts = draft_path.read_text()
+    assert result["draft_count"] == drafts.count("## Draft for ")
+    assert "HUMAN REVIEW REQUIRED — NOT SENT" in drafts
+    assert "scenario-case-clock" in drafts
+    assert "reimbursement-policy-pol-2026-2" in drafts
+    assert "follow-up-drafts.md" in result["outputs"]["report"].read_text()
+    for item in result["state"]["domain"]["repair_queue"]["items"].values():
+        assert item["request_draft"] == {"status": "draft", "sent": False}
+        if item["status"] == "open":
+            assert f"Item `{item['item_id']}`" in drafts
+
+
+def test_replay_refuses_existing_drafts_before_sealing_any_batches(tmp_path):
+    run_dir, _ = _capture(tmp_path)
+    draft_path = run_dir / "follow-up-drafts.md"
+    draft_path.write_text("existing reviewed draft")
+    assert main(["offline-replay", str(run_dir), "--schema", str(SCHEMA)]) == 1
+    assert draft_path.read_text() == "existing reviewed draft"
+    assert not (run_dir / "batches").exists()

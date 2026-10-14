@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from .follow_up import render_follow_up_drafts
 from .integration import integrate_arrival_batch
 from .outputs import owner_grouped_view, write_claims_csv, write_repair_queue
 from .parsing import OUTPUT_NAME
@@ -116,6 +117,7 @@ def _report(
         f"- Current claims: `{output_paths['claims'].name}` (exact required CSV columns).",
         f"- Full integration state and source-linked histories: `{output_paths['state'].name}`.",
         f"- Repair queue: `{output_paths['queue'].name}` (grouped by owner, item identity retained).",
+        f"- Owner follow-up drafts: `{output_paths['drafts'].name}` (human review required; not sent).",
         "",
         "For an authoritative live-source run, resume only after obtaining the authoritative case clock and an accessible native reimbursement policy, then perform fresh reads of all five source locations. This replay does not modify source content or send requests.",
         "",
@@ -145,6 +147,7 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
         "report": run_dir / "report.md",
         "queue": run_dir / "repair-queue.json",
         "state": run_dir / "offline-replay-state.json",
+        "drafts": run_dir / "follow-up-drafts.md",
     }
     occupied = [str(path) for path in output_paths.values() if path.exists()]
     if occupied:
@@ -235,9 +238,14 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
         },
         "repair_queue": queue,
     })
+    drafts, draft_count = render_follow_up_drafts(
+        run_id=manifest["run_id"], queue=queue, blockers=parsed.get("unresolved_issues", []),
+    )
+    with output_paths["drafts"].open("x", encoding="utf-8", newline="\n") as stream:
+        stream.write(drafts)
     report = _report(
         run_id=manifest["run_id"], parsed=parsed, snapshots=sealed, latest=latest,
         output_paths=output_paths,
     )
     output_paths["report"].write_text(report, encoding="utf-8", newline="\n")
-    return {"run_id": manifest["run_id"], "snapshots": sealed, "outputs": output_paths, "state": latest}
+    return {"run_id": manifest["run_id"], "snapshots": sealed, "outputs": output_paths, "state": latest, "draft_count": draft_count}
