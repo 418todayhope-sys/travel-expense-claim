@@ -1,0 +1,442 @@
+I have obtained the complete Project D task and submission requirements.
+
+Before continuing implementation, I will provide the full task text.
+
+Treat that text, the original stakeholder interview, the native business sources, and snapshot.schema.json as the authoritative requirements.
+
+Review the current implementation against those requirements and identify missing deliverables or incorrect assumptions.
+
+Do not modify files yet. Do not commit or push.
+
+Pay particular attention to:
+
+Fresh retrieval of all five native sources on every new run
+
+Exact sources.json fields and source retention
+
+One sealed snapshot per consumed batch
+
+Snapshot predecessor and source-binding hashes
+
+The exact required claims.csv columns
+
+Independent trip and permit cancellation processes
+
+A local repair queue with partial-response handling
+
+Replay idempotency and financial reconciliation
+
+Four source-grounded implementation choices that I must personally explain in the captured coding conversation
+
+Real Entire.io capture evidence and final submission requirements
+
+Wait for me to paste the complete task before producing your revised implementation plan.
+
+---
+
+# Travel expense claim — Task and submission
+
+## Scenario
+
+Alderbridge Consulting's operations lead needs a dependable, traceable way to handle travel expenses as claims, decisions and supporting information change. Interview the lead to understand the work, then build a reusable Agent Skill that supports the complete process. The company and records are fictional.
+
+## Your task
+
+Create your own repository from the public GitHub template. It supplies an entry README and the required snapshot schema; you build the Skill, implementation, checks and outputs. Use Git, an AI coding agent, the program's supported session capture, and browser or supported API/export access. Choose your implementation language and document any additional setup. No real employee identity, bank account or paid data source is needed.Implement the assigned work across all supplied records and arrival batches: travel permission and claim handling, monetary review, human decisions, reimbursement reconciliation and closure, corrections, and independent trip or permit cancellations, including processes without a claim. Build and demonstrate a connected ordinary path, then cover the material exceptions and later changes found in the sources. Individual cases may remain unresolved when the facts require it; report the affected work, reason, responsible person and evidence needed to resume. Missing company rules or inaccessible required sources must be raised with the lead or facilitator rather than guessed.
+
+Also implement a local work queue or request drafts for missing evidence and returned work. Choose its organization and partial-response handling. Keep individual work traceable to its subject, revision, source, missing fact or return reason, responsible person and next action. Show significant queue updates with their run/batch references in or through the report. Apply your chosen organization throughout the applicable records; the supplied later batches are fixed inputs, not events caused by your drafts.
+
+
+Obtain the five native source locations through the interview. Inputs include searchable PDFs, a Google Sheets workbook and a Notion page; business data is not bundled in the starter. Every new run must attempt fresh reads of all five locations through a browser or supported API/export route. Retain the complete relevant content actually used, including its original wording, identities, precision and history, and bind it in `sources.json`. Preserve the supplied case clock and arrival boundaries. Record inaccessible, partial or incompatible content and its affected scope explicitly. A URL, successful response or hash alone is not evidence of complete access. Do not alter sources or silently substitute bundled inputs, earlier downloads or an AI paraphrase. A labelled offline replay may reuse an earlier run's retained inputs without claiming fresh access.
+
+People retain business approval, exception and payment authority. The Skill prepares local work, validates and consumes authorized scenario decisions, and records their effects; it must not fabricate a reply, make professional approval recommendations, send real requests, book travel or move money..
+
+In your captured coding conversation, make and explain four source-grounded choices: how incomplete claims affect independent work; which work to revalidate after material corrections; the financial-completion conditions and delivery scope you accept after inspecting an actual result; and the organization and partial-response constraints for repair work. Adopt these constraints before they guide the work, connect them to actual source/subject and code/run references, and show their effect in the implementation and results. You may adopt an agent suggestion with your own source-grounded reason and constraint. Record an owned unresolved step where the evidence does not support completion, and reconsider affected choices when later evidence arrives. Concise statements in your normal conversation are enough; no separate decision register or fabricated mistake is required.
+
+
+Verify the ordinary path and every material branch in the supplied records, including later corrections, cancellations and replay. Check quantities, identities, source bindings and state transitions as well as status labels. Additional isolated test inputs are allowed but do not replace the primary run. Document unrun checks and implementation limitations honestly; a case-count or time limit does not remove assigned work.
+
+## Deliverables
+
+**Interview records — `interviews/*.md`.** Include the original Work Sim Markdown export for every interview session, with its session metadata and complete participant-visible messages. Keep one final complete export per session without rewriting or summarizing it. Commit and push these files in the submitted code revision and ensure the facilitator can read them. Coding-session capture remains a separate requirement. If the export is unavailable, contact the facilitator; do not manufacture a replacement.
+
+Paths are relative to your repository. Replace angle-bracketed placeholders with your own stable, nonempty IDs. JSON is UTF-8; output money is integer EUR cents or null when unknown, with blank unknown money in CSV. Zero is a known amount. Obtain business field meanings and date/time rules from the lead and sources.
+| Path | Required content |
+| --- | --- |
+| `skills/travel-expense-claim/SKILL.md` | Reusable Skill instructions with name/description metadata, inputs, invocation, human boundaries, outputs, error/retry behavior and supporting file references |
+| Supporting Skill files | Your code and focused references under the Skill or documented project paths; no case-specific hard-coded answers |
+| `README.md` | Setup, exact batch and replay commands, success/partial/failure behavior, verification commands and support/handoff instructions |
+| `artifacts/runs/<run-id>/sources.json` | `run_id`, `source_version`, `case_clock`, and `files`. Each file records `source_id`, relative retained-content `path`, observed `sha256`, `status` (`read` or `unavailable`), nullable `error`, native `url`, page/tab/section `locator`, UTC `observed_at` and observed source `version`. Cover all five URLs; use unique source IDs for multiple pieces. Bind read pieces to retained bytes. Unavailable portions retain attempted URL/locator/time and error, with null path/hash/version when unobtainable; identify missing scope separately from usable partial reads |
+| `artifacts/runs/<run-id>/batches/<batch-id>.json` | One sealed snapshot for each consumed batch, conforming to the public snapshot schema. Preserve earlier states before later information changes their basis ||
+| `artifacts/runs/<run-id>/claims.csv` | One current row per claim, with columns `claim_id,revision,trip_id,status,allowed_cents,paid_cents,balance_cents,next_owner,reason` |
+| `artifacts/runs/<run-id>/report.md` | Operations handoff: completed work, amounts and outstanding obligations, unresolved work, responsible people, next evidence/action, source/run references and significant changes. Include or link the operational repair queue and its significant partial-update views; account for cancellation processes without claims without inventing claim rows |
+| Actual coding-session evidence | The capture tool's real checkpoint/session records associated with the submitted code revision; self-authored logs or generated approval claims do not substitute for them |
+Snapshots use `schema_version: travel-claim-snapshot/2` and all fields, types, enumerations and references in the linked schema. Preserve claim and independent trip/permit revisions, line findings/source IDs, decision and request relationships, cancellation processes, financial state, and owned issues. Keep Finance `admitted_event_ids` separate from cancellation activity references; `issue_record_ids` must resolve to `issues[].record_id`. The lead and native sources supply the rules for interpreting and changing those states.
+
+The first snapshot has `predecessor: null`; later snapshots bind the preceding retained snapshot by relative path and SHA-256. `source_binding` binds the run's `sources.json` path and SHA-256. Files must not hash themselves. An unchanged replay preserves obligation/event identity and money. If rerunning would change sealed content, retain a new run with an explicit link and explanation instead of overwriting it. Report missing or corrupt prior state, or rebuild it from retained complete source/event history without inventing historical execution times. Required outputs must agree with their source and run references, including on retry or a partial result.
+
+## Interview
+
+Use Project D in Work Sim. Start your own participant session and retain its actual version and conversation. Investigate the business work and obtain the relevant rules, source links, field meanings and explanations as you need them; ask the lead to resolve missing or conflicting company context. No special question wording is required.
+**Interview rule.** You conduct the stakeholder interview yourself, and the questions are yours. Do not connect a coding agent or any other AI to the interview to run, script, or automate it. The interview transcript is assessed together with the code; a project whose interview was run by an agent is not scored.
+
+Before assessed implementation, follow Setting Up entire.io for a Project and verify actual coding-session capture. Check a recorded checkpoint after your first meaningful commit; ask the facilitator to repair missing capture before continuing. Coding-session capture does not replace the interview record. Keep your own source-grounded choices attributable in the real conversation and paired with code/results; do not reconstruct missing private conversations or manufacture transcripts. 
+
+## Submit
+
+Attach your completed GitHub repository URL to the Project D Classroom assignment. In its private comment, provide the exact commit ID, run ID, report path and real capture checkpoint references. Push the implementation and actual Entire capture branch, and confirm the facilitator can access and pair them. Keep secrets out of the repository; do not send credentials or make private conversations public. Your handoff must explain how to rerun, import a new authorized batch and resume owned unresolved work.
+
+---
+
+My first Project D implementation decision is to hold only the claims or dependent work affected by missing evidence, while allowing independent valid claims to continue.
+
+I chose this approach because the Travel Administration Lead explained in my stakeholder interview that incomplete claims should remain on hold without blocking independent claims.
+
+My constraint is that every unresolved item must retain its exact subject ID, revision, missing or conflicting fact, responsible owner, and next action.
+
+Implement this behavior in the claim-processing workflow and demonstrate it using actual source records when available.
+
+Do not fabricate missing evidence or mark held work as complete.
+
+Record this decision as part of our captured coding conversation. Do not modify code yet; wait until we finish the remaining implementation decisions.
+
+---
+
+My second Project D implementation decision concerns material claim corrections.
+
+I chose to revalidate every dependency affected by a material correction, including expense evidence, calculations, trip and permit consistency, required approvals, and Finance authorization.
+
+My reason is that the Travel Administration Lead explained that material corrections invalidate previous readiness, even when the reimbursement total remains unchanged.
+
+My constraints are:
+
+Preserve all previous claim revisions and their history.
+
+Use the corrected revision for current processing.
+
+Do not reuse approvals that no longer match the current facts.
+
+Preserve historical Finance commitments, transfers, and refunds.
+
+Revalidate affected dependencies rather than automatically discarding unrelated valid evidence.
+
+Demonstrate this behavior using actual correction records, including C09 if supported by the native sources.
+
+This is my second source-grounded implementation decision. Do not modify code yet; wait until we finish all four decisions.
+
+---
+
+My third Project D implementation decision concerns financial completion.
+
+I agree that a claim may be marked reimbursed only when:
+
+Required evidence and approvals are valid for the current claim revision.
+
+The reviewed entitlement matches the authorized reimbursement obligation.
+
+Net confirmed payments, accounting for confirmed refunds, equal the authorized amount.
+
+All required Finance resolutions are recorded.
+
+No unresolved issues prevent financial closure.
+
+I chose these conditions because the stakeholder interview establishes that issuing a payment alone does not prove reimbursement is complete.
+
+For example, if the authorized obligation is €100 and confirmed net payments total €80, the claim must remain unresolved with €20 outstanding.
+
+Preserve actual Finance events and their identities. Do not invent payments, refunds, approvals, or resolutions.
+
+This is my provisional third implementation decision. The assignment requires me to inspect an actual processing result before confirming the final financial-completion conditions and accepted delivery scope. After implementation produces a real result, stop and show me the financial reconciliation and unresolved cases so I can make that final decision myself.
+
+Do not modify code yet. Wait until we finish the fourth decision.
+
+---
+
+My fourth Project D implementation decision is to organize the repair queue by responsible owner (Option B).
+
+I chose this because the Travel Administration Lead described the need to identify responsible people, track missing evidence, and follow up on unresolved work. Grouping tasks by owner makes follow-up efficient while preserving individual claim traceability.
+
+My implementation constraints are:
+
+Group repair tasks by responsible owner, but preserve each task's individual identity.
+
+Record the exact subject ID, subject type, revision, source reference, missing fact or return reason, responsible owner, and next action.
+
+Support claims, trips, and permits independently, including cancellations without claims.
+
+A partial response may resolve only the specific repair items supported by that response.
+
+Unanswered, insufficiently supported, or conflicting items must remain open.
+
+Preserve the history of repair items and significant changes, including run and batch references.
+
+Generate local repair drafts only. Do not send real requests or fabricate employee responses.
+
+For example, if an employee owes two receipts and provides only one valid receipt, close only the corresponding repair item. Keep the second item open.
+
+This is my fourth source-grounded implementation decision.
+
+All four initial decisions have now been established. Before implementing them, summarize how each will be represented in code and tested against actual source records. Do not modify files until I authorize the implementation.
+
+---
+
+I authorize you to begin implementing Project D according to the revised plan and my four recorded decisions.
+
+Start with the foundation required for a real, traceable run:
+
+    Implement fresh retrieval attempts for all five native sources, retaining the actual relevant content accessed and recording partial or unavailable scopes honestly.
+
+    Generate the required sources.json manifest with the exact source metadata and retained-content bindings.
+
+    Implement batch snapshot creation using snapshot.schema.json, including source bindings, predecessor paths, SHA-256 integrity checks, and immutable earlier snapshots.
+
+    Implement the exact claims.csv output contract and the owner-grouped repair queue with item-level traceability.
+
+    Add automated tests for these components.
+
+Use the actual sourcerecords and public schema. Do not hard-code expected claim answers, fabricate approvals or Finance events, silently substitute offline files for fresh reads, or claim that incomplete evidence is complete.
+
+Do not attempt the entire assignment in one uncontrolled change. Implement this foundation first, run its tests, and report:
+
+Files created or modified.
+
+Tests executed and their results.
+
+Which native sources were successfully accessed and which were partial or unavailable.
+
+Remaining implementation work and limitations.
+
+Do not commit or push yet. Stop after the foundation so I can review the results before we continue.
+
+Preserve my four implementation decisions in the captured coding conversation. My third decision remains provisional until I inspect an actual processing result.
+
+---
+
+The foundation review is accepted as an initial implementation milestone. The 15 passing tests are encouraging, but they do not establish that the complete Project D workflow works.
+
+Before proceeding to scenario processing, investigate the unavailable Notion reimbursement policy.
+
+Try a supported browser, Notion API, or export method that can retrieve the actual policy content from the original native source URL. Do not treat the generic HTML shell as successful access.
+
+If access succeeds, retain the complete relevant policy content and its original wording, record its source metadata and SHA-256, and use a new run ID without overwriting the previous capture.
+
+If access fails, keep the source explicitly unavailable, explain what access method or facilitator assistance is needed, and identify which policy-dependent processing cannot safely proceed.
+
+Do not substitute my earlier pasted policy text for a fresh native-source read. You may use the interview to identify questions, but not to invent missing policy evidence.
+
+Do not implement the remaining workflow yet, and do not commit or push. Report the policy retrieval results and stop for my review.
+
+---
+
+I'm working on Project D — Travel Expense Claim.
+
+My implementation successfully retrieved the three PDF binders and Google Sheets workbook, but I cannot access the original Notion reimbursement policy.
+
+I attempted the native URL, browser access, and the official Notion API. The native page returned only an HTML shell, and the API returned HTTP 401 Unauthorized.
+
+Could you provide an accessible native export of the policy or enable authorized read access to the original Notion page?
+
+I have preserved the failed-access evidence and have not substituted or invented policy content.
+
+---
+
+Continue Project D development while the Notion reimbursement policy remains inaccessible.
+
+Implement the policy-independent components next:
+
+Parse the retained PDF binders and Google Sheets workbook while preserving original wording, identities, precision, and source references.
+
+Identify the actual arrival batches and supplied case clock from the records.
+
+Build traceable representations of claims, trips, permits, receipts, decisions, and Finance events.
+
+Preserve revisions and distinguish independent cancellations from claim processing.
+
+Add automated parsing and source-integrity tests.
+
+Do not determine policy eligibility, reimbursement entitlements, or final approval readiness without verified policy evidence.
+
+Keep policy-dependent work unresolved, with its responsible owner and next action. Do not substitute the previously pasted policy for a fresh native read.
+
+Stop after implementing and testing these components. Report which actual records were parsed, which batches were identified, and what remains blocked.
+
+Do not commit or push yet.
+
+---
+
+Before treating the Project D case clock as unavailable, re-examine the complete original stakeholder interview and task materials for an explicitly supplied scenario date, time, or timezone.
+
+Our earlier interview review identified November 15, 2026, Europe/Amsterdam as a possible authoritative case clock. Verify that exact value against the original evidence rather than accepting it from this message alone.
+
+If confirmed, record the exact supporting source and locator and update the case-clock issue appropriately.
+
+If not confirmed, preserve the unresolved issue and explain what evidence is missing.
+
+Do not infer the case clock from source download times or individual activity timestamps.
+
+Do not process batches, commit, or push yet. Report your findings and stop.
+
+---
+
+I accept the evidence review. Keep the authoritative case clock unresolved because the original materials inspected do not confirm it. Keep the Notion reimbursement policy unavailable.
+
+Continue implementing Project D's policy-independent processing infrastructure, using the parsed native records for structural understanding and clearly labeled synthetic fixtures for behavior tests.
+
+Prioritize claim and trip revision history, independent cancellation state transitions, decision-to-subject matching, Finance event deduplication and conflict detection, and owner-grouped repair queue updates.
+
+Do not infer missing policy rules, use fabricated approvals as actual case decisions, or generate purportedly complete scenario results.
+
+Preserve both unresolved issues with their affected scope, responsible owner, and next action. Stop after implementing and testing this stage, without committing or pushing.
+
+Report the exact tests run and the remaining blockers.
+
+---
+
+For Project D, follow an incremental verification workflow and preserve evidence for my assignment.
+
+1. After each meaningful code change, read back the modified file and run the relevant tests.
+2. Run the linter and type checker when available. Report any unavailable tools.
+3. Inspect generated JSON, CSV, and Markdown outputs for correctness and traceability.
+4. Verify that Entire.io is capturing this Codex session and that my four implementation decisions are preserved in the session evidence.
+5. Record the actual verification commands, results, failures, and corrections so they can be reviewed.
+6. At the end, run the full test suite and report the results, Entire.io capture status, and remaining blockers.
+
+Do not fabricate test results or claim that Entire.io recorded something without verifying it.
+
+Do not commit or push yet. Stop and report your findings.
+
+---
+
+Create a clearly labeled work-in-progress Git commit for the current Project D implementation and verification evidence.
+
+Before committing, inspect git status and ensure no credentials, secrets, virtual environments, or unnecessarily large generated source files are staged.
+
+Stage only appropriate source code, tests, documentation, and the verification log. Do not stage the retained PDF binders, workbook, or large generated artifacts.
+
+Commit with the message "wip: Project D parsing, workflow infrastructure, and verification".
+
+Then attempt to push the project branch and synchronize the relevant Entire.io checkpoint branch using the documented repository workflow.
+
+Report the exact commit hash, push results, and checkpoint synchronization status. If remote access fails, preserve the local commit and report the failure.
+
+Do not claim Project D is complete. Do not begin another implementation stage.
+
+---
+
+Continue Project D from commit 24b5d48db18979a9f3c9546f34863dd878c73a63.
+
+Implement the policy-independent financial reconciliation engine, building on the existing workflow infrastructure.
+
+Requirements:
+
+    Preserve all Finance event IDs and original event history.
+
+    Detect duplicate event IDs and conflicting event content.
+
+    Distinguish confirmed payments, confirmed refunds, pending transfers, and unresolved events using source-supported event classifications.
+
+    Calculate net confirmed payments as confirmed payments minus linked confirmed refunds, using integer EUR cents.
+
+    Keep authorized obligations separate from actual payments.
+
+    Calculate outstanding balances only when the required inputs are known and supported.
+
+    Preserve claim revision history and invalidate affected reconciliation results when material corrections occur.
+
+    Maintain traceable source references and owner-grouped repair issues.
+
+Use synthetic fixtures for tests.Do not fabricate actual business approvals, payment confirmations, or policy entitlements.
+
+Keep the inaccessible Notion policy and unconfirmed authoritative case clock explicitly unresolved. Do not consume the real arrival batches or claim that the scenario is complete.
+
+After each meaningful change, read back the modified file, run relevant tests, and inspect generated outputs. Run lint/type checks if available; otherwise report that limitation.
+
+At the end, run the full test suite and report:
+
+Tests passed and failed
+
+Implemented financial behaviors
+
+Remaining blockers
+
+Files changed
+
+Do not commit or push yet. Stop after this implementation stage.
+
+---
+
+Continue Project D from the current workspace, preserving the uncommitted finance.py and test_finance.py changes.
+
+Implement the policy-independent integration layer connecting the existing claim/trip revision handling, independent trip and permit cancellation activities, review decisions, Finance reconciliation, and owner-grouped repair queue.
+
+Use the retained parsed records to understand actual field names and source references. Use clearly labeled synthetic fixtures for end-to-end behavior tests.
+
+Requirements:
+
+Process records in explicit arrival-batch order without changing the original activity timestamps.
+
+Preserve all prior revisions, decisions, and Finance event identities.
+
+Match decisions to the correct subject and revision, without assuming that a recorded decision establishes full policy compliance.
+
+Keep trip and permit cancellations independent of claims.
+
+Revalidate affected dependencies after material corrections while preserving unaffected records.
+
+Reconcile only supported financial events and obligations.
+
+Preserve source references and individually traceable, owner-grouped repair issues.
+
+Prepare the resulting state for the existing snapshot schema without sealing real scenario batches yet.
+
+Keep the inaccessible Notion policy and unconfirmed authoritative case clock explicitly unresolved. Do not invent eligibility rules, approvals, or financial outcomes.
+
+After each meaningful change, read back the changed files and run relevant tests. Inspect a serialized synthetic integrated result. Run the full test suite at the end and report the results, changed files, and remaining blockers.
+
+Do not commit or push yet. Stop after this stage.
+
+---
+
+Create a work-in-progress Git commit preserving the newly implemented Project D Finance reconciliation and integration layers.
+
+First inspect git status and verify the exact files being staged. Stage only:
+- src/travel_claim/finance.py
+- src/travel_claim/integration.py
+- tests/test_finance.py
+- tests/test_integration.py
+
+Do not stage artifacts/runs/, retained source documents, generated outputs, credentials, or unrelated files.
+
+Run git diff --cached --check and the full pytest suite before committing. If checks pass, commit with:
+
+wip: Project D financial reconciliation and batch integration
+
+Push main to origin using the existing Entire.io-enabled Git workflow. Verify the remote main commit and report whether the Entire.io checkpoint synchronization succeeded.
+
+Report the exact commit hash, tests, and remote verification. Do not claim the assignment is complete and do not begin another implementation stage.
+
+---
+
+Implement the next Project D milestone now. Do not produce another gap assessment.
+
+Connect the existing parsing, integration, Finance, and output modules into a runnable CLI workflow that processes retained Project D records in explicit batch order and writes verifiable outputs.
+
+Requirements:
+
+Reuse existing modules, schemas, and tests; avoid rewriting working code.
+
+Preserve claim revisions, approvals, Finance events, cancellations, and source traceability.
+
+Generate immutable per-batch snapshots, claims.csv with the required exact header, and report.md with owner-grouped outstanding issues.
+
+Clearly label any offline replay. Do not claim a fresh native-source read.
+
+Do not invent policy rules, a case clock, approvals, payments, or financial amounts. Mark unsupported calculations unresolved.
+
+Add focused tests, then run the full pytest suite.
+
+Inspect the generated files and report their exact paths and validation results.
+
+Do not commit or push yet.
+
+Implement the smallest working end-to-end slice first. Keep your final response concise to conserve usage.
