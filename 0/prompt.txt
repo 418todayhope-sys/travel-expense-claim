@@ -289,3 +289,48 @@ Run the complete pytest suite and git diff --check.
 Do not commit or push yet.
 
 Report changed files, the real claim demonstrated, successful and blocked transitions, test results, and remaining gaps.
+
+---
+
+Preserve the completed Project D Step 152 connected ordinary workflow milestone.
+
+    Inspect git status, all source diffs, and the staging area.
+
+    Stage ONLY these ten files:
+
+        README.md
+
+        snapshot.schema.json
+
+        src/travel_claim/ordinary.py
+
+        src/travel_claim/integration.py
+
+        src/travel_claim/offline_replay.py
+
+        src/travel_claim/outputs.py
+
+        src/travel_claim/readiness.py
+
+        tests/test_ordinary.py
+
+        tests/test_offline_replay.py
+
+        tests/fixtures/ordinary_claim_c01.json
+
+    Do not stage artifacts/runs/, artifacts/verification/, or unrelated files.
+
+Run git diff --cached --check and the full pytest suite.
+
+If validation passes, commit with:
+feat: connect evidence-driven travel claim workflow
+
+Push to origin main using the existing Entire.io hooks.
+
+Verify the exact remote main commit and Entire.io checkpoint references.
+
+Verify the original interview and all 64 previously retained artifact files remain unchanged.
+
+Do not force-push or rewrite history.
+
+Report the commit hash, test count, push verification, checkpoint results, and any warnings.
