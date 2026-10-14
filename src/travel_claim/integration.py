@@ -538,7 +538,7 @@ def integrate_arrival_batch(
         "source_classifications": source_classifications or {},
         "trip_reference_records": parsed.get("records", {}).get("trips", []),
         "unresolved_issues": parsed.get("unresolved_issues", []),
-        "ordinary_evidence": {key: parsed.get(key) for key in ("records", "workbook_sheets", "case_clock", "event_clock", "evidence_mode")},
+        "ordinary_evidence": {key: parsed.get(key) for key in ("records", "workbook_sheets", "case_clock", "event_clock", "evidence_mode", "expense_policy")},
         "source_observations": source_observations or [],
     })
     previous_domain = deepcopy(prior_result["domain"]) if prior_result else _domain_seed()

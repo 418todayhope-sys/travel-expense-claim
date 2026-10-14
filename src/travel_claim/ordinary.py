@@ -7,11 +7,11 @@ from __future__ import annotations
 
 from copy import deepcopy
 from datetime import datetime, timezone
-from decimal import Decimal, InvalidOperation
 import re
 
 from .finance import _cents, reconcile_finance_events
 from .workflow import row_values
+from .expenses import evaluate_expenses
 
 ROLE_FIELDS = {"administration": "Administration reviewer", "budget_owner": "Budget owner",
                "supervisor": "Supervisor", "director": "Director"}
@@ -31,10 +31,21 @@ def table(parsed, key, tab):
 
 def expense_lines(record):
     """Read complete rows from the retained PDF layout; never guess a row."""
-    pattern = re.compile(r'^\s*(\d+)\s+(\S+)\s+(\S+)\s+(\d{4}-\d{2}-\d{2})\s+([\d,]+\.\d{2})\s+([A-Z]{3})\s*$', re.M)
-    return [dict(line=int(m[1]), cost_id=m[2], receipt_id=m[3], first_submitted_date=m[4],
-                 original_cents=_cents(m[5].replace(',', '')), currency=m[6], source_refs=[ref(record)])
-            for m in pattern.finditer(record.get('text', ''))]
+    lines = []
+    for raw in record.get('text', '').splitlines():
+        if not re.match(r'^\s*\d+\s+', raw):
+            continue
+        tokens = raw.split()
+        if len(tokens) == 6:
+            number, cost, receipt, submitted, amount, currency = tokens
+        else:
+            number = tokens[0]; cost = tokens[1] if len(tokens) > 1 else 'unknown'
+            receipt = submitted = amount = currency = None
+        lines.append(dict(line=int(number), cost_id=cost, receipt_id=receipt,
+            first_submitted_date=submitted, original_amount=amount.replace(',', '') if amount else None,
+            original_cents=_cents(amount.replace(',', '')) if amount else None,
+            currency=currency, source_refs=[ref(record)]))
+    return lines
 
 
 def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancellations,
@@ -123,81 +134,27 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
           lead, 'Obtain the policy-defined permission requirement and matching permit approvals/timing; resolve affected cancellations')
 
     lines = expense_lines(record)
-    receipts = parsed.get('records', {}).get('receipts', [])
-    merchants = table(parsed, 'merchant_payments', 'Merchant payments')
-    evidence_ok = bool(lines) and len({line['cost_id'] for line in lines}) == len(lines)
-    for line in lines:
-        rs = [r for r in receipts if fields(r).get('Receipt reference') == line['receipt_id']]
-        ms = [r for r in merchants if fields(r).get('Expense reference') == line['cost_id']]
-        # Stable merchant transaction identity: duplicates are not extra proof
-        # or additional money; conflicting payloads cannot pass validation.
-        unique = {}; conflict = False
-        for row in ms:
-            mv = fields(row); identity = mv.get('Transaction reference')
-            if not identity or identity in unique and fields(unique[identity]) != mv:
-                conflict = True
-            unique[identity] = row
-        ms = list(unique.values())
-        rv = fields(rs[0]) if len(rs) == 1 else {}
-        receipt_ok = (len(rs) == 1 and rv.get('Expense reference') == line['cost_id']
-                      and rv.get('Employee') == employee and rv.get('Trip reference') == trip_id
-                      and rv.get('Currency') == line['currency'] and _cents(rv.get('Gross amount')) == line['original_cents'])
-        merchant_ok = bool(ms) and not conflict and all(
-            fields(m).get('Employee ID') == employee and fields(m).get('Trip reference') == trip_id
-            and fields(m).get('Receipt reference') == line['receipt_id']
-            and fields(m).get('Currency') == line['currency'] and fields(m).get('Payment status') == 'settled'
-            and _cents(fields(m).get('Gross amount')) is not None and fields(m).get('Paid date') for m in ms)
-        merchant_ok = merchant_ok and sum(_cents(fields(m)['Gross amount']) for m in ms) == line['original_cents']
-        line.update(evidence_status='PASS' if receipt_ok and merchant_ok else 'BLOCKED',
-                    category=rv.get('Category'), documented_units=rv.get('Documented units'),
-                    paid_dates=sorted({str(fields(m).get('Paid date'))[:10] for m in ms}),
-                    allowed_cents=None, status='unresolved',
-                    reason='Evidence matched; policy eligibility remains separate' if receipt_ok and merchant_ok else 'Receipt or settled merchant proof is missing, conflicting or mismatched')
-        line['source_refs'] += [ref(r) for r in rs + ms]
-        evidence_ok = evidence_ok and receipt_ok and merchant_ok
+    calculation = evaluate_expenses(lines=lines, parsed=parsed, employee=employee, trip_id=trip_id,
+        trip=trip, record=record, history=finance['revision_history'], fields=fields, ref=ref, table=table)
+    evidence_ok = bool(lines) and len({line['cost_id'] for line in lines}) == len(lines) and all(
+        line['evidence_status'] == 'PASS' for line in lines)
     evidence_refs = [ref(record)] + [r for line in lines for r in line['source_refs']]
     stage('supporting_evidence', evidence_ok, evidence_refs,
-          'Current revision expense IDs, receipts, settled merchant transactions, identities, currencies and amounts',
-          employee or 'Employee', 'Supply matching receipts and settled merchant proof for each current-revision expense line')
-
-    policy_ok = policy_supported and evidence_ok and linked and permission
-    rates = table(parsed, 'fx_rates', 'FX'); caps = table(parsed, 'caps', 'Caps')
+          'Current revision receipts and settled merchant proof must match employee, trip, cost, currency and gross',
+          employee or 'Employee', 'Supply matching receipts and settled merchant proof for every expense')
+    filing_ok = bool(lines) and all(line['filing_status'] == 'PASS' for line in lines)
+    stage('filing_deadline', filing_ok, evidence_refs,
+          '; '.join(f"{line['cost_id']}: {line['reason']}" for line in lines) or 'Missing expense submissions',
+          finance_owner, 'Verify cost-specific original submission dates, trip end and employee payment; obtain explicit Finance exception for late filing')
+    policy_ok = policy_supported and evidence_ok and linked and permission and calculation['status'] == 'PASS'
     for line in lines:
+        line['allowed_cents'] = line['calculated_cents'] if policy_ok else None
         if not policy_ok:
-            break
-        if line['category'] not in policy['Eligible categories'] or len(line['paid_dates']) != 1:
-            policy_ok = False; break
-        date = line['paid_dates'][0]; original = line['original_cents']
-        if line['category'] not in policy['Uncapped categories']:
-            cs = [c for c in caps if fields(c).get('Destination') == trip.get('Destination')
-                  and fields(c).get('Category') == line['category'] and fields(c).get('Currency') == line['currency']
-                  and str(fields(c).get('Effective from'))[:10] <= date <= str(fields(c).get('Effective to'))[:10]]
-            try:
-                units = Decimal(str(line['documented_units']))
-                limit = _cents(fields(cs[0]).get('Amount per unit')) if len(cs) == 1 else None
-                total_limit = units * limit if limit is not None else None
-                if not units.is_finite() or units <= 0 or total_limit is None or total_limit != total_limit.to_integral_value():
-                    policy_ok = False; break
-                original = min(original, int(total_limit)); line['source_refs'] += [ref(cs[0])]
-            except (InvalidOperation, TypeError):
-                policy_ok = False; break
-        fx = [r for r in rates if fields(r).get('Currency') == line['currency'] and str(fields(r).get('Rate date'))[:10] == date]
-        try:
-            rate = Decimal(str(fields(fx[0]).get('EUR per currency unit'))) if len(fx) == 1 else None
-            converted = Decimal(original) * rate if rate is not None else None
-            if rate is None or not rate.is_finite() or rate <= 0 or converted != converted.to_integral_value():
-                policy_ok = False; break
-            line['allowed_cents'] = int(converted); line['status'] = 'supported'
-            line['source_refs'] += [ref(fx[0])]
-        except (InvalidOperation, TypeError):
-            policy_ok = False; break
-    if not policy_ok:
-        for line in lines:
-            line.update(allowed_cents=None, status='unresolved')
-    allowed = sum(line['allowed_cents'] for line in lines) if policy_ok else None
+            line['status'] = 'unresolved'
+    allowed = calculation['calculated_cents'] if policy_ok else None
     stage('policy_eligibility', policy_ok, policy_refs + evidence_refs,
-          'Eligibility and exact-cent entitlement require a verified source-backed rule definition; interview summaries and Finance acceptance are insufficient',
-          lead, 'Obtain complete native policy and a reviewed source-referenced rule definition; verify dates, FX, caps and exceptions')
+          'Expense calculation and filing are separate from travel permission, reviewed policy definitions and approvals',
+          lead, 'Resolve line findings and remaining policy/permission evidence before treating calculated amounts as entitlement')
 
     current = [r for r in decisions if fields(r).get('Subject type') == 'claim'
                and fields(r).get('Subject reference') == claim_id and fields(r).get('Revision') == revision]
@@ -318,7 +275,7 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
     pending = next((s for s in stages if s['status'] != 'PASS'), None)
     return dict(claim_id=claim_id, revision=revision, trip_id=trip_id, trip_revision=claim.get('trip_revision'),
                 mode=parsed.get('evidence_mode', 'offline-replay'), status=('closed-reimbursed' if allowed else 'closed-no-payment') if closed else 'pending',
-                allowed_cents=allowed, balance_cents=finance['balance_cents'], lines=lines, stages=stages,
+                expense_calculation=calculation, allowed_cents=allowed, balance_cents=finance['balance_cents'], lines=lines, stages=stages,
                 observed_reviews=observed, request=deepcopy(requests[0]) if request_ok else None,
                 source_refs=list(dict.fromkeys([ref(record)] + [r for s in stages for r in s['source_refs']])),
                 next_owner=None if closed else pending['owner'], reason='Supported financial closure' if closed else pending['detail'],

@@ -8,6 +8,7 @@ from jsonschema import Draft202012Validator, FormatChecker
 import pytest
 
 from travel_claim.integration import integrate_arrival_batch
+from travel_claim.expenses import load_expense_policy
 from travel_claim.outputs import load_repair_queue, write_repair_queue
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def native():
     parsed = json.loads((Path(__file__).parent / 'fixtures/ordinary_claim_c01.json').read_text())
+    parsed['expense_policy'] = load_expense_policy(ROOT / 'tests/fixtures/POL-2026.2-browser-copy.txt')
     parsed['event_clock'] = {'date': '2026-11-15', 'timezone': 'Europe/Amsterdam'}  # policy line 3; no instant invented
     return parsed
 
@@ -226,9 +228,11 @@ def test_conflicting_duplicate_review_id_cannot_supply_an_approval():
 def test_synthetic_source_defined_cap_changes_entitlement_without_changing_merchant_cost():
     parsed = synthetic()
     policy = parsed['records']['workflow_policy_rules'][0]['values']
+    policy['Eligible categories']['value'] = ['lodging']
     policy['Uncapped categories']['value'] = []
+    parsed['records']['receipts'][0]['fields'] = [dict(f, value='lodging') if f['label'] == 'Category' else f for f in parsed['records']['receipts'][0]['fields']]
     cap = row('synthetic-travel-registers-workbook', 'SYNTHETIC cap row', **{
-        'Cap reference': 'SYN-CAP', 'Destination': 'NL', 'Category': 'transport', 'Currency': 'EUR',
+        'Cap reference': 'SYN-CAP', 'Destination': 'NL', 'Category': 'lodging', 'Currency': 'EUR',
         'Effective from': '2026-01-01', 'Effective to': '2026-12-31', 'Amount per unit': 40,
     })
     parsed['workbook_sheets'].append({'name': 'Caps', 'records': [cap]})
