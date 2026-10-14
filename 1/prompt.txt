@@ -304,3 +304,19 @@ For Project D, follow an incremental verification workflow and preserve evidence
 Do not fabricate test results or claim that Entire.io recorded something without verifying it.
 
 Do not commit or push yet. Stop and report your findings.
+
+---
+
+Create a clearly labeled work-in-progress Git commit for the current Project D implementation and verification evidence.
+
+Before committing, inspect git status and ensure no credentials, secrets, virtual environments, or unnecessarily large generated source files are staged.
+
+Stage only appropriate source code, tests, documentation, and the verification log. Do not stage the retained PDF binders, workbook, or large generated artifacts.
+
+Commit with the message "wip: Project D parsing, workflow infrastructure, and verification".
+
+Then attempt to push the project branch and synchronize the relevant Entire.io checkpoint branch using the documented repository workflow.
+
+Report the exact commit hash, push results, and checkpoint synchronization status. If remote access fails, preserve the local commit and report the failure.
+
+Do not claim Project D is complete. Do not begin another implementation stage.
