@@ -193,6 +193,40 @@
             "type": "integer",
             "minimum": 1,
             "description": "Exact trip revision from the supplied trip source, independent of claim revision."
+          },
+          "finance_evidence": {
+            "type": "object",
+            "required": [
+              "recorded_obligation",
+              "recorded_ledger_balance_cents",
+              "basis",
+              "current_revision_authority_confirmed",
+              "closure_authority_confirmed"
+            ],
+            "properties": {
+              "recorded_obligation": {
+                "type": [
+                  "object",
+                  "null"
+                ]
+              },
+              "recorded_ledger_balance_cents": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "basis": {
+                "type": "string",
+                "minLength": 1
+              },
+              "current_revision_authority_confirmed": {
+                "const": false
+              },
+              "closure_authority_confirmed": {
+                "const": false
+              }
+            }
           }
         }
       }

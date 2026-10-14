@@ -81,6 +81,28 @@ travel-claim validate-snapshot artifacts/runs/<run-id>/batches/<batch-id>.json
 
 `verify-batch` also checks the source-manifest bytes, predecessor bytes, and cancellation-to-issue references. Do not overwrite a sealed snapshot; create a new run with a documented link if later processing changes its content.
 
+## Recorded Finance obligations
+
+Offline replay connects Finance ledger observations to claim IDs and request IDs, retaining event IDs, arrival deliveries, source cells, and obligation history. The retained `Finance activity` headers mean:
+
+| Retained field | Interpretation used by replay |
+| --- | --- |
+| Activity reference | Immutable event identity; identical redeliveries count once. |
+| Arrival batch | Delivery membership, separate from business event time. |
+| Activity type | Recorded event vocabulary; accepted/adjustment/resolution carry obligation observations, while settled/refund carry confirmed cash. |
+| Request reference / Claim reference | Explicit request and claim links; neither encodes an explicit revision. |
+| Finance officer / Payee ID | Recorded officer and payee identities, not evidence that every required human approval is present. |
+| Currency / Amount (EUR) | Currency and cash amount; only sufficiently supported EUR cash is reconciled. |
+| Original activity reference | Refund linkage to the original confirmed payment. |
+| Obligation (EUR) | Recorded commitment amount; observations are not summed as additional cash or assumed reimbursement entitlement. |
+| Reason / Activity time (UTC) | Retained description and UTC event time; neither establishes a scenario case clock. |
+
+The interview's acceptance description is retained at `interviews/project-d-travel-expense-claim-20261013-2210.md:425`; native headers and examples are retained in `Finance activity`, row 5 and rows 23–25/33. Native Finance rows have no claim-revision column. Replay therefore records the source-observed revision context at **first delivery**, leaving the explicit revision null. Redelivery never rebinds an old event to a corrected revision. An explicit `Claim revision` field, if supplied in source records, is checked against retained revision history.
+
+The sidecar and optional claim `finance_evidence` projection expose recorded obligation history and `recorded_ledger_balance_cents` (recorded obligation minus confirmed net cash for the same request/payee). Adjustments/resolutions record amounts, not additive payment events. Unknown ordering, conflicting events, missing links, or undefined reversal semantics leave the affected ledger difference unresolved. Transfer cancellation does not itself erase the obligation or reverse cash. Corrections preserve historical cash/commitments and reopen revision-dependent review; unrelated claim evidence remains intact.
+
+This ledger arithmetic is separate from current-revision authorization and reviewed entitlement. Without separately supported authorization, `allowed_cents` and `balance_cents` remain null/blank and claims remain pending. A zero ledger difference does not establish policy eligibility, complete approvals, or closure. The exact CSV header is unchanged; `report.md` explains recorded financial facts separately from unresolved repairs and external blockers.
+
 ## Submission-readiness validation
 
 ```bash

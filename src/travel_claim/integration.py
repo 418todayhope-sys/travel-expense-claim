@@ -140,9 +140,19 @@ def _sync_finance_repairs(domain: dict[str, Any], reconciliations: dict[str, Any
     for claim_id, result in reconciliations.items():
         for issue in result["repair_issues"]:
             item_id = f"finance:{issue['record_id']}"
-            if item_id in queue["items"]:
-                continue
             refs = [_ref_text(ref) for ref in issue.get("source_refs", []) if isinstance(ref, dict)]
+            if item_id in queue["items"]:
+                item = queue["items"][item_id]
+                changes = {key: value for key, value in {
+                    "source_refs": refs,
+                    "missing_or_return_reason": issue["missing_or_return_reason"],
+                    "next_action": issue["next_action"],
+                }.items() if item[key] != value}
+                if changes:
+                    update_repair_item(queue, item_id=item_id,
+                                       update_id=f"finance-evidence:{item_id}:{batch_id}",
+                                       run_id=run_id, batch_id=batch_id, **changes)
+                continue
             _open_issue_for_subject(
                 queue, item_id=item_id, subject_type="claim", subject_id=claim_id,
                 revision=result["claim_revision"], refs=refs,
@@ -539,6 +549,13 @@ def integrate_arrival_batch(
             "status": "pending",
             "lines": [],
             "allowed_cents": None,
+            "finance_evidence": {
+                "recorded_obligation": deepcopy(finance["recorded_obligation"]),
+                "recorded_ledger_balance_cents": finance["recorded_ledger_balance_cents"],
+                "basis": "Recorded request ledger only; not reviewed entitlement or current-revision authorization",
+                "current_revision_authority_confirmed": False,
+                "closure_authority_confirmed": False,
+            },
             "paid_cents": finance["net_confirmed_cents"],
             "balance_cents": finance["balance_cents"],
             "decision_ids": list(dict.fromkeys(row["decision_id"] for row in matches if row.get("decision_id"))),

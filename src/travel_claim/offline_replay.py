@@ -74,11 +74,38 @@ def _report(
         )
     lines.extend([
         "",
-        "Each snapshot retains the observed claim revision and matching decision IDs. Decisions are not treated as proof of policy compliance. Finance event identities and supported confirmed cash are retained; no obligation or entitlement is inferred. Claim monetary entitlement and balance remain null when unsupported.",
+        "Each snapshot retains the observed claim revision and matching decision IDs. Decisions are not treated as proof of policy compliance. Finance event identities and supported confirmed cash are retained. Recorded ledger obligations are separate from entitlement and current-revision authorization. Claim monetary entitlement and balance remain null when unsupported.",
         "",
         "Independent valid records continue through the replay while unresolved claims remain pending. External blockers prevent authoritative live-run conclusions, not retention of independent evidence or partial progress.",
         "",
     ])
+    lines.extend([
+        "## Recorded Finance obligations and cash", "",
+        "Obligation (EUR) is the ledger's recorded commitment amount, not a payment or approved reimbursement entitlement. "
+        "Ledger differences below compare that recorded amount with confirmed transfers minus linked refunds. "
+        "They do not establish claim eligibility, payment readiness or closure. Claim balance_cents remains null without a separately supported current-revision authorization.", "",
+        "Native Finance rows have no claim-revision column. Arrival revision context identifies the source-observed revision at first delivery; "
+        "it is not an explicit authorization binding, and redelivery never changes it. Adjustments/resolutions record obligation amounts rather than cash. "
+        "Cancellation/retry events are not refunds or proof that an obligation is zero.", "",
+    ])
+    latest_snapshot = json.loads(snapshots[-1].read_text(encoding="utf-8"))
+    for claim in latest_snapshot["claims"]:
+        evidence = claim.get("finance_evidence", {})
+        obligation = evidence.get("recorded_obligation")
+        if obligation is None:
+            continue
+        delta = evidence.get("recorded_ledger_balance_cents")
+        lines.extend([
+            f"- Claim `{claim['claim_id']}` current revision {claim['revision']}; request `{obligation['request_id']}`: "
+            f"recorded obligation **{obligation['amount_cents']} cents**, confirmed net cash **{claim['paid_cents']} cents**, "
+            f"recorded ledger difference **{delta if delta is not None else 'unresolved'}** cents.",
+            f"  - Event `{obligation['event_id']}` ({obligation['event_type']}); first arrival batch {obligation['first_arrival_batch']}; "
+            f"arrival revision context {obligation['arrival_revision_context']}; explicit claim revision {obligation['claim_revision']}; "
+            f"link status `{obligation['revision_link_status']}`. Exact revision authority and closure remain unconfirmed.",
+            "  - Retained evidence: " + "; ".join(f"`{ref}`" for ref in obligation['source_refs']) + ". "
+            "Complete obligation changes and cash histories remain in `offline-replay-state.json`.",
+        ])
+    lines.append("")
     queue = latest["domain"]["repair_queue"]
     for title, subject_types in (
         ("Claim-specific actionable repairs by owner", {"claim"}),
