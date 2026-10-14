@@ -694,3 +694,41 @@ Run the complete test suite and report the results.
 Do not commit or push yet.
 
 Stop after implementation and verification, reporting any policy ambiguity or missing source data.
+
+---
+
+Project D — Step 174: Verify, commit, and push the Step 173 expense-calculation and filing-deadline milestone.
+
+Review the seven changed files and confirm the changes are limited to Step 173.
+
+Verify tests/fixtures/POL-2026.2-browser-copy.txt is an exact-byte copy of the user-provided policy. Label it clearly as a browser-obtained fixture, not an independently fetched native Notion source.
+
+Rerun the full test suite and Git diff checks.
+
+Verify the original interview, policy, prior snapshots, retained financial outputs, and Step 171 event-integrity code remain unchanged.
+
+Stage only these seven reviewed files:
+
+README.md
+
+src/travel_claim/expenses.py
+
+src/travel_claim/ordinary.py
+
+src/travel_claim/integration.py
+
+tests/test_expenses.py
+
+tests/test_ordinary.py
+
+tests/fixtures/POL-2026.2-browser-copy.txt
+
+Commit with message: feat: validate policy expense calculations and filing deadlines
+
+Push normally to origin main without force-pushing.
+
+Verify remote main matches the local commit and all Entire.io checkpoint references are present.
+
+Do not stage unrelated untracked policy provenance or audit artifacts.
+
+Report the full commit SHA, test count, remote verification, and Entire.io checkpoint status. Stop if any check fails.
