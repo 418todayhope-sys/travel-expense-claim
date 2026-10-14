@@ -13,6 +13,7 @@ from typing import Any
 from .follow_up import render_follow_up_drafts
 from .integration import integrate_arrival_batch
 from .offline_replay import OFFLINE_MARKER, _report
+from .ordinary import ordinary_demo
 from .outputs import CLAIMS_COLUMNS, load_repair_queue
 from .snapshots import verify_snapshot
 from .sources import SOURCES, verify_source_manifest
@@ -20,6 +21,7 @@ from .sources import SOURCES, verify_source_manifest
 REQUIRED_FILES = (
     "sources.json", "parsed-records.json", "offline-replay-state.json",
     "claims.csv", "report.md", "repair-queue.json", "follow-up-drafts.md",
+    "ordinary-workflow.json", "ordinary-workflow-demo.md",
 )
 
 
@@ -137,7 +139,7 @@ def validate_readiness(run_dir: Path, *, schema_path: Path, repo_dir: Path) -> d
             current = integrate_arrival_batch(
                 parsed, arrival_batch=number, run_id=state["run_id"], batch_id=path.stem,
                 source_binding=observed["source_binding"], predecessor=observed["predecessor"],
-                prior_result=prior_result,
+                prior_result=prior_result, source_observations=manifest['files'],
             )
             current["snapshot"]["issues"].append(dict(OFFLINE_MARKER))
             require(current["snapshot"] == observed, f"{path.name} content differs from retained evidence replay")
@@ -200,13 +202,31 @@ def validate_readiness(run_dir: Path, *, schema_path: Path, repo_dir: Path) -> d
             claim = by_id[row["claim_id"]]
             for field in ("revision", "trip_id", "paid_cents", "balance_cents"):
                 require(row[field] == ("" if claim[field] is None else str(claim[field])), f"CSV {field} differs from latest snapshot")
-            require(row["allowed_cents"] == "" and row["status"] == "pending", "Offline CSV asserts unsupported entitlement/status")
+            require(row["allowed_cents"] == ("" if claim["allowed_cents"] is None else str(claim["allowed_cents"]))
+                    and row["status"] == claim["status"], "CSV entitlement/status differs from evidence-derived snapshot")
             open_claim_repairs = [item for item in queue.get("items", {}).values()
                                  if item["subject_type"] == "claim" and item["subject_id"] == row["claim_id"] and item["status"] == "open"]
             owner = open_claim_repairs[0]["owner"] if open_claim_repairs else claim["next_owner"]
             reason = open_claim_repairs[0]["missing_or_return_reason"] if open_claim_repairs else "Offline structural replay; policy eligibility and reimbursement entitlement remain unresolved."
+            owner = None if claim['status'].startswith('closed-') else owner
             require(row["next_owner"] == (owner or "") and row["reason"] == reason, "CSV owner/reason differs from current repair evidence")
     check("claims-csv-contract", [run_dir / "claims.csv"], csv_contract)
+
+    def ordinary_trace():
+        require(snapshots, "Verified snapshots required")
+        obj = objects['ordinary-workflow.json']
+        require(obj['mode'] == 'offline-replay' and obj['fresh_native_reads_performed'] is False
+                and obj['run_id'] == state['run_id'], "Ordinary workflow run/mode mismatch")
+        current = {c['claim_id']: c['ordinary_workflow'] for c in json.loads(snapshots[-1].read_text())['claims']}
+        require(obj['claims'] == state['ordinary_workflows'] == current, "Ordinary current workflow differs from sealed claims")
+        expected = {(path.stem, c['claim_id']): c['ordinary_workflow'] for path in snapshots
+                    for c in json.loads(path.read_text())['claims']}
+        history = obj['history']
+        observed = {(r['batch_id'], r['workflow']['claim_id']): r['workflow'] for r in history}
+        require(len(history) == len(observed) and observed == expected and history == state['ordinary_workflow_history'],
+                "Ordinary workflow history differs from the complete sealed batch chain")
+        require((run_dir / 'ordinary-workflow-demo.md').read_text() == ordinary_demo(current), "Ordinary demonstration differs from retained stage evidence")
+    check('ordinary-workflow-traceability', [run_dir / 'ordinary-workflow.json', run_dir / 'ordinary-workflow-demo.md'], ordinary_trace)
 
     def report_trace():
         require(snapshots and queue, "Verified snapshots and queue required")

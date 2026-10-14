@@ -221,10 +221,44 @@
                 "minLength": 1
               },
               "current_revision_authority_confirmed": {
-                "const": false
+                "type": "boolean"
               },
               "closure_authority_confirmed": {
-                "const": false
+                "type": "boolean"
+              }
+            }
+          },
+          "ordinary_workflow": {
+            "type": "object",
+            "required": [
+              "claim_id",
+              "revision",
+              "status",
+              "stages",
+              "source_refs"
+            ],
+            "properties": {
+              "stages": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "stage",
+                    "status",
+                    "source_refs",
+                    "owner",
+                    "next_action"
+                  ],
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "PASS",
+                        "BLOCKED",
+                        "FAIL"
+                      ]
+                    }
+                  }
+                }
               }
             }
           }

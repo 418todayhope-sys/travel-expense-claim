@@ -9,6 +9,7 @@ from typing import Any
 
 from .follow_up import render_follow_up_drafts
 from .integration import integrate_arrival_batch
+from .ordinary import ordinary_demo
 from .outputs import owner_grouped_view, write_claims_csv, write_repair_queue
 from .parsing import OUTPUT_NAME
 from .snapshots import seal_batch_snapshot, verify_snapshot
@@ -105,6 +106,13 @@ def _report(
             "  - Retained evidence: " + "; ".join(f"`{ref}`" for ref in obligation['source_refs']) + ". "
             "Complete obligation changes and cash histories remain in `offline-replay-state.json`.",
         ])
+    lines.extend(["", "## Connected ordinary workflow", "",
+        "Stage results preserve exact current claim/revision evidence. A matched review or balanced ledger alone does not establish all required approvals, eligibility or closure.", "",
+        "Full stage evidence and transition history: `ordinary-workflow.json`. A retained claim is demonstrated in `ordinary-workflow-demo.md`.", ""])
+    for claim in latest_snapshot["claims"]:
+        workflow = claim.get("ordinary_workflow")
+        if workflow:
+            lines.append(f"- `{claim['claim_id']}` r{claim['revision']} — **{workflow['status']}**; " + "; ".join(f"{stage['stage']}={stage['status']}" for stage in workflow['stages']))
     lines.append("")
     queue = latest["domain"]["repair_queue"]
     for title, subject_types in (
@@ -184,6 +192,8 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
         "queue": run_dir / "repair-queue.json",
         "state": run_dir / "offline-replay-state.json",
         "drafts": run_dir / "follow-up-drafts.md",
+        "workflow": run_dir / "ordinary-workflow.json",
+        "demo": run_dir / "ordinary-workflow-demo.md",
     }
     occupied = [str(path) for path in output_paths.values() if path.exists()]
     if occupied:
@@ -207,6 +217,7 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
         current = integrate_arrival_batch(
             parsed, arrival_batch=number, run_id=manifest["run_id"], batch_id=batch_id,
             source_binding=binding, predecessor=predecessor, prior_result=previous,
+            source_observations=manifest["files"],
         )
         current["snapshot"]["issues"].append(dict(OFFLINE_MARKER))
         path = seal_batch_snapshot(
@@ -238,11 +249,11 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
             "claim_id": claim_id,
             "revision": claim["revision"],
             "trip_id": claim["trip_id"],
-            "status": "pending",
-            "allowed_cents": None,
+            "status": claim["status"],
+            "allowed_cents": claim["allowed_cents"],
             "paid_cents": claim["paid_cents"],
             "balance_cents": claim["balance_cents"],
-            "next_owner": owner_by_claim.get(claim_id, claim["next_owner"]),
+            "next_owner": None if claim["status"].startswith("closed-") else owner_by_claim.get(claim_id, claim["next_owner"]),
             "reason": reason_by_claim.get(
                 claim_id,
                 "Offline structural replay; policy eligibility and reimbursement entitlement remain unresolved.",
@@ -266,6 +277,8 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
         "finance_reconciliations": latest["finance_reconciliations"],
         "cancellation_state": latest["domain"]["cancellation_state"],
         "material_corrections": latest["domain"]["material_corrections"],
+        "ordinary_workflows": latest["domain"]["ordinary_workflows"],
+        "ordinary_workflow_history": latest["domain"]["ordinary_workflow_history"],
         "source_record_history": {
             "claim_revisions": latest["domain"]["claim_records"],
             "decisions": latest["domain"]["decision_records"],
@@ -274,6 +287,10 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
         },
         "repair_queue": queue,
     })
+    workflows = latest["domain"]["ordinary_workflows"]
+    _exclusive_json(output_paths["workflow"], {"mode": "offline-replay", "fresh_native_reads_performed": False,
+        "run_id": manifest["run_id"], "claims": workflows, "history": latest["domain"]["ordinary_workflow_history"]})
+    output_paths["demo"].write_text(ordinary_demo(workflows), encoding="utf-8")
     drafts, draft_count = render_follow_up_drafts(
         run_id=manifest["run_id"], queue=queue, blockers=parsed.get("unresolved_issues", []),
     )

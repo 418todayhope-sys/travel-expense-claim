@@ -377,3 +377,20 @@ def write_repair_queue(queue: dict, path: Path) -> None:
     finally:
         if os.path.exists(tmp_name):
             os.unlink(tmp_name)
+
+
+def record_evidence_validation(queue: dict, *, item_id: str, supported: bool,
+                               source_refs: list[str], run_id: str, batch_id: str) -> None:
+    """Record a local evidence recheck, not a fabricated human response."""
+    item = queue['items'][item_id]
+    status = 'resolved' if supported else 'open'
+    if supported and not source_refs:
+        raise ValueError('Evidence-supported resolution requires retained references')
+    if item['status'] == status:
+        return
+    event = dict(event='evidence-revalidated', item_id=item_id, previous_status=item['status'],
+                 status=status, source_refs=list(dict.fromkeys(source_refs)), run_id=run_id,
+                 batch_id=batch_id, origin='local-evidence-check; no human response created')
+    item['history'].append(dict(event))
+    queue['events'].append(event)
+    item['status'] = status

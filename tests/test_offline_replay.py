@@ -265,3 +265,19 @@ def test_replay_refuses_existing_drafts_before_sealing_any_batches(tmp_path):
     assert main(["offline-replay", str(run_dir), "--schema", str(SCHEMA)]) == 1
     assert draft_path.read_text() == "existing reviewed draft"
     assert not (run_dir / "batches").exists()
+
+
+def test_replay_exports_connected_workflow_history_and_traceable_demo(tmp_path):
+    from travel_claim.offline_replay import run_offline_replay
+
+    run_dir, _ = _capture(tmp_path)
+    result = run_offline_replay(run_dir, schema_path=SCHEMA)
+    artifact = json.loads(result['outputs']['workflow'].read_text())
+    assert artifact['mode'] == 'offline-replay'
+    assert artifact['fresh_native_reads_performed'] is False
+    assert len(artifact['history']) == 2
+    assert artifact['claims']['C-SYN-RUN']['revision'] == 2
+    assert artifact['claims']['C-SYN-RUN']['status'] == 'pending'
+    assert 'OFFLINE REPLAY' in result['outputs']['demo'].read_text()
+    assert 'C-SYN-RUN' in result['outputs']['demo'].read_text()
+    assert 'ordinary-workflow-demo.md' in result['outputs']['report'].read_text()

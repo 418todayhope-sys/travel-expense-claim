@@ -81,6 +81,18 @@ travel-claim validate-snapshot artifacts/runs/<run-id>/batches/<batch-id>.json
 
 `verify-batch` also checks the source-manifest bytes, predecessor bytes, and cancellation-to-issue references. Do not overwrite a sealed snapshot; create a new run with a documented link if later processing changes its content.
 
+## Connected ordinary workflow (Step 152)
+
+Each offline arrival batch now connects exact claim/trip/employee identity, current-revision expense lines, receipts and settled merchant proof, travel permission, eligibility, human review packets, explicit reimbursement requests, Finance obligations, cash reconciliation and financial closure. `ordinary-workflow.json` retains every claim's stage results and all batch transitions; `ordinary-workflow-demo.md` demonstrates C01 when present. `report.md` summarizes the same stages. Every blocked stage produces an owner-specific unsent repair action. Supported rechecks resolve only their matching items, with an explicit local evidence-validation event rather than an invented human reply.
+
+The retained C01 fixture matches trip T01, receipt R-COST-01, merchant transaction M-COST-01, three observed review packets and request ledger REQ-C01. Its recorded ledger balances, but permission, policy eligibility, approval completeness, exact request/revision authority and closure remain blocked. A matched receipt is evidence, not automatic reimbursement eligibility. Every correction starts evaluation of the current revision again and preserves earlier decisions, cash and stage history. Independent cancellations block only affected claims' ordinary closure paths.
+
+Actual native policy content is still unavailable. The evaluator never extracts policy rules from an interview summary, Finance acceptance, a cap table alone, or a keyword in HTML. It accepts only explicitly supplied, source-hash-matched normalized `workflow_policy_rules` records for its supported `exact-paid-costs-v1` rule set. Definitions specify receipt/settlement requirements, eligible/uncapped categories, FX date basis, required human roles (and any explicit director threshold), permission requirements and completion conditions. Unsupported or incomplete definitions remain blocked. International permission additionally needs exact permit revisions, named reviewers and expressly UTC commitment/approval timing; local date-only commitment cells cannot supply a missing timezone.
+
+Closure also needs a source-backed exact-revision `reimbursement_requests` record, a matching explicitly revision-bound Finance obligation, current required approval evidence, exact entitlement/authorized-obligation/net-cash agreement, an authoritative clock and source-backed `closure_authorities` confirmation of completion conditions. Failed/cancelled/pending Finance dependencies cannot silently disappear. The current native records do not supply those missing authorities. Nothing sends requests or makes discretionary human decisions.
+
+`tests/test_ordinary.py` contains an explicitly labeled **synthetic-test** successful path (pending → closed after confirmed payment), missing-condition regressions, correction reopening, and an unrelated cancellation. Its synthetic policy/clock/request/authority records are confined to the test fixture and are never substituted into real replay evidence. The supported rule set does not claim to implement the complete inaccessible native policy, its exceptions, or unprovided rule definitions.
+
 ## Recorded Finance obligations
 
 Offline replay connects Finance ledger observations to claim IDs and request IDs, retaining event IDs, arrival deliveries, source cells, and obligation history. The retained `Finance activity` headers mean:

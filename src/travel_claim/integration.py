@@ -12,7 +12,8 @@ from copy import deepcopy
 from typing import Any
 
 from .finance import reconcile_finance_events
-from .outputs import add_repair_item, new_repair_queue, update_repair_item
+from .ordinary import connect_claim
+from .outputs import add_repair_item, new_repair_queue, update_repair_item, record_evidence_validation
 from .workflow import (
     build_revision_history,
     match_decisions_to_subjects,
@@ -96,6 +97,8 @@ def _domain_seed() -> dict[str, Any]:
         "revision_history": None,
         "decision_history": [],
         "finance_reconciliations": {},
+        "ordinary_workflows": {},
+        "ordinary_workflow_history": [],
         "authorized_obligations": {},
         "source_classifications": {},
         "cancellation_state": {},
@@ -161,6 +164,44 @@ def _sync_finance_repairs(domain: dict[str, Any], reconciliations: dict[str, Any
                 next_action=issue.get("next_action", "Finance to resolve the identified item"),
                 run_id=run_id, batch_id=batch_id,
             )
+
+
+def _sync_ordinary_repairs(domain: dict[str, Any], *, run_id: str, batch_id: str) -> None:
+    queue = domain["repair_queue"]
+    for claim_id, workflow in domain["ordinary_workflows"].items():
+        revision = workflow["revision"]
+        stages = {s["stage"]: s for s in workflow["stages"]}
+        for stage in workflow["stages"]:
+            item_id = f"ordinary:{claim_id}:r{revision}:{stage['stage']}"
+            if stage["status"] != "PASS":
+                _open_issue_for_subject(queue, item_id=item_id, subject_type="claim", subject_id=claim_id,
+                    revision=revision, refs=stage["source_refs"], reason=stage["detail"], owner=stage["owner"],
+                    next_action=stage["next_action"], run_id=run_id, batch_id=batch_id)
+            if item_id in queue["items"]:
+                item = queue["items"][item_id]
+                changes = {key: value for key, value in {"source_refs": stage["source_refs"],
+                    "missing_or_return_reason": stage["detail"], "owner": stage["owner"],
+                    "next_action": stage["next_action"]}.items() if item[key] != value}
+                if changes:
+                    update_repair_item(queue, item_id=item_id, update_id=f"ordinary-evidence:{item_id}:{batch_id}",
+                                       run_id=run_id, batch_id=batch_id, **changes)
+                record_evidence_validation(queue, item_id=item_id, supported=stage["status"] == "PASS",
+                    source_refs=stage["source_refs"], run_id=run_id, batch_id=batch_id)
+        for area, stage_name in (("expense-evidence", "supporting_evidence"), ("calculations", "policy_eligibility"),
+                                 ("trip-permit", "travel_permission"), ("approvals", "required_approvals"),
+                                 ("finance-authorization", "request_obligation")):
+            item_id = f"correction:{claim_id}:r{revision}:{area}"
+            if item_id in queue["items"]:
+                stage = stages[stage_name]
+                record_evidence_validation(queue, item_id=item_id, supported=stage["status"] == "PASS",
+                    source_refs=stage["source_refs"], run_id=run_id, batch_id=batch_id)
+        current_issues = {f"finance:{i['record_id']}" for i in domain["finance_reconciliations"][claim_id]["repair_issues"]}
+        finance_refs = (domain["finance_reconciliations"][claim_id].get("authorized_obligation") or {}).get("source_refs", [])
+        if finance_refs:
+            for item_id, item in queue["items"].items():
+                if item_id.startswith("finance:") and item["subject_id"] == claim_id and item["revision"] == revision and item_id not in current_issues:
+                    record_evidence_validation(queue, item_id=item_id, supported=True, source_refs=finance_refs,
+                                               run_id=run_id, batch_id=batch_id)
 
 
 def _subject_claim_revisions(history: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -389,6 +430,7 @@ def integrate_arrival_batch(
     prior_result: dict[str, Any] | None = None,
     authorized_obligations: dict[str, dict[str, Any]] | None = None,
     source_classifications: dict[str, str] | None = None,
+    source_observations: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Integrate exactly the next arrival batch into a schema-shaped projection.
 
@@ -412,6 +454,8 @@ def integrate_arrival_batch(
         "source_classifications": source_classifications or {},
         "trip_reference_records": parsed.get("records", {}).get("trips", []),
         "unresolved_issues": parsed.get("unresolved_issues", []),
+        "ordinary_evidence": {key: parsed.get(key) for key in ("records", "workbook_sheets", "case_clock", "evidence_mode")},
+        "source_observations": source_observations or [],
     })
     previous_domain = deepcopy(prior_result["domain"]) if prior_result else _domain_seed()
     processed = previous_domain["processed_batches"]
@@ -467,6 +511,7 @@ def integrate_arrival_batch(
         current_revision = record_set["current_revision"]
         claim_revision = next(row for row in reversed(record_set["revisions"]) if row["revision"] == current_revision)
         current_claims[claim_id] = claim_revision
+    cancellation_rows = _cancellation_rows(domain, history=history, run_id=run_id, batch_id=batch_id)
     finance_results = {}
     for claim_id, claim_revision in current_claims.items():
         record_set = history["claim"][claim_id]
@@ -479,6 +524,14 @@ def integrate_arrival_batch(
             previous_reconciliation=prior_finance,
             source_classifications=domain["source_classifications"],
         )
+        workflow = connect_claim(parsed=parsed, claim=claim_revision, decisions=domain["decision_records"],
+            finance_events=domain["finance_records"], finance=finance_results[claim_id],
+            cancellations=cancellation_rows, arrival_batch=arrival_batch,
+            source_observations=source_observations or [], prior_finance=prior_finance,
+            source_classifications=domain["source_classifications"])
+        finance_results[claim_id] = workflow.pop("finance")
+        domain["ordinary_workflows"][claim_id] = workflow
+        domain["ordinary_workflow_history"].append({"batch_id": batch_id, "workflow": deepcopy(workflow)})
     domain["finance_reconciliations"] = finance_results
     _sync_finance_repairs(domain, finance_results, run_id=run_id, batch_id=batch_id)
 
@@ -499,7 +552,7 @@ def integrate_arrival_batch(
         blockers.append(blocker)
     domain["policy_clock_blockers"] = blockers
 
-    cancellation_rows = _cancellation_rows(domain, history=history, run_id=run_id, batch_id=batch_id)
+    _sync_ordinary_repairs(domain, run_id=run_id, batch_id=batch_id)
     schema_issues = list(blockers) + list(domain.get("structural_blockers", []))
     schema_issues.extend(_issue_from_item(item) for item in domain["repair_queue"]["items"].values() if item["status"] == "open")
     # Every cancellation issue reference must resolve in issues[].record_id.
@@ -541,26 +594,31 @@ def integrate_arrival_batch(
                    if row.get("subject_type") == "claim" and row.get("subject_id") == claim_id
                    and row.get("revision") == revision and row.get("structural_match") == "revision_match_current"]
         finance = finance_results[claim_id]
+        workflow = domain["ordinary_workflows"][claim_id]
         snapshot_claims.append({
             "claim_id": claim_id,
             "revision": revision,
             "trip_id": str(trip_id),
             "trip_revision": trip_revision,
-            "status": "pending",
-            "lines": [],
-            "allowed_cents": None,
+            "status": workflow["status"],
+            "ordinary_workflow": deepcopy(workflow),
+            "lines": [{"cost_id": line["cost_id"], "source_ids": list(dict.fromkeys(ref.split('@', 1)[0] for ref in line["source_refs"])),
+                       "status": line["status"], "allowed_cents": line["allowed_cents"], "reason": line["reason"],
+                       "source_refs": line["source_refs"], "original_cents": line["original_cents"],
+                       "currency": line["currency"], "evidence_status": line["evidence_status"]} for line in workflow["lines"]],
+            "allowed_cents": workflow["allowed_cents"],
             "finance_evidence": {
                 "recorded_obligation": deepcopy(finance["recorded_obligation"]),
                 "recorded_ledger_balance_cents": finance["recorded_ledger_balance_cents"],
                 "basis": "Recorded request ledger only; not reviewed entitlement or current-revision authorization",
-                "current_revision_authority_confirmed": False,
-                "closure_authority_confirmed": False,
+                "current_revision_authority_confirmed": workflow["request"] is not None,
+                "closure_authority_confirmed": workflow["status"].startswith('closed-'),
             },
             "paid_cents": finance["net_confirmed_cents"],
             "balance_cents": finance["balance_cents"],
             "decision_ids": list(dict.fromkeys(row["decision_id"] for row in matches if row.get("decision_id"))),
-            "next_owner": "Travel Administration Lead",
-            "reason": "Structural integration only; reimbursement policy and current-revision compliance remain unresolved.",
+            "next_owner": workflow["next_owner"],
+            "reason": workflow["reason"],
         })
 
     schema_issues.extend(projection_issues)
@@ -591,7 +649,12 @@ def integrate_arrival_batch(
         "predecessor": deepcopy(predecessor),
         "source_binding": deepcopy(source_binding),
         "claims": snapshot_claims,
-        "requests": [],
+        "requests": [{"request_id": row_values(w["request"])["Request reference"], "claim_id": w["claim_id"],
+                      "revision": w["revision"], "amount_cents": w["allowed_cents"],
+                      "payee": row_values(w["request"])["Payee ID"], "currency": "EUR", "status": "accepted",
+                      "decision_ids": list(dict.fromkeys(d["decision_id"] for d in w["observed_reviews"] if d["outcome"] == "approve")),
+                      "source_refs": [_ref_text(_ref(w["request"]))], "origin": "observed source request; no request sent"}
+                     for w in domain["ordinary_workflows"].values() if w["request"] is not None],
         "travel_cancellations": cancellation_rows,
         "admitted_event_ids": finance_ids,
         "issues": schema_issues,
