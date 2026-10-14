@@ -43,6 +43,8 @@ def _run(tmp_path, *, complete=False, repairs=False):
         policy_path.write_bytes(body)
         manifest["files"][0].update(path="sources/policy-pol-2026-2.html", sha256=hashlib.sha256(body).hexdigest(),
                                     status="read", error=None, missing_scope=[], version="synthetic")
+        # This test constructs a legacy synthetic complete manifest, not a native read.
+        manifest["source_version"] = "native-source-manifest/1"
         manifest["case_clock"] = "2026-09-01T00:00:00Z"
         parsed.update(case_clock=manifest["case_clock"], case_clock_issue=None, unresolved_issues=[])
     manifest_path.write_text(json.dumps(manifest))

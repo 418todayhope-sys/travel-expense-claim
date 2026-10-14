@@ -12,6 +12,7 @@ import hashlib
 import json
 import re
 from datetime import date, datetime, time
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 
@@ -46,7 +47,7 @@ def _pdf_pages(path: Path, source_id: str, sha256: str) -> list[dict[str, Any]]:
     reader = PdfReader(path, strict=True)
     pages: list[dict[str, Any]] = []
     for page_no, page in enumerate(reader.pages, 1):
-        text = page.extract_text(extraction_mode="layout") or ""
+        text = (page.extract_text(extraction_mode="layout") or "") if "/Contents" in page else ""
         claim = re.search(r"^\s*Claim reference:\s*(.+)$", text, re.M)
         receipt_refs = re.findall(r"^\s*Receipt reference:\s*(.+)$", text, re.M)
         pages.append({
@@ -152,22 +153,33 @@ def parse_retained_run(run_dir: Path, *, output_path: Path | None = None) -> dic
     if errors:
         raise ValueError("Cannot parse unverified retained sources: " + "; ".join(errors))
     manifest = json.loads((run_dir / "sources.json").read_text(encoding="utf-8"))
-    read = {row["source_id"]: row for row in manifest["files"] if row["status"] == "read"}
+    read = {row["source_id"]: row for row in manifest["files"] if row["status"] in {"read", "partial"}}
     parsed_sources: list[dict[str, Any]] = []
+    transcription_issues = []
     pages: list[dict[str, Any]] = []
     sheets: list[dict[str, Any]] = []
     for source_id, meta in read.items():
         source_path = run_dir / meta["path"]
         if hashlib.sha256(source_path.read_bytes()).hexdigest() != meta["sha256"]:
             raise ValueError(f"Retained-source hash changed during parse: {source_id}")
-        if source_path.suffix.lower() == ".pdf":
-            extracted = _pdf_pages(source_path, source_id, meta["sha256"])
-            pages.extend(extracted)
-            parsed_sources.append({"source_id": source_id, "kind": "pdf", "page_count": len(extracted)})
-        elif source_path.suffix.lower() == ".xlsx":
-            extracted_sheets = _workbook_sheets(source_path, source_id, meta["sha256"])
-            sheets.extend(extracted_sheets)
-            parsed_sources.append({"source_id": source_id, "kind": "xlsx", "sheet_count": len(extracted_sheets)})
+        try:
+            if source_path.suffix.lower() == ".pdf":
+                extracted = _pdf_pages(source_path, source_id, meta["sha256"])
+                pages.extend(extracted)
+                parsed_sources.append({"source_id": source_id, "kind": "pdf", "page_count": len(extracted)})
+            elif source_path.suffix.lower() == ".xlsx":
+                extracted_sheets = _workbook_sheets(source_path, source_id, meta["sha256"])
+                sheets.extend(extracted_sheets)
+                parsed_sources.append({"source_id": source_id, "kind": "xlsx", "sheet_count": len(extracted_sheets)})
+
+            elif source_path.suffix.lower() == ".html":
+                parsed_sources.append({"source_id": source_id, "kind": "html", "path": meta["path"],
+                    "sha256": meta["sha256"], "status": meta["status"],
+                    "interpretation": "Raw HTML retained verbatim; no policy rules inferred or normalized"})
+        except Exception as exc:
+            transcription_issues.append({"source_id": source_id, "source_sha256": meta["sha256"],
+                "path": meta["path"], "error": f"{type(exc).__name__}: {exc}",
+                "owner": "Travel Administration Lead", "next_action": "Obtain readable native content and retry in a new run"})
 
     # Preserve separate record categories. These are source transcriptions,
     # not assessments; trip and permit revisions remain independent fields.
@@ -192,23 +204,37 @@ def parse_retained_run(run_dir: Path, *, output_path: Path | None = None) -> dic
             })
 
     batch_ids: set[int] = set()
-    for page in pages:
-        for field in page["fields"]:
-            if field["label"].strip().lower() == "arrival batch":
-                try: batch_ids.add(int(field["value"]))
-                except ValueError: pass
-    for record in decisions + finance + cancellations:
-        batch = _value(record, "Arrival batch")
+    invalid_batches = set()
+    def explicit_batch(value, record):
+        try:
+            number = Decimal(str(value))
+            if isinstance(value, bool) or not number.is_finite() or number < 1 or number != number.to_integral_value():
+                raise ValueError("not a positive integer batch")
+            return int(number)
+        except (InvalidOperation, ValueError, TypeError):
+            key = (record.get('source_id'), record.get('locator'), str(value))
+            if key not in invalid_batches:
+                invalid_batches.add(key)
+                transcription_issues.append({'source_id': record.get('source_id'),
+                    'source_sha256': record.get('source_sha256'), 'path': record.get('locator'),
+                    'error': f"Arrival batch is not an explicit positive integer: {value!r}; raw value preserved",
+                    'owner': 'Travel Administration Lead', 'next_action': 'Obtain the authoritative arrival membership without rounding or defaulting'})
+            return None
+    for record in claim_revisions + decisions + finance + cancellations:
+        value = (next((f['value'] for f in record['fields'] if f['label'].strip().lower() == 'arrival batch'), None)
+                 if 'fields' in record else _value(record, 'Arrival batch'))
+        batch = explicit_batch(value, record)
         if batch is not None:
-            batch_ids.add(int(batch))
+            batch_ids.add(batch)
 
     batch_contents: dict[str, dict[str, int]] = {str(batch): {} for batch in sorted(batch_ids)}
     def count_batch(category: str, records: list[dict[str, Any]], getter) -> None:
         for record in records:
             value = getter(record)
-            if value is None or value == "":
+            batch = explicit_batch(value, record)
+            if batch is None:
                 continue
-            key = str(int(value))
+            key = str(batch)
             bucket = batch_contents.setdefault(key, {})
             bucket[category] = bucket.get(category, 0) + 1
     count_batch("claim_revisions", claim_revisions,
@@ -224,12 +250,13 @@ def parse_retained_run(run_dir: Path, *, output_path: Path | None = None) -> dic
         "case_clock": manifest["case_clock"],
         "case_clock_state": "supplied" if manifest["case_clock"] else "not_in_accessible_retained_sources",
         "case_clock_issue": None if manifest["case_clock"] else {
-            "reason": "No supplied scenario case-clock value was present in the retained native PDFs, workbook, or interview record used for this run.",
+            "reason": "No authoritative scenario case clock was supplied to this invocation; retrieval timestamps do not establish it.",
             "owner": "Exercise facilitator",
             "next_action": "Provide the authoritative scenario case clock before consuming any arrival batch.",
         },
         "arrival_batches": sorted(batch_ids),
         "arrival_batch_contents": batch_contents,
+        "transcription_issues": transcription_issues,
         "missing_sources": [
             {"source_id": row["source_id"], "url": row["url"], "locator": row["locator"],
              "error": row["error"], "missing_scope": row.get("missing_scope", [])}
@@ -260,7 +287,7 @@ def parse_retained_run(run_dir: Path, *, output_path: Path | None = None) -> dic
                 "subject_id": "arrival-batch-clock",
                 "revision": None,
                 "affected_scope": "all batch cutoff decisions and arrival-state consumption",
-                "reason": "The task calls for a supplied case clock, but no explicit scenario date, time, or timezone was confirmed in the original task text or complete stakeholder interview export.",
+                "reason": "No authoritative scenario date, time and timezone was supplied for this run; obtain the explicit case clock before batch consumption.",
                 "owner": "Exercise facilitator",
                 "next_action": "Provide the authoritative scenario case clock before consuming any arrival batch.",
                 "evidence_needed": "Explicit scenario date, time, and timezone from the facilitator or original task material.",
@@ -271,13 +298,26 @@ def parse_retained_run(run_dir: Path, *, output_path: Path | None = None) -> dic
                 "subject_id": "POL-2026.2",
                 "revision": None,
                 "affected_scope": "eligibility, entitlement, approval readiness, reimbursement caps and final closure",
-                "reason": "The fresh native Notion attempt returned a generic HTML shell; earlier API access returned HTTP 401. No policy content was retained.",
+                "reason": "Native policy content is incomplete or unverified; consult this run's source observation.",
                 "owner": "Travel Administration Lead / exercise facilitator",
                 "next_action": "Provide an authorized native export or enable read access to the original Notion page, then perform a fresh native read.",
                 "evidence_needed": "Complete policy content from the original Notion page or authorized native export, with observed URL/version and retained-content hash.",
             },
         ],
     }
+    policy_meta = next(row for row in manifest["files"] if row["source_id"] == "policy-pol-2026-2")
+    result['unresolved_issues'] = [issue for issue in result['unresolved_issues']
+        if issue['record_id'] != 'scenario-case-clock' or not manifest['case_clock']]
+    policy_issue = next(i for i in result['unresolved_issues'] if i['record_id'] == 'reimbursement-policy-pol-2026-2')
+    policy_issue['reason'] = policy_meta.get('error') or 'Policy bytes retained; policy rule interpretation and completeness for decision processing remain unverified'
+    policy_issue['source_observation'] = policy_meta
+    result['processing_boundary']['reason'] = policy_issue['reason']
+    result['unresolved_issues'].extend({
+        'record_id': f"source-access:{row['source_id']}", 'subject_type': 'source', 'subject_id': row['source_id'],
+        'revision': None, 'reason': row['error'], 'owner': 'Travel Administration Lead',
+        'affected_scope': row['missing_scope'], 'next_action': 'Obtain complete native access and retry in a new run',
+        'evidence_needed': row['missing_scope'],
+    } for row in manifest['files'] if row['status'] != 'read' and row['source_id'] != 'policy-pol-2026-2')
     destination = output_path or (run_dir / OUTPUT_NAME)
     if destination.exists():
         raise FileExistsError(f"Refusing to overwrite parsed output: {destination}")

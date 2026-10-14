@@ -10,6 +10,7 @@ from pathlib import Path
 from travel_claim.cli import main
 from travel_claim.outputs import CLAIMS_COLUMNS
 from travel_claim.snapshots import verify_snapshot
+from source_fixtures import pdf_bytes, xlsx_bytes
 from travel_claim.sources import SOURCES, capture_sources
 
 
@@ -18,20 +19,16 @@ SCHEMA = ROOT / "snapshot.schema.json"
 
 
 def _xlsx_bytes():
-    buffer = io.BytesIO()
-    with zipfile.ZipFile(buffer, "w") as archive:
-        archive.writestr("xl/workbook.xml", "<workbook><sheets/></workbook>")
-    return buffer.getvalue()
-
+    return xlsx_bytes()
 
 def _capture(tmp_path):
     run_id = "offline-synthetic"
     run_dir = tmp_path / run_id
     bodies = {
         "policy-pol-2026-2": b"generic policy shell",
-        "initial-claim-binder": b"%PDF-1.4\nsynthetic\n%%EOF",
-        "claim-updates-binder": b"%PDF-1.4\nsynthetic\n%%EOF",
-        "receipt-binder": b"%PDF-1.4\nsynthetic\n%%EOF",
+        "initial-claim-binder": pdf_bytes(),
+        "claim-updates-binder": pdf_bytes(),
+        "receipt-binder": pdf_bytes(),
         "travel-registers-workbook": _xlsx_bytes(),
     }
     attempts = []

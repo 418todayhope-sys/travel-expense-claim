@@ -17,7 +17,13 @@ Never infer an approval, exception, source value, reply, or payment from a missi
 
 ## Invocation
 
-Install as described in the repository [README](../../README.md). Capture sources for a new run with:
+Install as described in the repository [README](../../README.md). Perform fresh acquisition and transcription for a new run with:
+
+```bash
+travel-claim live-run <new-run-id> artifacts/runs/<new-run-id> [--case-clock '<authoritative scenario timestamp>']
+```
+
+This attempts all five original sources, retains response evidence and emits `live-run.json`/`.md`. It never accepts prior inputs or consumes batches when clock/policy authority is missing. Direct Notion HTML cannot establish a complete policy block-tree read; authenticated native access remains required. Retrieval timestamps are observations, never an invented case clock. Source-only capture is also available:
 
 ```bash
 travel-claim capture-sources <run-id> artifacts/runs/<run-id> --case-clock '<scenario ISO timestamp>'
@@ -75,4 +81,4 @@ Unknown money is null in JSON and blank in CSV. Zero is a known amount. Never la
 - On invalid or conflicting batch data, preserve the input evidence, reject admission of unsupported effects, and create an owned issue; do not silently discard it.
 - Retry a failed fresh retrieval only by making another live request and recording the new observation. Do not overwrite a prior run's manifest, retained bytes, or sealed snapshot.
 - On replay, preserve obligation/event identity and money; detect conflicting content under an existing event ID.
-- Foundation implementation currently covers source capture/verification, retained PDF/workbook transcription, snapshot sealing/verification, the claims CSV writer, and local repair queue primitives. Scenario-state processing, policy/evidence decisions, approvals, Finance reconciliation, replay orchestration, and the complete operations report remain to be implemented and verified.
+- Implemented paths include fresh HTTP/export acquisition and source-bound transcription, plus explicitly offline connected claim, correction, independent cancellation and Finance replay. New source manifests retain response observations and partial/error bodies. Complete native policy access, rule interpretation, authoritative case clock and supported completion authority remain required for final live business compliance; acquisition or offline integrity alone does not establish it.

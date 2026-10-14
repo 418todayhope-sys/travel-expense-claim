@@ -76,7 +76,7 @@ def test_policy_dependent_outputs_are_not_inferred(tmp_path):
     parsed = parse_retained_run(CAPTURE, output_path=tmp_path / "parsed.json")
     assert parsed["processing_boundary"] == {
         "policy_dependent_conclusions": "unresolved",
-        "reason": "Native reimbursement policy content is unavailable; parsed source values are not eligibility, entitlement, approval-readiness, or closure decisions.",
+        "reason": "HTTP response contained a generic Notion shell; policy page content was not accessible",
         "owner": "Travel Administration Lead / facilitator for source access",
         "next_action": "Provide an authorized native export or enable read access to the original Notion policy, then perform a fresh native read.",
     }

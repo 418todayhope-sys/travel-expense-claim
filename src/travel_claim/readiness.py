@@ -66,7 +66,7 @@ def validate_readiness(run_dir: Path, *, schema_path: Path, repo_dir: Path) -> d
     def manifest_integrity():
         errors = verify_source_manifest(run_dir)
         require(not errors, "; ".join(errors))
-        require(manifest.get("source_version") == "native-source-manifest/1", "Unsupported manifest version")
+        require(manifest.get("source_version") in {"native-source-manifest/1", "native-source-manifest/2"}, "Unsupported manifest version")
         rows = manifest["files"]
         require(len(rows) == len(SOURCES), "Expected exactly five source entries")
         require({r["source_id"]: r["url"] for r in rows} == {s.source_id: s.url for s in SOURCES},

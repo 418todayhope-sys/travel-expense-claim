@@ -18,6 +18,7 @@ from travel_claim.outputs import (
     write_repair_queue,
 )
 from travel_claim.snapshots import seal_batch_snapshot, verify_snapshot
+from source_fixtures import pdf_bytes, xlsx_bytes
 from travel_claim.sources import SOURCES, capture_sources, verify_source_manifest
 
 
@@ -26,18 +27,14 @@ SCHEMA = ROOT / "snapshot.schema.json"
 
 
 def _xlsx_bytes():
-    buffer = io.BytesIO()
-    with zipfile.ZipFile(buffer, "w") as archive:
-        archive.writestr("xl/workbook.xml", "<workbook><sheets/></workbook>")
-    return buffer.getvalue()
-
+    return xlsx_bytes()
 
 def _source_bodies():
     return {
         "policy-pol-2026-2": b"<!doctype html><title>Travel reimbursement policy POL-2026.2 Alderbridge</title>",
-        "initial-claim-binder": b"%PDF-1.4\ninitial pdf\n%%EOF",
-        "claim-updates-binder": b"%PDF-1.4\nupdates pdf\n%%EOF",
-        "receipt-binder": b"%PDF-1.4\nreceipts pdf\n%%EOF",
+        "initial-claim-binder": pdf_bytes(),
+        "claim-updates-binder": pdf_bytes(),
+        "receipt-binder": pdf_bytes(),
         "travel-registers-workbook": _xlsx_bytes(),
     }
 

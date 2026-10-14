@@ -10,6 +10,7 @@ from pathlib import Path
 from jsonschema import Draft202012Validator, FormatChecker
 
 from .outputs import write_claims_csv
+from .live_run import run_live_sources
 from .offline_replay import run_offline_replay
 from .readiness import readiness_summary, validate_readiness, write_readiness_reports
 from .parsing import parse_retained_run
@@ -62,6 +63,12 @@ def build_parser() -> argparse.ArgumentParser:
     capture.add_argument("run_id", help="new, stable run identifier")
     capture.add_argument("run_dir", type=Path, help="new artifacts/runs/<run-id> directory")
     capture.add_argument("--case-clock", help="supplied scenario clock; omit only for source-only capture")
+
+    live = commands.add_parser("live-run", help="freshly attempt all five sources, retain and transcribe; report blockers without offline fallback")
+    live.add_argument("run_id")
+    live.add_argument("run_dir", type=Path)
+    live.add_argument("--case-clock", help="explicit authoritative scenario clock; never inferred from retrieval time")
+    live.add_argument("--timeout", type=float, default=30.0, help="per-request timeout seconds")
 
     verify_sources = commands.add_parser("verify-sources", help="verify source manifest and retained-byte hashes")
     verify_sources.add_argument("run_dir", type=Path)
@@ -126,15 +133,24 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         print(f"Snapshot is valid: {args.snapshot}")
         return 0
+    if args.command == "live-run":
+        try:
+            report = run_live_sources(args.run_dir, run_id=args.run_id, case_clock=args.case_clock, timeout=args.timeout)
+        except (OSError, ValueError) as exc:
+            print(f"Live-source attempt failed: {exc}", file=sys.stderr)
+            return 1
+        print(f"LIVE SOURCE ATTEMPT {report['status']}: {args.run_id}; acquisition {report['acquisition_status']}; no cached fallback; final compliance not established")
+        print(f"Report: {args.run_dir / 'live-run.md'}")
+        return {"PASS": 0, "BLOCKED": 2, "FAIL": 1}[report['status']]
     if args.command == "capture-sources":
         try:
             manifest = capture_sources(args.run_dir, run_id=args.run_id, case_clock=args.case_clock)
         except Exception as exc:
             print(f"Source capture failed: {exc}", file=sys.stderr)
             return 1
-        counts = {state: sum(row["status"] == state for row in manifest["files"]) for state in ("read", "unavailable")}
-        print(f"Source capture complete: {args.run_id} ({counts['read']} read, {counts['unavailable']} unavailable)")
-        return 0 if not counts["unavailable"] else 2
+        counts = {state: sum(row["status"] == state for row in manifest["files"]) for state in ("read", "partial", "unavailable")}
+        print(f"Source capture {'PASS' if counts['read'] == 5 else 'BLOCKED'}: {args.run_id} ({counts['read']} read, {counts['partial']} partial, {counts['unavailable']} unavailable)")
+        return 0 if counts["read"] == 5 else 2
     if args.command == "verify-sources":
         errors = verify_source_manifest(args.run_dir)
         if errors:
@@ -159,7 +175,7 @@ def main(argv: list[str] | None = None) -> int:
             f"{len(parsed['records']['cancellation_activities'])} cancellation activities; "
             f"arrival batches {parsed['arrival_batches']}; case clock {parsed['case_clock_state']}"
         )
-        return 0 if not parsed["missing_sources"] and parsed["case_clock"] else 2
+        return 0 if not parsed["missing_sources"] and not parsed.get("transcription_issues") and parsed["case_clock"] else 2
     if args.command == "seal-batch":
         try:
             state = json.loads(args.state.read_text(encoding="utf-8"))

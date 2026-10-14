@@ -7,6 +7,8 @@ configured native URL or its documented export route again.
 from __future__ import annotations
 
 import hashlib
+import io
+from http.client import HTTPException, IncompleteRead
 import json
 import re
 import urllib.error
@@ -111,100 +113,144 @@ def _validate_payload(source: NativeSource, content: bytes) -> tuple[bool, str |
 
 
 def _request(url: str, timeout: float) -> tuple[bytes, Mapping[str, str], str]:
-    req = urllib.request.Request(url, headers={"User-Agent": "travel-claim-source-capture/1.0"})
+    req = urllib.request.Request(url, headers={"User-Agent": "travel-claim-source-capture/2.0", "Cache-Control": "no-cache", "Pragma": "no-cache"})
     with urllib.request.urlopen(req, timeout=timeout) as response:
-        return response.read(), dict(response.headers.items()), response.geturl()
+        headers = dict(response.headers.items())
+        headers["X-Travel-Claim-HTTP-Status"] = str(response.status)
+        try:
+            body = response.read()
+        except IncompleteRead as exc:
+            body = exc.partial
+            headers["X-Travel-Claim-Read-Error"] = str(exc)
+        return body, headers, response.geturl()
+
+
+WORKBOOK_TABS = {"People", "Trips", "Merchant payments", "FX", "Caps", "Budget", "Review ledger",
+                 "Review packets", "Finance activity", "Travel cancellations"}
+
+
+def assess_payload(source: NativeSource, body: bytes) -> tuple[str, str | None, str | None, list[str]]:
+    """Check accessible scope; a Notion HTML fragment never proves a full policy read."""
+    usable, suffix, reason = _validate_payload(source, body)
+    if not usable:
+        return "unavailable", None, reason, [source.title]
+    if source.kind == "notion":
+        return "partial", suffix, "Policy-related HTML accessed, but complete native Notion page content is not established", ["Complete authoritative policy page body and all relevant blocks"]
+    try:
+        if source.kind == "pdf":
+            from pypdf import PdfReader
+            reader = PdfReader(io.BytesIO(body), strict=True)
+            if reader.is_encrypted or not reader.pages:
+                raise ValueError("PDF has no accessible pages or is encrypted")
+            # Traverse every page, not just the signature/trailer. Raw bytes are
+            # retained even where text extraction cannot read scanned content.
+            texts = [(page.extract_text(extraction_mode="layout") or "") if "/Contents" in page else "" for page in reader.pages]
+            if any(not text.strip() for text in texts):
+                return "partial", suffix, "One or more PDF pages have no extractable text; visual/OCR verification required", ["Readable text or verified visual transcription of every PDF page"]
+        elif source.kind == "xlsx":
+            from openpyxl import load_workbook
+            workbook = load_workbook(io.BytesIO(body), data_only=False, read_only=False)
+            missing = sorted(WORKBOOK_TABS - set(workbook.sheetnames))
+            workbook.close()
+            if missing:
+                return "partial", suffix, "Workbook export lacks required retained-source tabs", missing
+    except Exception as exc:
+        return "unavailable", None, f"Native document validation failed: {type(exc).__name__}: {exc}", [source.title]
+    return "read", suffix, None, []
 
 
 def capture_sources(
-    run_dir: Path,
-    *,
-    run_id: str,
-    case_clock: str | None,
+    run_dir: Path, *, run_id: str, case_clock: str | None,
     source_specs: tuple[NativeSource, ...] = SOURCES,
     fetch: Callable[[str, float], tuple[bytes, Mapping[str, str], str]] = _request,
-    observed_at: Callable[[], str] = _utc_now,
-    timeout: float = 30.0,
+    observed_at: Callable[[], str] = _utc_now, timeout: float = 30.0,
 ) -> dict:
-    """Freshly attempt every source and write exact returned bytes plus sources.json.
+    """Attempt fresh requests; retain every returned body, including error evidence.
 
-    `case_clock` is caller supplied scenario time. It may be null for a
-    source-acquisition-only run where no supplied batch clock has been read.
+    A new, empty run directory is required. There is no retained-input option.
+    Observation timestamps are retrieval facts, never the scenario case clock.
     """
     if not run_id or Path(run_id).name != run_id or run_id in {".", ".."}:
         raise ValueError("run_id must be a single safe path component")
     if run_dir.name != run_id:
         raise ValueError("run_dir basename must equal run_id")
+    if timeout <= 0:
+        raise ValueError("timeout must be positive")
+    if case_clock is not None:
+        try:
+            clock = datetime.fromisoformat(case_clock.replace("Z", "+00:00"))
+            if clock.utcoffset() is None:
+                raise ValueError("timezone required")
+        except (ValueError, AttributeError, TypeError) as exc:
+            raise ValueError("case_clock must be an explicit date/time with timezone, never an observation default") from exc
+    if set(source_specs) != set(SOURCES) or len(source_specs) != 5:
+        raise ValueError("Every live capture must attempt exactly all five original source identities and URLs")
+    if run_dir.exists() and any(run_dir.iterdir()):
+        raise FileExistsError(f"Refusing to reuse nonempty run directory: {run_dir}")
     run_dir.mkdir(parents=True, exist_ok=True)
     manifest_path = run_dir / "sources.json"
-    if manifest_path.exists():
-        raise FileExistsError(f"Refusing to overwrite source manifest: {manifest_path}")
-    source_dir = run_dir / "sources"
-    source_dir.mkdir(exist_ok=True)
-    if any(source_dir.iterdir()):
-        raise FileExistsError(f"Refusing to reuse nonempty retained-source directory: {source_dir}")
-    entries: list[dict] = []
+    (run_dir / "sources").mkdir()
+    (run_dir / "responses").mkdir()
+    entries = []
     for source in source_specs:
-        timestamp = observed_at()
-        url_attempted = source.export_url or source.url
+        started = observed_at()
+        attempted = source.export_url or source.url
+        body, headers, final_url, status_code, failure = None, {}, None, None, None
         try:
-            body, headers, _final_url = fetch(url_attempted, timeout)
-            usable, suffix, validation_error = _validate_payload(source, body)
-            timestamp = observed_at()
-            version = headers.get("ETag") or headers.get("Last-Modified")
-            if usable:
-                rel_path = Path("sources") / f"{source.source_id}.{suffix}"
-                content_path = run_dir / rel_path
-                with content_path.open("xb") as retained:
-                    retained.write(body)
-                entries.append({
-                    "source_id": source.source_id,
-                    "path": rel_path.as_posix(),
-                    "sha256": sha256_bytes(body),
-                    "status": "read",
-                    "error": None,
-                    "url": source.url,
-                    "locator": source.locator,
-                    "observed_at": timestamp,
-                    "version": version,
-                    "scope": source.title,
-                    "missing_scope": [],
-                })
-            else:
-                entries.append({
-                    "source_id": source.source_id,
-                    "path": None,
-                    "sha256": None,
-                    "status": "unavailable",
-                    "error": validation_error,
-                    "url": source.url,
-                    "locator": source.locator,
-                    "observed_at": timestamp,
-                    "version": None,
-                    "scope": source.title,
-                    "missing_scope": [source.title],
-                })
-        except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
-            timestamp = observed_at()
-            entries.append({
-                "source_id": source.source_id,
-                "path": None,
-                "sha256": None,
-                "status": "unavailable",
-                "error": f"{type(exc).__name__}: {exc}",
-                "url": source.url,
-                "locator": source.locator,
-                "observed_at": timestamp,
-                "version": None,
-                "scope": source.title,
-                "missing_scope": [source.title],
-            })
-    manifest = {
-        "run_id": run_id,
-        "source_version": "native-source-manifest/1",
-        "case_clock": case_clock,
-        "files": entries,
-    }
+            body, headers, final_url = fetch(attempted, timeout)
+            status_code = int(next((v for k, v in headers.items() if k.lower() == "x-travel-claim-http-status"), "200"))
+        except urllib.error.HTTPError as exc:
+            status_code, final_url = exc.code, exc.geturl()
+            headers = dict(exc.headers.items()) if exc.headers else {}
+            try:
+                body = exc.read()
+            except OSError:
+                pass
+            failure = f"HTTPError: {exc.code} {exc.reason}"
+        except (urllib.error.URLError, TimeoutError, OSError, ValueError, HTTPException) as exc:
+            failure = f"{type(exc).__name__}: {exc}"
+        completed = observed_at()
+        normalized = {k.lower(): v for k, v in headers.items()}
+        selected_headers = {k: normalized[k] for k in ("etag", "last-modified", "content-type", "content-length", "content-range", "x-travel-claim-read-error") if k in normalized}
+        response_path = None
+        if body is not None:
+            response_path = f"responses/{source.source_id}.body"
+            with (run_dir / response_path).open("xb") as stream:
+                stream.write(body)
+        if failure:
+            state, suffix, error, missing = "unavailable", None, failure, [source.title]
+        else:
+            state, suffix, error, missing = assess_payload(source, body or b"")
+            if status_code != 200 or "content-range" in normalized:
+                state, error, missing = "partial" if suffix else "unavailable", f"Incomplete HTTP response: status {status_code}, content range {normalized.get('content-range')}", [source.title]
+            if "x-travel-claim-read-error" in normalized:
+                state, error, missing = "partial" if suffix else "unavailable", normalized["x-travel-claim-read-error"], [source.title]
+            if "content-length" in normalized:
+                try:
+                    if int(normalized["content-length"]) != len(body or b""):
+                        state, error, missing = "partial" if suffix else "unavailable", "Response byte length differs from Content-Length", [source.title]
+                except ValueError:
+                    state, error, missing = "unavailable", "Invalid Content-Length", [source.title]
+        rel_path = None
+        if suffix and body is not None and state != "unavailable":
+            rel_path = f"sources/{source.source_id}.{suffix}"
+            with (run_dir / rel_path).open("xb") as stream:
+                stream.write(body)
+        entries.append({
+            "source_id": source.source_id, "path": rel_path,
+            "sha256": sha256_bytes(body) if rel_path else None,
+            "status": state, "error": error, "url": source.url, "locator": source.locator,
+            "observed_at": completed, "version": (normalized.get("etag") or normalized.get("last-modified")) if rel_path else None,
+            "scope": source.title, "missing_scope": missing,
+            "observation": {"method": "fresh-http-export" if source.export_url else "fresh-http-native",
+                "requested_url": attempted, "final_url": final_url, "http_status": status_code,
+                "started_at": started, "completed_at": completed, "response_headers": selected_headers,
+                "response_path": response_path, "response_sha256": sha256_bytes(body) if body is not None else None,
+                "response_bytes": len(body) if body is not None else None,
+                "content_version": sha256_bytes(body) if body is not None else None,
+                "cache_fallback_used": False},
+        })
+    manifest = {"run_id": run_id, "source_version": "native-source-manifest/2", "case_clock": case_clock, "files": entries}
     with manifest_path.open("x", encoding="utf-8", newline="\n") as stream:
         stream.write(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
     return manifest
@@ -226,6 +272,9 @@ def verify_source_manifest(run_dir: Path) -> list[str]:
         errors.append("sources.json run_id must match its run directory")
     if not isinstance(manifest.get("files"), list):
         return errors + ["sources.json files must be an array"]
+    if manifest.get("source_version") not in {"native-source-manifest/1", "native-source-manifest/2"}:
+        errors.append("Unsupported source manifest version")
+    specs = {source.source_id: source for source in SOURCES}
     seen: set[str] = set()
     for record in manifest["files"]:
         if not isinstance(record, dict):
@@ -257,7 +306,15 @@ def verify_source_manifest(run_dir: Path) -> list[str]:
             errors.append(f"{sid}: observed_at must be an ISO UTC timestamp")
         if record["error"] is not None and not isinstance(record["error"], str):
             errors.append(f"{sid}: error must be a string or null")
-        if record["status"] == "read":
+        if sid in specs and record["url"] != specs[sid].url:
+            errors.append(f"{sid}: source identity does not match its original native URL")
+        if manifest.get("source_version") == "native-source-manifest/2":
+            errors.extend(_verify_observation(run_dir, record, specs.get(sid)))
+        if record["status"] in {"read", "partial"}:
+            if record["status"] == "read" and (record["missing_scope"] or record["error"]):
+                errors.append(f"{sid}: read scope cannot contain missing scope or errors")
+            if record["status"] == "partial" and (not record["missing_scope"] or not record["error"]):
+                errors.append(f"{sid}: partial scope must identify missing content and an error")
             if not isinstance(record["path"], str) or not record["path"] or not isinstance(record["sha256"], str) or not record["sha256"]:
                 errors.append(f"{sid}: read record has no retained path or hash")
                 continue
@@ -275,10 +332,12 @@ def verify_source_manifest(run_dir: Path) -> list[str]:
         elif record["status"] == "unavailable":
             if any(record[k] is not None for k in ("path", "sha256", "version")):
                 errors.append(f"{sid}: unavailable scope must have null path, sha256, and version")
-            if not record["error"]:
-                errors.append(f"{sid}: unavailable scope has no error")
+            if not record["error"] or not record["missing_scope"]:
+                errors.append(f"{sid}: unavailable scope has no error or missing scope")
         else:
             errors.append(f"{sid}: invalid status {record['status']!r}")
+    if seen != set(specs) or len(manifest["files"]) != 5:
+        errors.append("manifest must cover exactly all five configured native source identities")
     expected_urls = {source.url for source in SOURCES}
     observed_urls = {
         record.get("url")
@@ -287,4 +346,47 @@ def verify_source_manifest(run_dir: Path) -> list[str]:
     }
     if observed_urls != expected_urls:
         errors.append("manifest must cover exactly all five configured native source URLs")
+    return errors
+
+
+def _verify_observation(run_dir: Path, record: dict, source: NativeSource | None) -> list[str]:
+    errors = []
+    sid = record.get("source_id")
+    observation = record.get("observation")
+    if not source or record.get("url") != source.url or not isinstance(observation, dict):
+        return [f"{sid}: native identity, URL or fresh retrieval observation missing"]
+    if (observation.get("requested_url") != (source.export_url or source.url)
+            or observation.get("method") != ("fresh-http-export" if source.export_url else "fresh-http-native")
+            or observation.get("cache_fallback_used") is not False):
+        errors.append(f"{sid}: fresh native request binding or no-fallback evidence invalid")
+    try:
+        start, end = [datetime.fromisoformat(str(observation[k]).replace("Z", "+00:00")) for k in ("started_at", "completed_at")]
+        if any(t.utcoffset() is None or t.utcoffset().total_seconds() != 0 for t in (start, end)) or end < start or observation['completed_at'] != record['observed_at']:
+            raise ValueError("retrieval timestamps must be ordered UTC observations")
+    except (ValueError, TypeError, KeyError):
+        errors.append(f"{sid}: invalid retrieval observation times")
+    path = observation.get("response_path")
+    if path is None:
+        if record.get("status") != "unavailable" or any(observation.get(k) is not None for k in ("response_sha256", "response_bytes", "content_version")):
+            errors.append(f"{sid}: missing response cannot establish accessible content")
+        return errors
+    try:
+        response_path = run_dir / path
+        if not response_path.resolve().is_relative_to(run_dir.resolve()):
+            raise ValueError("response path escapes run directory")
+        body = response_path.read_bytes()
+        digest = sha256_bytes(body)
+        if digest != observation.get("response_sha256") or digest != observation.get("content_version") or len(body) != observation.get("response_bytes"):
+            errors.append(f"{sid}: response evidence hash or size mismatch")
+        if record.get("status") in {"read", "partial"} and record.get("sha256") != digest:
+            errors.append(f"{sid}: retained source differs from fresh response evidence")
+        if record.get("status") == "read":
+            state, _, reason, _ = assess_payload(source, body)
+            headers = observation.get("response_headers", {})
+            if state != "read" or observation.get("http_status") != 200 or "content-range" in headers or "x-travel-claim-read-error" in headers:
+                errors.append(f"{sid}: complete read not supported by native response: {reason}")
+            if "content-length" in headers and int(headers['content-length']) != len(body):
+                errors.append(f"{sid}: complete read has inconsistent Content-Length")
+    except (OSError, ValueError, TypeError) as exc:
+        errors.append(f"{sid}: cannot verify response evidence: {exc}")
     return errors
