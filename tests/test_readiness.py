@@ -197,3 +197,13 @@ def test_cli_failed_validation_still_writes_both_readiness_reports(tmp_path):
     assert main(["validate-readiness", str(run), "--repo", str(tmp_path), "--output-dir", str(output)]) == 1
     assert json.loads((output / "readiness.json").read_text())["status"] == "FAIL"
     assert "**FAIL**" in (output / "readiness.md").read_text()
+
+
+def test_readiness_detects_tampered_executed_correction_verification(tmp_path):
+    run = _run(tmp_path, complete=True)
+    path = run / 'correction-cancellation-verification.json'
+    value = json.loads(path.read_text())
+    value['fresh_native_reads_performed'] = True
+    path.write_text(json.dumps(value))
+    result = validate_readiness(run, schema_path=SCHEMA, repo_dir=_repo(tmp_path))
+    assert _checks(result)['correction-cancellation-traceability'] == 'FAIL'

@@ -8,6 +8,7 @@ declare any claim ready or reimbursed.
 from __future__ import annotations
 
 from collections import defaultdict
+from datetime import datetime
 from typing import Any
 
 
@@ -243,6 +244,20 @@ def reduce_cancellation_activities(records: list[dict[str, Any]]) -> dict[str, A
                 issues.append({"cancellation_id": cancellation_id, "event_id": event_id,
                                "source_ref": _source_ref(record), "reason": "confirmation has no effective time"})
                 continue
+            # Explicitly UTC columns give timezone context, but never a case clock.
+            stamps = [row_values(linked[1]).get("Activity time (UTC)"),
+                      values.get("Activity time (UTC)"), values.get("Effective time (UTC)")]
+            try:
+                times = [datetime.fromisoformat(t.replace("Z", "+00:00")) for t in stamps]
+                if times[1] < times[0] or times[2] < times[0]:
+                    raise ValueError("confirmation precedes initiation")
+            except (TypeError, ValueError, AttributeError):
+                # Older structural-only inputs may omit all activity timestamps;
+                # they remain structural observations, not verified authority.
+                if any(stamps[:2]):
+                    issues.append({"cancellation_id": cancellation_id, "event_id": event_id,
+                                   "source_ref": _source_ref(record), "reason": "missing, invalid or inconsistent UTC cancellation chronology"})
+                    continue
             process["state"] = "confirmed"
             process["next_action"] = None
         else:
@@ -254,6 +269,8 @@ def reduce_cancellation_activities(records: list[dict[str, Any]]) -> dict[str, A
             "event_id": event_id, "action": action,
             "arrival_batch": values.get("Arrival batch"),
             "effective_time": values.get("Effective time (UTC)"),
+            "activity_time_utc": values.get("Activity time (UTC)"),
+            "actor": values.get("Acting employee or supervisor"),
             "source_ref": _source_ref(record),
         })
         id_lookup[str(event_id)] = (str(cancellation_id), record)

@@ -13,6 +13,7 @@ from typing import Any
 from .follow_up import render_follow_up_drafts
 from .integration import integrate_arrival_batch
 from .offline_replay import OFFLINE_MARKER, _report
+from .revalidation import verification_document
 from .ordinary import ordinary_demo
 from .outputs import CLAIMS_COLUMNS, load_repair_queue
 from .snapshots import verify_snapshot
@@ -22,6 +23,7 @@ REQUIRED_FILES = (
     "sources.json", "parsed-records.json", "offline-replay-state.json",
     "claims.csv", "report.md", "repair-queue.json", "follow-up-drafts.md",
     "ordinary-workflow.json", "ordinary-workflow-demo.md",
+    "correction-cancellation-verification.json", "correction-cancellation-verification.md",
 )
 
 
@@ -131,6 +133,7 @@ def validate_readiness(run_dir: Path, *, schema_path: Path, repo_dir: Path) -> d
             snapshots.append(path)
     check("snapshot-chain", [run_dir / "batches", schema_path], chain)
 
+    revalidation_expected = {}
     def snapshot_evidence():
         require(snapshots and checks[-1]["status"] == "PASS", "Verified complete snapshot chain required")
         prior_result = None
@@ -144,7 +147,18 @@ def validate_readiness(run_dir: Path, *, schema_path: Path, repo_dir: Path) -> d
             current["snapshot"]["issues"].append(dict(OFFLINE_MARKER))
             require(current["snapshot"] == observed, f"{path.name} content differs from retained evidence replay")
             prior_result = current
+        data, summary = verification_document(current['domain'], current['snapshot']['travel_cancellations'], run_id=state['run_id'])
+        revalidation_expected.update(data=data, summary=summary)
     check("snapshot-content-evidence", [run_dir / "batches", run_dir / "parsed-records.json"], snapshot_evidence)
+
+    def correction_trace():
+        require(revalidation_expected, "Deterministic retained evidence replay required")
+        require(objects['correction-cancellation-verification.json'] == revalidation_expected['data'],
+                "Correction/cancellation checks differ from executed retained evidence replay")
+        require((run_dir / 'correction-cancellation-verification.md').read_text() == revalidation_expected['summary'],
+                "Correction/cancellation summary differs from executed checks")
+    check('correction-cancellation-traceability', [run_dir / 'correction-cancellation-verification.json',
+          run_dir / 'correction-cancellation-verification.md'], correction_trace)
 
     # Collect only references actually present in retained parsed evidence.
     parsed_refs: set[str] = set()

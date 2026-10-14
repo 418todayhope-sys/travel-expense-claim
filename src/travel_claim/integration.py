@@ -12,7 +12,8 @@ from copy import deepcopy
 from typing import Any
 
 from .finance import reconcile_finance_events
-from .ordinary import connect_claim
+from .ordinary import connect_claim, fields, table
+from .revalidation import record_executed_rechecks
 from .outputs import add_repair_item, new_repair_queue, update_repair_item, record_evidence_validation
 from .workflow import (
     build_revision_history,
@@ -259,14 +260,26 @@ def _material_correction_tasks(
 
 
 def _cancellation_rows(
-    domain: dict[str, Any], *, history: dict[str, Any], run_id: str, batch_id: str,
+    domain: dict[str, Any], *, history: dict[str, Any], run_id: str, batch_id: str, parsed: dict[str, Any],
 ) -> list[dict[str, Any]]:
     reduced = reduce_cancellation_activities(domain["cancellation_records"])
     domain["cancellation_state"] = reduced
-    raw_by_id = {
-        row_values(record).get("Cancellation activity reference"): record
-        for record in domain["cancellation_records"]
-    }
+    raw_by_id = {}
+    for record in domain["cancellation_records"]:
+        raw_by_id.setdefault(row_values(record).get("Cancellation activity reference"), record)
+    domain["cancellation_evidence"] = {}
+    for index, issue in enumerate(reduced["issues"]):
+        event = raw_by_id.get(issue.get("event_id"))
+        value = row_values(event) if event else {}
+        kind = value.get("Cancelled subject")
+        subject = value.get("Trip reference") if kind == "trip" else value.get("Permit reference")
+        revision = _as_batch(value.get("Trip revision") if kind == "trip" else value.get("Permit revision"))
+        if kind in {"trip", "permit"} and subject and revision:
+            _open_issue_for_subject(domain["repair_queue"], item_id=f"cancellation-evidence:{issue.get('event_id')}:{index}",
+                subject_type=kind, subject_id=subject, revision=revision, refs=[_ref_text(_ref(event))],
+                reason=issue["reason"], owner="Travel Administration Lead",
+                next_action="Obtain a consistent employee initiation and linked supervisor confirmation with explicit UTC times",
+                run_id=run_id, batch_id=batch_id)
     claim_revisions = _subject_claim_revisions(history)
     snapshot_rows = []
     for cancellation_id, process in sorted(reduced["processes"].items()):
@@ -282,6 +295,8 @@ def _cancellation_rows(
             })
             continue
         record_order = process["activity_ids"]
+        if not record_order:
+            continue  # Orphan evidence remains in cancellation_state and owned issues.
         request_id = record_order[0]
         request = raw_by_id[request_id]
         request_values = row_values(request)
@@ -294,6 +309,7 @@ def _cancellation_rows(
         permit_revision = request_values.get("Permit revision") if target["subject_type"] == "permit" else None
         permit_revision = _as_batch(permit_revision) if permit_revision is not None else None
         affected = []
+        current_affected = []
         for claim_id, claim in claim_revisions.items():
             for claim_rev in claim["revisions"]:
                 if target["subject_type"] == "trip":
@@ -308,7 +324,8 @@ def _cancellation_rows(
                     )
                 if matches:
                     affected.append(claim_id)
-                    break
+                    if claim_rev["revision"] == claim["current_revision"]:
+                        current_affected.append(claim_id)
         affected = sorted(set(affected))
         task_id = f"cancellation-financial:{cancellation_id}"
         refs = [_ref_text(_ref(raw_by_id[event_id])) for event_id in record_order]
@@ -328,8 +345,6 @@ def _cancellation_rows(
             changes = {}
             if additions != item["source_refs"]:
                 changes["source_refs"] = additions
-            if process["state"] == "confirmed" and item["next_action"] != next_action:
-                changes["next_action"] = next_action
             if changes:
                 update_repair_item(
                     queue, item_id=task_id,
@@ -359,12 +374,69 @@ def _cancellation_rows(
             "confirmed_at": _stamp(confirmation_values.get("Activity time (UTC)")) if confirmation else None,
             "effective_at": _stamp(confirmation_values.get("Effective time (UTC)")) if confirmation else None,
             "affected_claim_ids": affected,
-            "original_request_ids": [],
+            "source_refs": refs,
+            "original_request_ids": sorted({row_values(r).get("Request reference") for r in domain["finance_records"]
+                if row_values(r).get("Claim reference") in affected and row_values(r).get("Request reference")}),
             "financial_status": "unresolved",
             "next_owner": "Finance",
             "reason": str(request_values.get("Business reason") or "Travel cancellation recorded; financial effect remains unresolved"),
             "issue_record_ids": [cancellation_issue],
         })
+        # Finance dispositions are explicit claim/revision/cancellation-bound source
+        # statements. They do not establish the missing policy or closure authority.
+        dispositions = []
+        for claim_id in affected:
+            for revision in claim_revisions[claim_id]["revisions"]:
+                value = _page_values(revision["record"])
+                if (value.get("Travel cancellation reference") == cancellation_id
+                        and value.get("Applies to claim") == claim_id
+                        and str(value.get("Applies to revision")) == str(revision["revision"])
+                        and value.get("Authorizing Finance officer")
+                        and value.get("Allowed original amount") is not None):
+                    dispositions.append({"claim_id": claim_id, "revision": revision["revision"],
+                        "finance_officer": value["Authorizing Finance officer"],
+                        "expense_reference": value.get("Expense reference"),
+                        "allowed_original_amount": value["Allowed original amount"],
+                        "reason": value.get("Exception reason"), "source_ref": _ref_text(revision["source_ref"])})
+        if dispositions:
+            disposition_refs = [d["source_ref"] for d in dispositions]
+            changes = {
+                "source_refs": list(dict.fromkeys(queue["items"][task_id]["source_refs"] + disposition_refs)),
+                "missing_or_return_reason": "Cancellation-bound Finance disposition recorded; current eligibility, request authorization and financial completion remain unverified",
+                "next_action": "Revalidate the cancellation-bound Finance disposition against current approvals, request revision and confirmed net cash; obtain completion authority"}
+            changes = {k: v for k, v in changes.items() if queue["items"][task_id][k] != v}
+            if changes:
+                update_repair_item(queue, item_id=task_id,
+                    update_id=f"cancellation-disposition:{cancellation_id}:{batch_id}", run_id=run_id, batch_id=batch_id, **changes)
+        trips = [r for r in parsed.get("records", {}).get("trips", [])
+                 if row_values(r).get("Trip reference") == trip_id
+                 and _as_batch(row_values(r).get("Trip revision")) == trip_revision]
+        employee = row_values(trips[0]).get("Employee ID") if len(trips) == 1 else None
+        people = [r for r in table(parsed, "people", "People") if fields(r).get("Employee ID") == employee]
+        supervisor = fields(people[0]).get("Supervisor") if len(people) == 1 else None
+        actors_ok = bool(employee and supervisor
+            and request_values.get("Acting employee or supervisor") == employee
+            and confirmation_values.get("Acting employee or supervisor") == supervisor)
+        actor_refs = [_ref_text(_ref(r)) for r in trips + people]
+        if not actors_ok:
+            _open_issue_for_subject(queue, item_id=f"cancellation-authority:{cancellation_id}",
+                subject_type=target["subject_type"], subject_id=str(target["subject_id"]), revision=target_revision,
+                refs=refs + actor_refs, reason="Employee initiation and supervisor confirmation not fully verified",
+                owner="Travel Administration Lead", next_action="Verify the actors against the exact trip employee and People supervisor record",
+                run_id=run_id, batch_id=batch_id)
+        actor_item = f"cancellation-authority:{cancellation_id}"
+        if actor_item in queue["items"]:
+            record_evidence_validation(queue, item_id=actor_item, supported=actors_ok,
+                source_refs=refs + actor_refs, run_id=run_id, batch_id=batch_id)
+        domain["cancellation_evidence"][cancellation_id] = {
+            "current_claim_ids": sorted(set(current_affected)),
+            "source_refs": refs + actor_refs + [d["source_ref"] for d in dispositions],
+            "history": deepcopy(process["history"]),
+            "actor_status": "PASS" if actors_ok else "BLOCKED: verify employee and supervisor against the trip register",
+            "dispositions": dispositions,
+            "disposition_status": "recorded; eligibility and financial completion require recheck" if dispositions else "BLOCKED: no cancellation-bound Finance disposition",
+            "request_effect": "hold payment readiness; retain obligation and cash history",
+        }
     return snapshot_rows
 
 
@@ -474,6 +546,7 @@ def integrate_arrival_batch(
         if predecessor is None:
             raise ValueError("a later integrated batch must carry a predecessor binding")
 
+    before_batch = deepcopy(previous_domain)
     domain = previous_domain
     if authorized_obligations:
         domain["authorized_obligations"].update(deepcopy(authorized_obligations))
@@ -511,7 +584,7 @@ def integrate_arrival_batch(
         current_revision = record_set["current_revision"]
         claim_revision = next(row for row in reversed(record_set["revisions"]) if row["revision"] == current_revision)
         current_claims[claim_id] = claim_revision
-    cancellation_rows = _cancellation_rows(domain, history=history, run_id=run_id, batch_id=batch_id)
+    cancellation_rows = _cancellation_rows(domain, history=history, run_id=run_id, batch_id=batch_id, parsed=parsed)
     finance_results = {}
     for claim_id, claim_revision in current_claims.items():
         record_set = history["claim"][claim_id]
@@ -533,6 +606,7 @@ def integrate_arrival_batch(
         domain["ordinary_workflows"][claim_id] = workflow
         domain["ordinary_workflow_history"].append({"batch_id": batch_id, "workflow": deepcopy(workflow)})
     domain["finance_reconciliations"] = finance_results
+    record_executed_rechecks(domain, before_batch, batch_id=batch_id)
     _sync_finance_repairs(domain, finance_results, run_id=run_id, batch_id=batch_id)
 
     # Policy and case-clock blockers are copied from parser/source evidence and
@@ -651,7 +725,7 @@ def integrate_arrival_batch(
         "claims": snapshot_claims,
         "requests": [{"request_id": row_values(w["request"])["Request reference"], "claim_id": w["claim_id"],
                       "revision": w["revision"], "amount_cents": w["allowed_cents"],
-                      "payee": row_values(w["request"])["Payee ID"], "currency": "EUR", "status": "accepted",
+                      "payee": row_values(w["request"])["Payee ID"], "currency": "EUR", "status": "held" if any(w["claim_id"] in c["affected_claim_ids"] for c in cancellation_rows) else "accepted",
                       "decision_ids": list(dict.fromkeys(d["decision_id"] for d in w["observed_reviews"] if d["outcome"] == "approve")),
                       "source_refs": [_ref_text(_ref(w["request"]))], "origin": "observed source request; no request sent"}
                      for w in domain["ordinary_workflows"].values() if w["request"] is not None],

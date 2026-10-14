@@ -306,6 +306,10 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
                 except (KeyError, ValueError, TypeError, AttributeError):
                     pass
     controls_clear = not finance['pending_transfer_event_ids'] and all(e['event_id'] in resolved_controls for e in control_events)
+    cancellation_refs = [source for c in affected for source in c.get("source_refs", [])]
+    stage('cancellation_readiness', not affected, cancellation_refs,
+          'Linked current or historical trip/permit cancellation requires specific Finance disposition and resolution; prior permission and money history are preserved' if affected else 'No linked cancellation dependency',
+          finance_owner, 'Verify cancellation-bound disposition, current request authority and monetary resolution before releasing payment readiness')
     closed = (all(s['status'] == 'PASS' for s in stages) and controls_clear and request_ok and finance['balance_cents'] == 0
               and not finance['repair_issues'] and not affected and clock_ok and closure_authority and not external)
     stage('financial_closure', closed, [ref(r) for r in authorities] + request_refs + policy_refs,

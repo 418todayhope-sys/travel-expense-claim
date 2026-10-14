@@ -10,6 +10,7 @@ from typing import Any
 from .follow_up import render_follow_up_drafts
 from .integration import integrate_arrival_batch
 from .ordinary import ordinary_demo
+from .revalidation import verification_document
 from .outputs import owner_grouped_view, write_claims_csv, write_repair_queue
 from .parsing import OUTPUT_NAME
 from .snapshots import seal_batch_snapshot, verify_snapshot
@@ -108,7 +109,7 @@ def _report(
         ])
     lines.extend(["", "## Connected ordinary workflow", "",
         "Stage results preserve exact current claim/revision evidence. A matched review or balanced ledger alone does not establish all required approvals, eligibility or closure.", "",
-        "Full stage evidence and transition history: `ordinary-workflow.json`. A retained claim is demonstrated in `ordinary-workflow-demo.md`.", ""])
+        "Executed correction and independent cancellation checks: `correction-cancellation-verification.md` and `.json`. Full stage evidence and transition history: `ordinary-workflow.json`. A retained claim is demonstrated in `ordinary-workflow-demo.md`.", ""])
     for claim in latest_snapshot["claims"]:
         workflow = claim.get("ordinary_workflow")
         if workflow:
@@ -194,6 +195,8 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
         "drafts": run_dir / "follow-up-drafts.md",
         "workflow": run_dir / "ordinary-workflow.json",
         "demo": run_dir / "ordinary-workflow-demo.md",
+        "revalidation": run_dir / "correction-cancellation-verification.json",
+        "revalidation_summary": run_dir / "correction-cancellation-verification.md",
     }
     occupied = [str(path) for path in output_paths.values() if path.exists()]
     if occupied:
@@ -287,6 +290,9 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
         },
         "repair_queue": queue,
     })
+    verification, summary = verification_document(latest["domain"], latest["snapshot"]["travel_cancellations"], run_id=manifest["run_id"])
+    _exclusive_json(output_paths["revalidation"], verification)
+    output_paths["revalidation_summary"].write_text(summary, encoding="utf-8")
     workflows = latest["domain"]["ordinary_workflows"]
     _exclusive_json(output_paths["workflow"], {"mode": "offline-replay", "fresh_native_reads_performed": False,
         "run_id": manifest["run_id"], "claims": workflows, "history": latest["domain"]["ordinary_workflow_history"]})
