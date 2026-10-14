@@ -366,3 +366,46 @@ Do not invent approvals, policy rules, cancellation confirmations, refunds, or t
 Do not commit or push yet.
 
 Report changed files, demonstrated cases, executed transitions, remaining blockers, and tests passed.
+
+---
+
+Preserve the completed Project D Step 157 correction revalidation and independent cancellation milestone.
+
+    Inspect git status, the complete source diff, and the staging area.
+
+    Stage ONLY these nine files:
+
+        README.md
+
+        src/travel_claim/integration.py
+
+        src/travel_claim/ordinary.py
+
+        src/travel_claim/workflow.py
+
+        src/travel_claim/offline_replay.py
+
+        src/travel_claim/readiness.py
+
+        src/travel_claim/revalidation.py
+
+        tests/test_readiness.py
+
+        tests/test_revalidation.py
+
+    Do not stage artifacts/runs/, artifacts/verification/, the original interview, or unrelated files.
+
+Run git diff --cached --check and the complete pytest suite.
+
+If validation passes, commit with:
+feat: revalidate corrections and independent cancellations
+
+Push to origin main, allowing existing Entire.io hooks to run.
+
+Verify the exact remote main commit and Entire.io checkpoint references.
+
+Verify the original interview and all 82 previously retained files remain unchanged.
+
+Do not force-push, rewrite history, or modify retained artifacts.
+
+Report the commit hash, tests passed, push verification, checkpoint results, and any warnings.
