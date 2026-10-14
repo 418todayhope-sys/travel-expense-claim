@@ -394,3 +394,23 @@ Keep the inaccessible Notion policy and unconfirmed authoritative case clock exp
 After each meaningful change, read back the changed files and run relevant tests. Inspect a serialized synthetic integrated result. Run the full test suite at the end and report the results, changed files, and remaining blockers.
 
 Do not commit or push yet. Stop after this stage.
+
+---
+
+Create a work-in-progress Git commit preserving the newly implemented Project D Finance reconciliation and integration layers.
+
+First inspect git status and verify the exact files being staged. Stage only:
+- src/travel_claim/finance.py
+- src/travel_claim/integration.py
+- tests/test_finance.py
+- tests/test_integration.py
+
+Do not stage artifacts/runs/, retained source documents, generated outputs, credentials, or unrelated files.
+
+Run git diff --cached --check and the full pytest suite before committing. If checks pass, commit with:
+
+wip: Project D financial reconciliation and batch integration
+
+Push main to origin using the existing Entire.io-enabled Git workflow. Verify the remote main commit and report whether the Entire.io checkpoint synchronization succeeded.
+
+Report the exact commit hash, tests, and remote verification. Do not claim the assignment is complete and do not begin another implementation stage.
