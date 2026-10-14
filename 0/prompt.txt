@@ -212,3 +212,40 @@ Generate a new labeled offline replay without overwriting prior artifacts.
 Do not invent approvals, payment confirmations, policy limits, or case-clock dates. Do not commit or push yet.
 
 Report changed files, tests passed, which financial facts were successfully linked, and what remains blocked.
+
+---
+
+Preserve the completed Project D financial source reconciliation milestone.
+
+    Inspect git status, the exact source diff, and all staged changes.
+
+    Stage ONLY these files:
+
+        README.md
+
+        snapshot.schema.json
+
+        src/travel_claim/finance.py
+
+        src/travel_claim/integration.py
+
+        src/travel_claim/offline_replay.py
+
+        tests/test_retained_finance.py
+
+        tests/fixtures/retained_finance_records.json
+
+    Do not stage artifacts/runs/, artifacts/verification/, or unrelated files.
+
+    Run git diff --cached --check and the complete pytest suite.
+
+    If validation passes, commit with:
+    feat: reconcile retained Finance obligations and refunds
+
+    Push to origin main, allowing existing Entire.io hooks to run.
+
+    Verify the exact remote main commit and Entire.io checkpoint references.
+
+Do not force-push, rewrite history, or modify retained artifacts.
+
+Report the commit hash, tests passed, push verification, and any warnings.
