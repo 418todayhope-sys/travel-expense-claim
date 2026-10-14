@@ -25,3 +25,23 @@ Run the complete test suite and git diff --check.
 Regenerate the offline replay outputs and summarize the actual results.
 
 Do not commit or push yet. Show me the files changed, tests passed, and any remaining blockers. Preserve all existing Git and Entire.io history.
+
+---
+
+Preserve the completed Project D report-separation milestone in Git and Entire.io.
+
+1. Inspect `git status` and the exact diff.
+2. Stage ONLY these three source files:
+   - `README.md`
+   - `src/travel_claim/offline_replay.py`
+   - `tests/test_offline_replay.py`
+3. Do NOT stage `artifacts/runs/` or unrelated files.
+4. Run `git diff --cached --check` and the complete pytest suite.
+5. If validation passes, commit with the message:
+   `feat: separate Project D repairs and run blockers`
+6. Push the commit to `origin main`, allowing the existing Entire.io hooks to run.
+7. Verify the remote main commit and report whether the Entire.io checkpoint references were pushed.
+
+Do not rewrite history, force-push, or modify retained source artifacts.
+
+Report the commit hash, test results, push status, and any warnings.
