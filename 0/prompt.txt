@@ -1,0 +1,27 @@
+Continue implementing Project D in the existing ~/travel-expense-claim repository.
+
+The previous milestone is committed and pushed as 65ee4f0. The offline replay already generates four linked batch snapshots, claims.csv, report.md, repair-queue.json, and offline-replay-state.json.
+
+Implement the next milestone now, not just a plan:
+
+Inspect the current offline replay report generation, repair queue, and related tests.
+
+Improve report.md to clearly separate:
+
+Claim-specific actionable repair items, grouped by responsible owner, with traceable claim/subject/revision/source references and next actions.
+
+Run-level external blockers, including the inaccessible native Notion reimbursement policy and the unconfirmed authoritative case clock.
+
+Clearly label this output as an offline replay of retained evidence, not a fresh live-source run.
+
+Preserve partial progress: unresolved claims must not prevent independent valid records from being processed.
+
+Do not invent policy rules, eligibility amounts, approvals, payment confirmations, or case-clock  dates.
+
+Add or update automated tests for the report sections, grouping, traceability, and unresolved blockers.
+
+Run the complete test suite and git diff --check.
+
+Regenerate the offline replay outputs and summarize the actual results.
+
+Do not commit or push yet. Show me the files changed, tests passed, and any remaining blockers. Preserve all existing Git and Entire.io history.
