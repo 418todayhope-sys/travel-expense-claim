@@ -136,3 +136,25 @@ Validate the latest retained-input replay without overwriting existing artifacts
 Do not invent policy rules, source observations, approvals, financial conclusions, or case-clock values. Do not commit or push yet.
 
 Report changed files, test results, readiness findings, and remaining blockers.
+
+---
+
+Preserve the completed Project D submission-readiness validator milestone.
+
+1. Inspect `git status`, the exact source diff, and any staged changes.
+2. Stage ONLY:
+   - `README.md`
+   - `src/travel_claim/cli.py`
+   - `src/travel_claim/offline_replay.py`
+   - `src/travel_claim/readiness.py`
+   - `tests/test_readiness.py`
+3. Do not stage `artifacts/runs/`, `artifacts/verification/`, or unrelated files.
+4. Run `git diff --cached --check` and the complete pytest suite.
+5. If validation passes, commit with:
+   `feat: validate Project D submission readiness`
+6. Push to `origin main`, allowing the existing Entire.io hooks to run.
+7. Verify the remote main commit and Entire.io checkpoint references.
+
+Do not force-push, rewrite history, or modify retained artifacts.
+
+Report the exact commit hash, test results, push status, checkpoint verification, and any warnings.
