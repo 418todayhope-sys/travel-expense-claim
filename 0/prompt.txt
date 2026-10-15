@@ -964,3 +964,97 @@ Do not modify unrelated approval, Finance-exception, or closure rules.
 Run the complete test suite and diff checks. Report changed files, test results, and unresolved blockers.
 
 Do not stage, commit, or push yet. Stop after implementation and verification.
+
+---
+
+Project D — Step 180: Commit and push the verified Step 179 budget reconciliation milestone.
+
+Verify the current branch, Git status, and complete diff against HEAD 7015dde20ccd6a2327985c0eb26899ecf97c3974.
+
+Confirm the changes are limited to the 12 reviewed Step 179 files.
+
+Rerun the full test suite and Git diff checks.
+
+Verify all 129 preserved-file hashes match, including the interview, policy, previous snapshots, outputs, and protected Finance and closure code.
+
+Stage only these files:
+
+README.md
+
+src/travel_claim/budget.py
+
+src/travel_claim/approvals.py
+
+src/travel_claim/integration.py
+
+src/travel_claim/offline_replay.py
+
+src/travel_claim/ordinary.py
+
+src/travel_claim/readiness.py
+
+src/travel_claim/snapshots.py
+
+tests/test_budget.py
+
+tests/test_approvals.py
+
+tests/test_exceptions.py
+
+tests/fixtures/retained_budget_records.json
+
+Commit with message: feat: reconcile budgets and prepaid cost commitments
+
+Push normally to origin main without force-pushing.
+
+Verify remote main matches the local commit and every Entire.io checkpoint reference matches remotely.
+
+---
+
+Project D — Step 180: Commit and push the verified Step 179 budget reconciliation milestone.
+
+Verify the current branch, Git status, and complete diff against HEAD 7015dde20ccd6a2327985c0eb26899ecf97c3974.
+
+Confirm the changes are limited to the 12 reviewed Step 179 files.
+
+Rerun the full test suite and Git diff checks.
+
+Verify all 129 preserved-file hashes match, including the interview, policy, previous snapshots, outputs, and protected Finance and closure code.
+
+Stage only these files:
+
+README.md
+
+src/travel_claim/budget.py
+
+src/travel_claim/approvals.py
+
+src/travel_claim/integration.py
+
+src/travel_claim/offline_replay.py
+
+src/travel_claim/ordinary.py
+
+src/travel_claim/readiness.py
+
+src/travel_claim/snapshots.py
+
+tests/test_budget.py
+
+tests/test_approvals.py
+
+tests/test_exceptions.py
+
+tests/fixtures/retained_budget_records.json
+
+Commit with message: feat: reconcile budgets and prepaid cost commitments
+
+Push normally to origin main without force-pushing.
+
+Verify remote main matches the local commit and every Entire.io checkpoint reference matches remotely.
+
+Do not stage unrelated audit reports or user-provided policy provenance files.
+
+Report the full commit SHA, final test count, committed file list, and Entire.io checkpoint verification.
+
+If any check fails, stop and report the issue.
