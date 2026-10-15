@@ -181,7 +181,7 @@ def test_material_replacement_rejects_stale_reviews_and_preserves_admitted_cash(
 
 def test_current_source_bound_reviews_and_matching_authorization_allow_synthetic_replacement():
     parsed=synthetic(); record=parsed['records']['claim_revisions'][0]; exception(record)
-    for d in parsed['records']['decisions']: setfield(d,'Source revisions',ref(record))
+    for d in parsed['records']['decisions']: setfield(d,'Source revisions',ref(record)+'\nPOL-2026.2')
     setfield(parsed['records']['reimbursement_requests'][0],'Amount (EUR)',80)
     for event in parsed['records']['finance_events']:
         for key in ('Amount (EUR)','Obligation (EUR)'):
@@ -252,7 +252,9 @@ def test_same_revision_material_change_requires_new_source_binding_and_hold_surv
     replay=connect_claim(**args,prior_workflow=held)
     assert stages(replay)['exception_revalidation']['status']=='BLOCKED'
     assert replay['finance']['admitted_events']==held['finance']['admitted_events']
-    for d in args['decisions']: setfield(d,'Source revisions',ref(record))
+    for d in args['decisions']:
+        setfield(d,'Source revisions',ref(record)+'\nPOL-2026.2')
+        setfield(d,'Arrival batch',3)
     reviewed=connect_claim(**args,prior_workflow=replay)
     assert stages(reviewed)['exception_revalidation']['status']=='PASS'
     assert stages(reviewed)['required_approvals']['status']=='PASS'
@@ -315,7 +317,7 @@ def test_multiple_cancellations_require_independent_exact_coverage():
 def test_decimal_display_precision_is_not_a_material_same_version_change():
     from travel_claim.ordinary import connect_claim
     parsed=synthetic();record=parsed['records']['claim_revisions'][0];exception(record,amount='80.00')
-    for d in parsed['records']['decisions']: setfield(d,'Source revisions',ref(record))
+    for d in parsed['records']['decisions']: setfield(d,'Source revisions',ref(record)+'\nPOL-2026.2')
     paid=batches(parsed)[1];prior=deepcopy(workflow(paid))
     exception(record,amount='80.0')
     claim=deepcopy(paid['domain']['revision_history']['claim']['SYN-C01']['revisions'][0]);claim['record']=record

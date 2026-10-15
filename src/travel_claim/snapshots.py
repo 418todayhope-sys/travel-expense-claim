@@ -140,6 +140,7 @@ def seal_batch_snapshot(
     schema_path: Path,
     predecessor_path: Path | None = None,
     allow_unconfirmed_case_clock: bool = False,
+    permit_approvals: dict | None = None,
 ) -> Path:
     """Seal one batch. Binding paths are relative to the run directory.
 
@@ -213,6 +214,8 @@ def seal_batch_snapshot(
         "admitted_event_ids": list(admitted_event_ids),
         "issues": copy.deepcopy(issues),
     }
+    if permit_approvals is not None:
+        snapshot["permit_approvals"] = copy.deepcopy(permit_approvals)
     errors = _schema_errors(snapshot, schema_path) + _check_semantics(snapshot)
     if errors:
         raise ValueError("Refusing to seal invalid snapshot: " + "; ".join(errors))

@@ -597,6 +597,24 @@ def integrate_arrival_batch(
         claim_revision = next(row for row in reversed(record_set["revisions"]) if row["revision"] == current_revision)
         current_claims[claim_id] = claim_revision
     cancellation_rows = _cancellation_rows(domain, history=history, run_id=run_id, batch_id=batch_id, parsed=parsed)
+    from .approvals import evaluate_permit
+    domain['permit_approvals']={}
+    for permit_id,subject in history.get('permit',{}).items():
+        current=next(r for r in reversed(subject['revisions']) if r['revision']==subject['current_revision'])
+        key=f"{permit_id}:r{current['revision']}"
+        review=evaluate_permit(parsed=parsed,trip_record=current['record'],decisions=domain['decision_records'],
+            arrival_batch=arrival_batch,observations=source_observations or [],
+            prior=before_batch.get('permit_approvals',{}).get(key),cancellations=cancellation_rows)
+        domain['permit_approvals'][key]=review
+        if not review['approved'] or not review['arrangement_authorized']:
+            item_id=f"permit-approval:{key}"
+            _open_issue_for_subject(domain['repair_queue'],item_id=item_id,subject_type='permit',subject_id=permit_id,
+                revision=current['revision'],refs=review['source_refs'],reason=f"Permit review state: {review['state']}; arrangement authority/timing requires current evidence",
+                owner='Travel Administration Lead',next_action='Obtain current permit-role decisions and resolve timing or cancellation holds',run_id=run_id,batch_id=batch_id)
+        if f"permit-approval:{key}" in domain['repair_queue']['items']:
+            record_evidence_validation(domain['repair_queue'],item_id=f"permit-approval:{key}",
+                supported=review['approved'] and review['arrangement_authorized'],source_refs=review['source_refs'],run_id=run_id,batch_id=batch_id)
+    domain.setdefault('permit_approval_history',[]).append({'batch_id':batch_id,'permits':deepcopy(domain['permit_approvals'])})
     finance_results = {}
     for claim_id, claim_revision in current_claims.items():
         record_set = history["claim"][claim_id]
@@ -733,10 +751,11 @@ def integrate_arrival_batch(
         "predecessor": deepcopy(predecessor),
         "source_binding": deepcopy(source_binding),
         "claims": snapshot_claims,
+        "permit_approvals": deepcopy(domain["permit_approvals"]),
         "requests": [{"request_id": row_values(w["request"])["Request reference"], "claim_id": w["claim_id"],
                       "revision": w["revision"], "amount_cents": w["allowed_cents"],
                       "payee": row_values(w["request"])["Payee ID"], "currency": "EUR", "status": "held" if any(w["claim_id"] in c["affected_claim_ids"] for c in cancellation_rows) else "accepted",
-                      "decision_ids": list(dict.fromkeys(d["decision_id"] for d in w["observed_reviews"] if d["outcome"] == "approve")),
+                      "decision_ids": list(dict.fromkeys(d["decision_id"] for d in w["observed_reviews"] if d["outcome"] == "approve" and d.get('active') and d.get('evidence_valid'))),
                       "source_refs": [_ref_text(_ref(w["request"]))], "origin": "observed source request; no request sent"}
                      for w in domain["ordinary_workflows"].values() if w["request"] is not None],
         "travel_cancellations": cancellation_rows,

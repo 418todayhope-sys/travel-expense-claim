@@ -114,6 +114,8 @@ def _workbook_sheets(path: Path, source_id: str, sha256: str) -> list[dict[str, 
             "source_id": source_id,
             "source_sha256": sha256,
             "name": sheet.title,
+            "preamble": [{"cell": cell.coordinate, "value": _scalar(cell.value), "source_text": str(cell.value)}
+                         for row in rows[:table_row] for cell in row if cell.value is not None],
             "header_row": table_row + 1,
             "headers": [str(h) if h is not None else None for h in headers],
             "records": records,

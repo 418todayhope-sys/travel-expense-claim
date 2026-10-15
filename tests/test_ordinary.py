@@ -39,9 +39,9 @@ def synthetic():
     for event in records['finance_events']:
         event['values']['Claim revision'] = {'value': 1}
     for packet in next(s['records'] for s in parsed['workbook_sheets'] if s['name'] == 'Review packets'):
-        packet['values']['Policy revision']['value'] = 'POL-SYNTHETIC-ONLY'
+        packet['values']['Policy revision']['value'] = 'POL-2026.2'
     records['workflow_policy_rules'] = [row('synthetic-policy', 'SYNTHETIC policy definition', **{
-        'Arrival batch': 1, 'Rule set': 'exact-paid-costs-v1', 'Policy revision': 'POL-SYNTHETIC-ONLY',
+        'Arrival batch': 1, 'Rule set': 'exact-paid-costs-v1', 'Policy revision': 'POL-2026.2',
         'Eligible categories': ['transport'], 'Uncapped categories': ['transport'],
         'Required claim roles': ['administration', 'budget_owner', 'supervisor'],
         'Receipt required': True, 'Settled merchant proof required': True, 'No self review': True,
@@ -91,9 +91,9 @@ def test_actual_c01_connects_evidence_reviews_and_ledger_but_never_fabricates_cl
     current = workflow(results[-1], 'C01'); checks = stages(current)
     assert current['claim_id'] == 'C01' and current['revision'] == 1
     assert current['trip_id'] == 'T01' and current['trip_revision'] == 1
-    for name in ('claim_trip_link', 'supporting_evidence', 'review_evidence', 'financial_reconciliation'):
+    for name in ('claim_trip_link', 'supporting_evidence', 'review_evidence', 'financial_reconciliation', 'travel_permission', 'required_approvals'):
         assert checks[name]['status'] == 'PASS'
-    for name in ('travel_permission', 'policy_eligibility', 'required_approvals', 'request_obligation', 'financial_closure'):
+    for name in ('policy_eligibility', 'request_obligation', 'financial_closure'):
         assert checks[name]['status'] == 'BLOCKED'
         assert checks[name]['owner'] and checks[name]['next_action']
     assert current['status'] == 'pending' and current['allowed_cents'] is None
@@ -247,12 +247,12 @@ def test_synthetic_source_defined_cap_changes_entitlement_without_changing_merch
     assert any('SYNTHETIC cap row' in ref for ref in value['lines'][0]['source_refs'])
 
 
-def test_source_defined_director_threshold_does_not_invent_missing_director_approval():
+def test_untrusted_synthetic_threshold_cannot_override_policy_director_threshold():
     parsed = synthetic()
     parsed['records']['workflow_policy_rules'][0]['values']['Director threshold cents'] = {'value': 5000}
     value = workflow(batches(parsed)[-1])
-    assert stages(value)['required_approvals']['status'] == 'BLOCKED'
-    assert value['status'] == 'pending'
+    assert stages(value)['required_approvals']['status'] == 'PASS'
+    assert value['status'] == 'closed-reimbursed'
     assert all('director' not in d['roles'] for d in value['observed_reviews'])
 
 
@@ -302,7 +302,8 @@ def test_affected_cancellation_holds_eligibility_without_erasing_calculation_or_
         parsed['records']['cancellation_activities'].append(record)
     final = batches(parsed)[-1]
     value = workflow(final)
-    assert stages(value)['travel_permission']['status'] == 'PASS'
+    assert stages(value)['travel_permission']['status'] == 'BLOCKED'
+    assert value['permit_approval']['arrangements_at_commitment_supported']
     assert value['allowed_cents'] is None
     assert value['lines'][0]['calculated_cents'] == 10000
     assert any(f['issue'] == 'travel_cancellation' and f['status'] == 'unresolved' for f in value['lines'][0]['eligibility_findings'])

@@ -14,6 +14,7 @@ from .finance import _cents, reconcile_finance_events
 from .workflow import row_values
 from .expenses import evaluate_expenses, policy_valid
 from .exceptions import travel_findings, review_binds_exception, source_bound
+from .approvals import evaluate_reviews, evaluate_permit
 
 ROLE_FIELDS = {"administration": "Administration reviewer", "budget_owner": "Budget owner",
                "supervisor": "Supervisor", "director": "Director"}
@@ -102,35 +103,12 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
                         and isinstance(policy.get('Domestic permit required'), bool))
     policy_refs = [ref(policy_record)] if policy_record else []
     affected = [c for c in cancellations if claim_id in c['affected_claim_ids']]
-    permission = False
-    permission_refs = [ref(r) for r in trips] + policy_refs
-    if linked and policy_supported:
-        if trip.get('International') is False and policy.get('Domestic permit required') is False:
-            permission = True
-        else:
-            # UTC timing must be expressly supplied; local calendar dates do
-            # not establish an exact commitment instant.
-            permit_roles = policy.get('Required permit roles')
-            commitment = trip.get('First commitment time (UTC)')
-            relevant = [r for r in decisions if fields(r).get('Subject type') == 'permit'
-                        and fields(r).get('Subject reference') == trip.get('Permit reference')
-                        and fields(r).get('Revision') == trip.get('Permit revision')]
-            permission_refs += [ref(r) for r in relevant]
-            try:
-                stamp = lambda text: datetime.fromisoformat(text.replace('Z', '+00:00'))
-                commit = stamp(commitment)
-                permission = bool(trip.get('Permit reference') and permit_roles and set(permit_roles) <= set(ROLE_FIELDS)
-                                  and commit.utcoffset() is not None)
-                for role in permit_roles or []:
-                    matching = [fields(r) for r in relevant if fields(r).get('Review roles') == role]
-                    permission = permission and len(matching) == 1 and matching[0].get('Outcome') == 'approve'
-                    if permission:
-                        permission = (matching[0].get('Reviewer') == person.get(ROLE_FIELDS[role])
-                                      and matching[0].get('Reviewer') != employee
-                                      and stamp(matching[0].get('Decision time (UTC)')).utcoffset() is not None
-                                      and stamp(matching[0]['Decision time (UTC)']) < commit)
-            except (ValueError, TypeError, AttributeError):
-                permission = False
+    permit_review = evaluate_permit(parsed=parsed, trip_record=trips[0] if len(trips)==1 else {},
+        decisions=decisions, arrival_batch=arrival_batch, observations=source_observations,
+        prior=(prior_workflow or {}).get('permit_approval'),
+        cost_ids=[line['cost_id'] for line in expense_lines(record)],cancellations=cancellations)
+    permission = linked and permit_review['arrangement_authorized']
+    permission_refs = [ref(r) for r in trips] + policy_refs + permit_review['source_refs']
     stage('travel_permission', permission, permission_refs,
           'Travel permission requires sourced policy and exact permit authority/timing where required; affected cancellations block the ordinary path',
           lead, 'Obtain the policy-defined permission requirement and matching permit approvals/timing; resolve affected cancellations')
@@ -139,6 +117,9 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
     eligibility = travel_findings(trip=trip, employee=employee, decisions=decisions, people=table(parsed, 'people', 'People'),
         cancellations=cancellations, fields=fields, ref=ref, observations=source_observations,
         trip_source_refs=[ref(r) for r in trips]) if policy_valid(parsed.get('expense_policy')) else []
+    if trip.get('International') is True and not permit_review['approved'] and not any(f['issue']=='permit_unapproved' for f in eligibility):
+        from .exceptions import finding
+        eligibility.append(finding('permit_unapproved', 'Current permit replies/packets do not establish required approval authority', permit_review['source_refs']))
     calculation = evaluate_expenses(lines=lines, parsed=parsed, employee=employee, trip_id=trip_id,
         trip=trip, record=record, history=finance['revision_history'], fields=fields, ref=ref, table=table,
         eligibility_findings=eligibility, observations=source_observations)
@@ -154,7 +135,7 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
           finance_owner, 'Verify cost-specific original submission dates, trip end and employee payment; obtain explicit Finance exception for late filing')
     waived_permission = bool(eligibility and any(f['issue'] in {'late_permit', 'permit_unapproved'} for f in eligibility)
         and lines and all(l['eligibility_status'] == 'PASS' for l in lines))
-    reimbursement_permission = permission or (linked and policy_supported and waived_permission)
+    reimbursement_permission = permission or (linked and permit_review.get('arrangements_at_commitment_supported',False)) or (linked and policy_supported and waived_permission)
     policy_ok = policy_supported and evidence_ok and linked and reimbursement_permission and calculation['status'] == 'PASS'
     for line in lines:
         line['allowed_cents'] = line['calculated_cents'] if policy_ok else None
@@ -192,57 +173,37 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
         or prior_workflow.get('exception_revalidation', {}).get('same_revision_change')))
     replacement_review = same_revision_change or any(
         line.get('replacement_amount_changed') or changed_exception_amount(line) for line in lines)
-    current = [r for r in decisions if fields(r).get('Subject type') == 'claim'
-               and fields(r).get('Subject reference') == claim_id and fields(r).get('Revision') == revision]
-    unique_decisions = {}; decision_conflict = False
-    for decision in current:
-        identity = fields(decision).get('Decision reference')
-        payload = {k: v for k, v in fields(decision).items() if k != 'Arrival batch'}
-        if not identity or identity in unique_decisions and unique_decisions[identity][1] != payload:
-            decision_conflict = True
-        unique_decisions[identity] = (decision, payload)
-    current = [pair[0] for pair in unique_decisions.values()]
-    packets = table(parsed, 'review_packets', 'Review packets')
-    budget_ids = {fields(r).get('Ledger reference') for r in table(parsed, 'budget', 'Budget')}
-    observed = []; reviews_ok = bool(current) and len(people) == 1 and not decision_conflict
-    for decision in current:
-        dv = fields(decision)
-        ps = [p for p in packets if fields(p).get('Decision reference') == dv.get('Decision reference')]
-        pv = fields(ps[0]) if len(ps) == 1 else {}
-        roles = str(dv.get('Review roles') or '').splitlines()
-        valid = (len(ps) == 1 and pv.get('Employee ID') == employee and pv.get('Trip reference') == trip_id
-                 and pv.get('Trip revision') == claim.get('trip_revision')
-                 and all(pv.get(key) == trip.get(key) for key in ('Business purpose', 'Client', 'Schedule coverage', 'Alternatives considered', 'Permit reference', 'Permit revision'))
-                 and set(str(pv.get('Expense references') or '').splitlines()) == {l['cost_id'] for l in lines}
-                 and bool(pv.get('Policy revision')) and bool(str(pv.get('Budget record references') or '').splitlines())
-                 and set(str(pv.get('Budget record references') or '').splitlines()) <= budget_ids
-                 and roles and all(role in ROLE_FIELDS and dv.get('Reviewer') == person.get(ROLE_FIELDS[role])
-                                   and dv.get('Reviewer') != employee for role in roles))
-        if policy_record:
-            valid = valid and pv.get('Policy revision') == policy.get('Policy revision')
-        exception_binding = (not replacement_review or (source_bound(decision, source_observations)
-            and all(source_bound(p, source_observations) for p in ps)
-            and review_binds_exception(decision, record, same_revision_change=same_revision_change, fields=fields, ref=ref)))
-        valid = valid and exception_binding
-        observed.append(dict(exception_binding_valid=exception_binding, decision_id=dv.get('Decision reference'), outcome=dv.get('Outcome'), roles=roles,
-                             evidence_valid=bool(valid), source_refs=[ref(decision)] + [ref(p) for p in ps]))
-        reviews_ok = reviews_ok and valid
-    review_refs = [r for d in observed for r in d['source_refs']] + [ref(p) for p in people]
-    stage('review_evidence', reviews_ok, review_refs, 'Observed current-revision human decisions matched to reviewers and preserved review packets; completeness is checked separately',
-          lead, 'Provide exact-revision decisions and packets matching the employee, trip, expense list, policy and budget references')
-    required = policy.get('Required claim roles', []) if policy_supported else []
-    if policy_supported and policy.get('Director threshold cents') is not None:
-        threshold = policy['Director threshold cents']
-        if isinstance(threshold, int) and not isinstance(threshold, bool) and threshold >= 0 and allowed is not None:
-            required = list(required) + (['director'] if allowed > threshold else [])
-        else:
-            reviews_ok = False
-    approvals = reviews_ok and policy_supported and all(
-        len([d for d in observed if role in d['roles'] and d['outcome'] == 'approve']) == 1
-        and all(d['outcome'] == 'approve' for d in observed if role in d['roles']) for role in required)
-    stage('required_approvals', approvals, review_refs + policy_refs,
-          'All policy-required roles must have matching current-revision approvals; no decisions are created',
-          lead, 'Confirm policy-required review roles and obtain their current-revision human approvals')
+    line_refs={r for line in lines for r in line['source_refs']}
+    dependencies=[r for key,tab in [('receipts','Receipts'),('merchant_payments','Merchant payments'),('caps','Caps'),('fx_rates','FX')]
+                  for r in table(parsed,key,tab) if ref(r) in line_refs]
+    claim_review=evaluate_reviews(parsed=parsed,kind='claim',subject_id=claim_id,revision=revision,
+        trip_record=trips[0] if len(trips)==1 else {},employee=employee,subject_record=record,
+        amount_cents=calculation['calculated_cents'],decisions=decisions,arrival_batch=arrival_batch,
+        observations=source_observations,cost_ids=[line['cost_id'] for line in lines],
+        dependency_rows=dependencies,prior=(prior_workflow or {}).get('claim_approval'),
+        withdrawn=linked and values.get('Status')=='withdrawn' and trusted(record),
+        cancellation_ids=[f['travel_cancellation_id'] for f in eligibility if f['issue']=='travel_cancellation'])
+    observed=claim_review['deliveries']
+    # Preserve Step 175's extra binding requirement on material Finance replacements.
+    for decision in observed:
+        decision['exception_binding_valid']=(not replacement_review or review_binds_exception(
+            decision['raw_record'],record,same_revision_change=same_revision_change,fields=fields,ref=ref))
+        if not decision['exception_binding_valid']:
+            decision['evidence_valid']=False
+    approvals=claim_review['approved'] and all(d['evidence_valid'] for d in observed if d['active'])
+    review_refs=claim_review['source_refs']
+    reviews_ok=all(claim_review['role_states'].get(role) not in {'missing','conflicting'} for role in claim_review['required_roles']) and all(d['evidence_valid'] for d in observed if d['active'])
+    stage('review_evidence',reviews_ok,review_refs,
+          'Current subject/version/role/actor/source/reason and complete review packets; rejected imports remain in history',
+          lead,'Supply current source-bound replies and complete packets; answer the concrete return repair requests')
+    stage('required_approvals',approvals,review_refs + policy_refs,
+          f"Claim approval state: {claim_review['state']}; required roles: {', '.join(claim_review['required_roles'])}",
+          lead,'Obtain the outstanding current-version human decisions; permit replies never approve a claim')
+
+    for reply in observed:
+        if reply['outcome']=='return' and reply['evidence_valid']:
+            stage(f"review_return:{reply['decision_id']}",not reply['active'],reply['source_refs'],
+                  f"{reply['reason']}; repair requested: {reply['repair_requested']}",employee or 'Employee',reply['repair_requested'])
 
     exception_revalidated = not replacement_review or approvals
     stage('exception_revalidation', exception_revalidated, evidence_refs + review_refs,
@@ -253,7 +214,7 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
                 if trusted(r) and visible(r) and fields(r).get('Claim reference') == claim_id and fields(r).get('Revision') == revision]
     request = fields(requests[0]) if len(requests) == 1 else {}
     obligation = finance.get('recorded_obligation')
-    approved_ids = {d['decision_id'] for d in observed if d['outcome'] == 'approve' and d['evidence_valid']}
+    approved_ids = {d['decision_id'] for d in observed if d['outcome'] == 'approve' and d['evidence_valid'] and d['active']}
     request_ok = bool(linked and reimbursement_permission and policy_ok and approvals and obligation and len(requests) == 1
                       and request.get('Request reference') == obligation['request_id']
                       and request.get('Payee ID') == person.get('Payee ID') == obligation['payee_id']
@@ -317,13 +278,23 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
     stage('financial_closure', closed, [ref(r) for r in authorities] + request_refs + policy_refs,
           'Closure requires supported completion conditions, authoritative clock, current evidence/approvals, entitlement/obligation/net cash agreement and no affected unresolved issue',
           finance_owner, 'Confirm completion conditions and the authoritative clock; resolve every affected approval, Finance or cancellation dependency')
+    business_state=claim_review['state']
+    financial_clean=(len(trips)==1 and trusted(trips[0]) and not finance.get('recorded_obligation') and not finance['net_confirmed_cents']
+        and not finance['event_history'] and not requests and not affected)
+    disposition=business_state if business_state in {'rejected','withdrawn'} and financial_clean else None
+    if business_state in {'rejected','withdrawn'} and not financial_clean:
+        stage('nonpayment_disposition',False,review_refs + request_refs,
+              'Rejection/withdrawal recorded; existing Finance effects require disposition and are not erased',
+              finance_owner,'Confirm cancellation/status of dispatched obligations and resolve existing cash before financial completion')
     pending = next((s for s in stages if s['status'] != 'PASS'), None)
     return dict(claim_id=claim_id, revision=revision, trip_id=trip_id, trip_revision=claim.get('trip_revision'),
-                mode=parsed.get('evidence_mode', 'offline-replay'), status=('closed-reimbursed' if allowed else 'closed-no-payment') if closed else 'pending',
+                mode=parsed.get('evidence_mode', 'offline-replay'), status=disposition or ('held' if business_state in {'rejected','withdrawn'} else ('closed-reimbursed' if allowed else 'closed-no-payment') if closed else 'pending'),
+                claim_approval=claim_review,permit_approval=permit_review,
                 expense_calculation=calculation, exception_revalidation=dict(required=replacement_review, same_revision_change=same_revision_change, status='PASS' if exception_revalidated else 'BLOCKED'), allowed_cents=allowed, balance_cents=finance['balance_cents'], lines=lines, stages=stages,
                 observed_reviews=observed, request=deepcopy(requests[0]) if request_ok else None,
                 source_refs=list(dict.fromkeys([ref(record)] + [r for s in stages for r in s['source_refs']])),
-                next_owner=None if closed else pending['owner'], reason='Supported financial closure' if closed else pending['detail'],
+                next_owner=None if closed or disposition else (finance_owner if business_state in {'rejected','withdrawn'} else pending['owner']),
+                reason=f"Clean business {disposition}: " + (values.get('Claim reason','') if disposition=='withdrawn' else '; '.join(d['reason'] for d in observed if d['active'] and d['outcome']=='reject')) if disposition else 'Supported financial closure' if closed else pending['detail'],
                 finance=finance)
 
 

@@ -228,7 +228,7 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
             predecessor_path=previous_path, schema_path=schema_path,
             allow_unconfirmed_case_clock=True, **{
                 key: current["snapshot"][key]
-                for key in ("claims", "requests", "travel_cancellations", "admitted_event_ids", "issues")
+                for key in ("claims", "requests", "travel_cancellations", "admitted_event_ids", "issues", "permit_approvals")
             },
         )
         validation = verify_snapshot(path, run_dir, schema_path)
