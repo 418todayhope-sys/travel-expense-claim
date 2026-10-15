@@ -1,0 +1,99 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "01M4ZPXY92M96ZDWBH9JFGCQST",
+  "session_id": "01a13bd1-7420-72c0-963e-58742d1be7bf",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-15T12:00:11.383736477Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 2,
+  "files_touched": [
+    "README.md",
+    "src/travel_claim/approvals.py",
+    "src/travel_claim/budget.py",
+    "src/travel_claim/completion.py",
+    "src/travel_claim/exceptions.py",
+    "src/travel_claim/finance.py",
+    "src/travel_claim/integration.py",
+    "src/travel_claim/ordinary.py",
+    "src/travel_claim/revalidation.py",
+    "tests/test_completion.py",
+    "tests/test_ordinary.py",
+    "tests/test_retained_finance.py"
+  ],
+  "agent": "Codex",
+  "model": "gpt-6.1-sol",
+  "turn_id": "69275a8c36bc",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 2873979,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 116660864,
+    "output_tokens": 458152,
+    "api_call_count": 705,
+    "subagent_tokens_complete": true
+  },
+  "session_metrics": {
+    "turn_count": 35
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-15T12:00:10.404458502Z",
+    "agent_lines": 615,
+    "agent_removed": 94,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 615,
+    "total_lines_changed": 709,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 299304,
+      "user_lines_removed": 0,
+      "agent_lines_added": 3055503,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-001.json": 3722,
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-002.json": 3870,
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-003.json": 4487,
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-004.json": 4624,
+        "artifacts/runs/source-capture-20261014T100034Z/claims.csv": 122,
+        "artifacts/runs/source-capture-20261014T100034Z/offline-replay-state.json": 63725,
+        "artifacts/runs/source-capture-20261014T100034Z/parsed-records.json": 207028,
+        "artifacts/runs/source-capture-20261014T100034Z/repair-queue.json": 4875,
+        "artifacts/runs/source-capture-20261014T100034Z/report.md": 209,
+        "artifacts/runs/source-capture-20261014T100034Z/sources.json": 74,
+        "artifacts/runs/source-capture-20261014T100034Z/sources/claim-updates-binder.pdf": 236,
+        "artifacts/runs/source-capture-20261014T100034Z/sources/initial-claim-binder.pdf": 3072,
+        "artifacts/runs/source-capture-20261014T100034Z/sources/receipt-binder.pdf": 3227,
+        "user-provided-sources/step-167/POL-2026.2-browser-copy.txt": 33
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 299304,
+      "user_lines_removed": 0,
+      "agent_lines_added": 3056118,
+      "agent_lines_removed": 94,
+      "user_added_per_file": {
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-001.json": 3722,
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-002.json": 3870,
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-003.json": 4487,
+        "artifacts/runs/source-capture-20261014T100034Z/batches/arrival-004.json": 4624,
+        "artifacts/runs/source-capture-20261014T100034Z/claims.csv": 122,
+        "artifacts/runs/source-capture-20261014T100034Z/offline-replay-state.json": 63725,
+        "artifacts/runs/source-capture-20261014T100034Z/parsed-records.json": 207028,
+        "artifacts/runs/source-capture-20261014T100034Z/repair-queue.json": 4875,
+        "artifacts/runs/source-capture-20261014T100034Z/report.md": 209,
+        "artifacts/runs/source-capture-20261014T100034Z/sources.json": 74,
+        "artifacts/runs/source-capture-20261014T100034Z/sources/claim-updates-binder.pdf": 236,
+        "artifacts/runs/source-capture-20261014T100034Z/sources/initial-claim-binder.pdf": 3072,
+        "artifacts/runs/source-capture-20261014T100034Z/sources/receipt-binder.pdf": 3227,
+        "user-provided-sources/step-167/POL-2026.2-browser-copy.txt": 33
+      }
+    }
+  ]
+}
