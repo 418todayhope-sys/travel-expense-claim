@@ -147,6 +147,8 @@ def validate_readiness(run_dir: Path, *, schema_path: Path, repo_dir: Path) -> d
             current["snapshot"]["issues"].append(dict(OFFLINE_MARKER))
             require(current["snapshot"] == observed, f"{path.name} content differs from retained evidence replay")
             prior_result = current
+        require(state.get('budget_reconciliation') == current['domain']['budget'], 'Budget state differs from evidence replay')
+        require(state.get('budget_history') == current['domain']['budget_history'], 'Budget history differs from evidence replay')
         data, summary = verification_document(current['domain'], current['snapshot']['travel_cancellations'], run_id=state['run_id'])
         revalidation_expected.update(data=data, summary=summary)
     check("snapshot-content-evidence", [run_dir / "batches", run_dir / "parsed-records.json"], snapshot_evidence)

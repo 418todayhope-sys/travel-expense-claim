@@ -144,6 +144,15 @@ def _report(
                     ) if item['source_refs'] else "  - Retained source references: unavailable; obtain authoritative evidence.",
                 ])
             lines.append("")
+    lines.extend(["## Budget reconciliation — retained facts", "",
+        "EUR cents; recorded commitments are separate from reimbursement authorization. Funds alone are not budget-owner approval.", ""])
+    for key,scope in latest_snapshot['budget_reconciliation']['scopes'].items():
+        lines.append(f"- Scope `{key}`: {scope['status']}; allocation {scope['allocation_cents']}; net settled {scope['net_settled_cents']}; remaining commitments {scope['remaining_commitment_cents']}; available {scope['available_cents']}. Sources: {'; '.join(scope['source_refs'])}")
+    lines.append("")
+    for claim_id,view in latest_snapshot['budget_reconciliation']['claim_views'].items():
+        if view['prior_committed_cents'] or view['prior_net_paid_cents']:
+            lines.append(f"- `{claim_id}`: prior linked commitment {view['prior_committed_cents']}; known prior net paid {view['prior_net_paid_cents']}; remaining request {view['remaining_request_cents']}. Sources: {'; '.join(view['source_refs'])}")
+    lines.append("")
     lines.extend([
         "## Run-level external blockers", "",
         "These retained policy and clock issues apply to the run as a whole and are separate from claim repairs. They remain unresolved in this offline replay; no case-clock date or policy rule is inferred.",
@@ -228,7 +237,7 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
             predecessor_path=previous_path, schema_path=schema_path,
             allow_unconfirmed_case_clock=True, **{
                 key: current["snapshot"][key]
-                for key in ("claims", "requests", "travel_cancellations", "admitted_event_ids", "issues", "permit_approvals")
+                for key in ("claims", "requests", "travel_cancellations", "admitted_event_ids", "issues", "permit_approvals", "budget_reconciliation")
             },
         )
         validation = verify_snapshot(path, run_dir, schema_path)
@@ -280,6 +289,8 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
         "finance_reconciliations": latest["finance_reconciliations"],
         "cancellation_state": latest["domain"]["cancellation_state"],
         "material_corrections": latest["domain"]["material_corrections"],
+        "budget_reconciliation": latest["domain"]["budget"],
+        "budget_history": latest["domain"]["budget_history"],
         "ordinary_workflows": latest["domain"]["ordinary_workflows"],
         "ordinary_workflow_history": latest["domain"]["ordinary_workflow_history"],
         "source_record_history": {

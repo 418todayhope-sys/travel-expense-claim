@@ -52,7 +52,7 @@ def expense_lines(record):
 
 
 def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancellations,
-                  arrival_batch, source_observations, prior_finance=None, source_classifications=None, prior_workflow=None):
+                  arrival_batch, source_observations, prior_finance=None, source_classifications=None, prior_workflow=None, budget_data=None, prepaid_data=None, prior_budget_view=None):
     """Evaluate an ordinary path; each result keeps its evidence and owner."""
     record = claim['record']; values = fields(record)
     claim_id, revision = claim['subject_id'], claim['revision']
@@ -103,10 +103,13 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
                         and isinstance(policy.get('Domestic permit required'), bool))
     policy_refs = [ref(policy_record)] if policy_record else []
     affected = [c for c in cancellations if claim_id in c['affected_claim_ids']]
+    from .budget import permit_budget_context
+    permit_budget=permit_budget_context(parsed=parsed,trip_record=trips[0] if len(trips)==1 else {},
+        budgets=budget_data or {'scopes':{}},prior=((prior_workflow or {}).get('permit_approval') or {}).get('budget_context'),arrival_batch=arrival_batch)
     permit_review = evaluate_permit(parsed=parsed, trip_record=trips[0] if len(trips)==1 else {},
         decisions=decisions, arrival_batch=arrival_batch, observations=source_observations,
         prior=(prior_workflow or {}).get('permit_approval'),
-        cost_ids=[line['cost_id'] for line in expense_lines(record)],cancellations=cancellations)
+        cost_ids=[line['cost_id'] for line in expense_lines(record)],cancellations=cancellations,budget_context=permit_budget)
     permission = linked and permit_review['arrangement_authorized']
     permission_refs = [ref(r) for r in trips] + policy_refs + permit_review['source_refs']
     stage('travel_permission', permission, permission_refs,
@@ -123,6 +126,15 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
     calculation = evaluate_expenses(lines=lines, parsed=parsed, employee=employee, trip_id=trip_id,
         trip=trip, record=record, history=finance['revision_history'], fields=fields, ref=ref, table=table,
         eligibility_findings=eligibility, observations=source_observations)
+    from .budget import claim_budget_view
+    budget_view=claim_budget_view(parsed=parsed,claim=claim,lines=lines,budgets=budget_data or {'scopes':{}},
+        attribution=prepaid_data or {'costs':{},'unallocated_costs':{}},prior=prior_budget_view,arrival_batch=arrival_batch)
+    stage('budget_availability',budget_view['status']=='PASS',budget_view['source_refs'],
+        '; '.join(i['reason'] for i in budget_view['issues']) or 'Complete scope ledger supports the incremental request; funds do not constitute approval',
+        budget_view['owner'],'Review the complete department/project/period ledger and obtain current budget-owner authorization')
+    stage('prior_cost_attribution',budget_view['remaining_request_cents'] is not None,budget_view['source_refs'],
+        'Each cost is linked to supported earlier obligations or remains unresolved; no aggregate prorating',finance_owner,
+        'Resolve exact original claim/cost/request links before any replacement or additional reimbursement')
     evidence_ok = bool(lines) and len({line['cost_id'] for line in lines}) == len(lines) and all(
         line['evidence_status'] == 'PASS' for line in lines)
     evidence_refs = [ref(record)] + [r for line in lines for r in line['source_refs']]
@@ -136,12 +148,20 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
     waived_permission = bool(eligibility and any(f['issue'] in {'late_permit', 'permit_unapproved'} for f in eligibility)
         and lines and all(l['eligibility_status'] == 'PASS' for l in lines))
     reimbursement_permission = permission or (linked and permit_review.get('arrangements_at_commitment_supported',False)) or (linked and policy_supported and waived_permission)
-    policy_ok = policy_supported and evidence_ok and linked and reimbursement_permission and calculation['status'] == 'PASS'
+    policy_ok = policy_supported and evidence_ok and linked and reimbursement_permission and calculation['status'] == 'PASS' and budget_view['remaining_request_cents'] is not None
     for line in lines:
         line['allowed_cents'] = line['calculated_cents'] if policy_ok else None
         if not policy_ok:
             line['status'] = 'unresolved'
-    allowed = calculation['calculated_cents'] if policy_ok else None
+    attributed={l['cost_id']:l for l in budget_view['lines']}
+    for line in lines:
+        if policy_ok:
+            line['allowed_cents']=attributed[line['cost_id']]['remaining_request_cents']
+            if line['allowed_cents'] is None:
+                line['status']='unresolved';line['reason']='Prior cost attribution is unresolved; original calculation retained'
+            if line['allowed_cents']==0 and attributed[line['cost_id']]['prior_reservations']:
+                line['status']='excluded';line['reason']='Prior cost obligation linked and excluded from this request; gross/conversion evidence retained'
+    allowed = budget_view['remaining_request_cents'] if policy_ok else None
     stage('policy_eligibility', policy_ok, policy_refs + evidence_refs,
           'Expense calculation and filing are separate from travel permission, reviewed policy definitions and approvals',
           lead, 'Resolve line findings and remaining policy/permission evidence before treating calculated amounts as entitlement')
@@ -178,11 +198,11 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
                   for r in table(parsed,key,tab) if ref(r) in line_refs]
     claim_review=evaluate_reviews(parsed=parsed,kind='claim',subject_id=claim_id,revision=revision,
         trip_record=trips[0] if len(trips)==1 else {},employee=employee,subject_record=record,
-        amount_cents=calculation['calculated_cents'],decisions=decisions,arrival_batch=arrival_batch,
+        amount_cents=budget_view['remaining_request_cents'] if calculation['status']=='PASS' else None,decisions=decisions,arrival_batch=arrival_batch,
         observations=source_observations,cost_ids=[line['cost_id'] for line in lines],
         dependency_rows=dependencies,prior=(prior_workflow or {}).get('claim_approval'),
         withdrawn=linked and values.get('Status')=='withdrawn' and trusted(record),
-        cancellation_ids=[f['travel_cancellation_id'] for f in eligibility if f['issue']=='travel_cancellation'])
+        cancellation_ids=[f['travel_cancellation_id'] for f in eligibility if f['issue']=='travel_cancellation'],budget_context=budget_view)
     observed=claim_review['deliveries']
     # Preserve Step 175's extra binding requirement on material Finance replacements.
     for decision in observed:
@@ -191,6 +211,11 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
         if not decision['exception_binding_valid']:
             decision['evidence_valid']=False
     approvals=claim_review['approved'] and all(d['evidence_valid'] for d in observed if d['active'])
+    budget_replies=[d for d in observed if 'budget_owner' in d['roles']]
+    budget_authorized=any(d['active'] and d['evidence_valid'] and d.get('budget_evidence_valid',True) and d['outcome']=='approve' for d in budget_replies)
+    stage('budget_owner_authorization',budget_authorized,budget_view['source_refs']+[r for d in budget_replies for r in d['source_refs']],
+        '; '.join(dict.fromkeys(d['budget_revalidation_reason'] for d in budget_replies if d.get('budget_revalidation_reason'))) or 'Current discretionary budget-owner authorization required; funds alone are insufficient',
+        budget_view['owner'],'Supply a current budget-owner response bound to the complete scope ledger and this claim/version')
     review_refs=claim_review['source_refs']
     reviews_ok=all(claim_review['role_states'].get(role) not in {'missing','conflicting'} for role in claim_review['required_roles']) and all(d['evidence_valid'] for d in observed if d['active'])
     stage('review_evidence',reviews_ok,review_refs,
@@ -290,7 +315,7 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
     return dict(claim_id=claim_id, revision=revision, trip_id=trip_id, trip_revision=claim.get('trip_revision'),
                 mode=parsed.get('evidence_mode', 'offline-replay'), status=disposition or ('held' if business_state in {'rejected','withdrawn'} else ('closed-reimbursed' if allowed else 'closed-no-payment') if closed else 'pending'),
                 claim_approval=claim_review,permit_approval=permit_review,
-                expense_calculation=calculation, exception_revalidation=dict(required=replacement_review, same_revision_change=same_revision_change, status='PASS' if exception_revalidated else 'BLOCKED'), allowed_cents=allowed, balance_cents=finance['balance_cents'], lines=lines, stages=stages,
+                budget_view=budget_view, expense_calculation=calculation, exception_revalidation=dict(required=replacement_review, same_revision_change=same_revision_change, status='PASS' if exception_revalidated else 'BLOCKED'), allowed_cents=allowed, balance_cents=finance['balance_cents'], lines=lines, stages=stages,
                 observed_reviews=observed, request=deepcopy(requests[0]) if request_ok else None,
                 source_refs=list(dict.fromkeys([ref(record)] + [r for s in stages for r in s['source_refs']])),
                 next_owner=None if closed or disposition else (finance_owner if business_state in {'rejected','withdrawn'} else pending['owner']),

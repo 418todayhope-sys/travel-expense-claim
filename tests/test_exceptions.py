@@ -245,7 +245,7 @@ def test_same_revision_material_change_requires_new_source_binding_and_hold_surv
     finance=deepcopy(paid['finance_reconciliations']['SYN-C01']);finance['revision_history']=[claim]
     args=dict(parsed=parsed,claim=claim,decisions=parsed['records']['decisions'],finance_events=paid['domain']['finance_records'],
         finance=finance,cancellations=[],arrival_batch=3,source_observations=parsed['source_observations'],
-        prior_finance=paid['finance_reconciliations']['SYN-C01'])
+        prior_finance=paid['finance_reconciliations']['SYN-C01'],budget_data=paid['domain']['budget'],prepaid_data=paid['domain']['budget']['cost_attribution'])
     held=connect_claim(**args,prior_workflow=prior)
     assert held['exception_revalidation']['same_revision_change']
     assert stages(held)['required_approvals']['status']=='BLOCKED'

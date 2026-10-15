@@ -192,7 +192,7 @@ def test_actual_retained_claim_and_permit_packets_roles_and_outcomes():
 
 
 def test_standalone_permit_without_a_claim_and_batch_replay():
-    p,record,trip=subject('permit');p['records']['claim_revisions']=[];setfield(trip,'First commitment date',None)
+    p,record,trip=subject('permit');p['records']['claim_revisions']=[];p['records']['finance_events']=[];p['records']['reimbursement_requests']=[];setfield(trip,'First commitment date',None)
     p['workbook_sheets'][0]['source_id']=trip['source_id'];p['workbook_sheets'][0]['preamble']=[dict(cell='A2',value='SRC-D-3')]
     first=integrate_arrival_batch(p,arrival_batch=1,run_id='permit-only',batch_id='arrival-001',
         source_binding={'path':'sources.json','sha256':'a'*64},source_observations=p['source_observations'])

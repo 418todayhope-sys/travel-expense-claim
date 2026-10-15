@@ -597,24 +597,6 @@ def integrate_arrival_batch(
         claim_revision = next(row for row in reversed(record_set["revisions"]) if row["revision"] == current_revision)
         current_claims[claim_id] = claim_revision
     cancellation_rows = _cancellation_rows(domain, history=history, run_id=run_id, batch_id=batch_id, parsed=parsed)
-    from .approvals import evaluate_permit
-    domain['permit_approvals']={}
-    for permit_id,subject in history.get('permit',{}).items():
-        current=next(r for r in reversed(subject['revisions']) if r['revision']==subject['current_revision'])
-        key=f"{permit_id}:r{current['revision']}"
-        review=evaluate_permit(parsed=parsed,trip_record=current['record'],decisions=domain['decision_records'],
-            arrival_batch=arrival_batch,observations=source_observations or [],
-            prior=before_batch.get('permit_approvals',{}).get(key),cancellations=cancellation_rows)
-        domain['permit_approvals'][key]=review
-        if not review['approved'] or not review['arrangement_authorized']:
-            item_id=f"permit-approval:{key}"
-            _open_issue_for_subject(domain['repair_queue'],item_id=item_id,subject_type='permit',subject_id=permit_id,
-                revision=current['revision'],refs=review['source_refs'],reason=f"Permit review state: {review['state']}; arrangement authority/timing requires current evidence",
-                owner='Travel Administration Lead',next_action='Obtain current permit-role decisions and resolve timing or cancellation holds',run_id=run_id,batch_id=batch_id)
-        if f"permit-approval:{key}" in domain['repair_queue']['items']:
-            record_evidence_validation(domain['repair_queue'],item_id=f"permit-approval:{key}",
-                supported=review['approved'] and review['arrangement_authorized'],source_refs=review['source_refs'],run_id=run_id,batch_id=batch_id)
-    domain.setdefault('permit_approval_history',[]).append({'batch_id':batch_id,'permits':deepcopy(domain['permit_approvals'])})
     finance_results = {}
     for claim_id, claim_revision in current_claims.items():
         record_set = history["claim"][claim_id]
@@ -628,16 +610,67 @@ def integrate_arrival_batch(
             source_classifications=domain["source_classifications"],
             event_context=finance_context(parsed, record_set["revisions"], domain["finance_records"], claim_id, arrival_batch),
         )
+    from .budget import reconcile_budgets, attribute_costs
+    budgets=reconcile_budgets(parsed=parsed,history=history,finances=finance_results,arrival_batch=arrival_batch,
+        observations=source_observations or [],cancellations=cancellation_rows,prior=before_batch.get('budget'),raw_finance=domain['finance_records'])
+    attribution=attribute_costs(parsed=parsed,history=history,budgets=budgets,arrival_batch=arrival_batch,
+        observations=source_observations or [],cancellations=cancellation_rows)
+    budgets['cost_attribution']=attribution;budgets['claim_views']={}
+    domain['budget']=budgets
+    from .approvals import evaluate_permit
+    from .budget import permit_budget_context
+    domain['permit_approvals']={}
+    for permit_id,subject in history.get('permit',{}).items():
+        current=next(r for r in reversed(subject['revisions']) if r['revision']==subject['current_revision'])
+        key=f"{permit_id}:r{current['revision']}"
+        budget_context=permit_budget_context(parsed=parsed,trip_record=current['record'],budgets=budgets,
+            prior=(before_batch.get('permit_approvals',{}).get(key) or {}).get('budget_context'),arrival_batch=arrival_batch)
+        review=evaluate_permit(parsed=parsed,trip_record=current['record'],decisions=domain['decision_records'],
+            arrival_batch=arrival_batch,observations=source_observations or [],
+            prior=before_batch.get('permit_approvals',{}).get(key),cancellations=cancellation_rows,budget_context=budget_context)
+        domain['permit_approvals'][key]=review
+        if not review['approved'] or not review['arrangement_authorized']:
+            item_id=f"permit-approval:{key}"
+            _open_issue_for_subject(domain['repair_queue'],item_id=item_id,subject_type='permit',subject_id=permit_id,
+                revision=current['revision'],refs=review['source_refs'],reason=f"Permit review state: {review['state']}; arrangement authority/timing requires current evidence",
+                owner='Travel Administration Lead',next_action='Obtain current permit-role decisions and resolve timing or cancellation holds',run_id=run_id,batch_id=batch_id)
+        if f"permit-approval:{key}" in domain['repair_queue']['items']:
+            record_evidence_validation(domain['repair_queue'],item_id=f"permit-approval:{key}",
+                supported=review['approved'] and review['arrangement_authorized'],source_refs=review['source_refs'],run_id=run_id,batch_id=batch_id)
+    domain.setdefault('permit_approval_history',[]).append({'batch_id':batch_id,'permits':deepcopy(domain['permit_approvals'])})
+    for claim_id,claim_revision in current_claims.items():
+        prior_finance=before_batch.get('finance_reconciliations',{}).get(claim_id)
         workflow = connect_claim(parsed=parsed, claim=claim_revision, decisions=domain["decision_records"],
             finance_events=domain["finance_records"], finance=finance_results[claim_id],
             cancellations=cancellation_rows, arrival_batch=arrival_batch,
             source_observations=source_observations or [], prior_finance=prior_finance,
             source_classifications=domain["source_classifications"],
-            prior_workflow=before_batch.get("ordinary_workflows", {}).get(claim_id))
+            prior_workflow=before_batch.get("ordinary_workflows", {}).get(claim_id),
+            budget_data=budgets,prepaid_data=attribution,prior_budget_view=before_batch.get("budget",{}).get("claim_views",{}).get(claim_id))
         finance_results[claim_id] = workflow.pop("finance")
+        budgets["claim_views"][claim_id]=deepcopy(workflow["budget_view"])
         domain["ordinary_workflows"][claim_id] = workflow
         domain["ordinary_workflow_history"].append({"batch_id": batch_id, "workflow": deepcopy(workflow)})
     domain["finance_reconciliations"] = finance_results
+    for scope in budgets['scopes'].values():
+        for request in scope['requests'].values():
+            result=finance_results.get(request['claim_id'],{})
+            matching=(result.get('recorded_obligation') or {}).get('request_id')==request['request_id']
+            authorization=result.get('authorized_obligation') if matching else None
+            request['authorized_obligation_cents']=authorization['amount_cents'] if authorization else None
+            request['authorized_balance_cents']=result.get('balance_cents') if authorization else None
+    domain.setdefault('budget_history',[]).append({'batch_id':batch_id,'budget':deepcopy(budgets)})
+    for claim_id,workflow in domain['ordinary_workflows'].items():
+        for n,issue in enumerate(workflow['budget_view']['issues']):
+            item_id=f"budget-detail:{claim_id}:r{workflow['revision']}:{_digest(issue['reason'])[:12]}"
+            _open_issue_for_subject(domain['repair_queue'],item_id=item_id,subject_type='claim',subject_id=claim_id,
+                revision=workflow['revision'],refs=issue['source_refs'],reason=issue['reason'],owner=issue['owner'],
+                next_action=issue['next_action'],run_id=run_id,batch_id=batch_id)
+        current={_digest(i['reason'])[:12] for i in workflow['budget_view']['issues']}
+        for item_id,item in domain['repair_queue']['items'].items():
+            if item_id.startswith(f"budget-detail:{claim_id}:r{workflow['revision']}:") and item_id.rsplit(':',1)[-1] not in current:
+                record_evidence_validation(domain['repair_queue'],item_id=item_id,supported=True,
+                    source_refs=workflow['budget_view']['source_refs'],run_id=run_id,batch_id=batch_id)
     record_executed_rechecks(domain, before_batch, batch_id=batch_id)
     _sync_finance_repairs(domain, finance_results, run_id=run_id, batch_id=batch_id)
 
@@ -752,6 +785,7 @@ def integrate_arrival_batch(
         "source_binding": deepcopy(source_binding),
         "claims": snapshot_claims,
         "permit_approvals": deepcopy(domain["permit_approvals"]),
+        "budget_reconciliation": deepcopy(budgets),
         "requests": [{"request_id": row_values(w["request"])["Request reference"], "claim_id": w["claim_id"],
                       "revision": w["revision"], "amount_cents": w["allowed_cents"],
                       "payee": row_values(w["request"])["Payee ID"], "currency": "EUR", "status": "held" if any(w["claim_id"] in c["affected_claim_ids"] for c in cancellation_rows) else "accepted",

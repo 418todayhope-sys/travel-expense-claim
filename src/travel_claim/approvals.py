@@ -51,7 +51,7 @@ def evidence_digest(rows, amount):
 
 def evaluate_reviews(*, parsed, kind, subject_id, revision, trip_record, employee,
                      subject_record, amount_cents, decisions, arrival_batch, observations,
-                     cost_ids=(), prior=None, dependency_rows=(), withdrawn=False, cancellation_ids=()):
+                     cost_ids=(), prior=None, dependency_rows=(), withdrawn=False, cancellation_ids=(), budget_context=None):
     """Evaluate supplied replies only. Invalid/stale imports stay in deliveries."""
     trip=fields(trip_record); policy=policy_valid(parsed.get('expense_policy'))
     people=[r for r in table(parsed,'people','People') if fields(r).get('Employee ID')==employee]
@@ -133,6 +133,10 @@ def evaluate_reviews(*, parsed, kind, subject_id, revision, trip_record, employe
             else:
                 item.update(import_status='exact-replay',replayed_decision_id=identity)
                 continue
+            from .budget import budget_reply_error
+            budget_error=budget_reply_error(budget_context,decision,ps[0]) if 'budget_owner' in roles else None
+            item['budget_evidence_valid']=not budget_error
+            item['budget_revalidation_reason']=budget_error
             item.update(evidence_valid=True,import_status='valid',order=stamp.isoformat(),decision_time=stamp.isoformat())
         except (ValueError,TypeError,InvalidOperation) as exc:
             item['rejection_reasons'].append(str(exc))
@@ -151,7 +155,7 @@ def evaluate_reviews(*, parsed, kind, subject_id, revision, trip_record, employe
             item['rejection_reasons'].append('Immutable decision identity has conflicting deliveries')
     role_states={}; selected=[]
     for role in required:
-        candidates=[d for d in deliveries if d['evidence_valid'] and role in d['roles']]
+        candidates=[d for d in deliveries if d['evidence_valid'] and role in d['roles'] and (role!='budget_owner' or d.get('budget_evidence_valid',True))]
         if not candidates: role_states[role]='missing'; continue
         latest=max(d['order'] for d in candidates)
         matches=[d for d in candidates if d['order']==latest]
@@ -176,7 +180,7 @@ def evaluate_reviews(*, parsed, kind, subject_id, revision, trip_record, employe
                 approved=state=='approved',repair_requests=[d['repair_requested'] for d in selected if d['outcome']=='return'])
 
 
-def evaluate_permit(*, parsed, trip_record, decisions, arrival_batch, observations, prior=None, cost_ids=(), cancellations=()):
+def evaluate_permit(*, parsed, trip_record, decisions, arrival_batch, observations, prior=None, cost_ids=(), cancellations=(), budget_context=None):
     trip=fields(trip_record)
     if trip.get('International') is False:
         affected=[c for c in cancellations if c.get('trip_id')==trip.get('Trip reference')
@@ -192,7 +196,8 @@ def evaluate_permit(*, parsed, trip_record, decisions, arrival_batch, observatio
         if s.get('source_id')==trip_record.get('source_id') for c in s.get('preamble',[]))
     result=evaluate_reviews(parsed=parsed,kind='permit',subject_id=trip.get('Permit reference'),revision=_revision(trip.get('Permit revision')),
         trip_record=trip_record,employee=trip.get('Employee ID'),subject_record=subject,amount_cents=_cents(trip.get('Estimate (EUR)')),
-        decisions=decisions,arrival_batch=arrival_batch,observations=observations,cost_ids=cost_ids,prior=prior)
+        decisions=decisions,arrival_batch=arrival_batch,observations=observations,cost_ids=cost_ids,prior=prior,budget_context=budget_context)
+    result['budget_context']=budget_context
     result['arrangement_authorized']=False
     if result['approved'] and trip.get('International') is True:
         commitment=trip.get('First commitment date')
