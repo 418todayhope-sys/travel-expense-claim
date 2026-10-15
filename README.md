@@ -370,3 +370,25 @@ or schema gaps stay pending, even though expense/exception/review calculations
 can now consume the explicitly supplied policy evidence. This command does not
 create missing normalized business definitions, requests, approvals or closure
 authority. Drafts remain unsent and require human review.
+
+## Step 184: expense-source and reviewer-clock admission
+
+Expense eligibility now requires well-formed source IDs, SHA-256 hashes and record
+locators bound to complete `read` observations. Claim, trip/directory, receipt,
+merchant payment, applicable cap/FX and reused filing-date evidence are checked
+before they can support an amount. Native page/row references must agree with
+retained page/cell metadata. Missing, partial, mismatched or unobserved bindings
+hold the affected work, retaining the evidence and its original references.
+Independent valid claims continue, and admitted Finance cash is preserved.
+
+Permit and claim replies use the existing event cutoff checks. An authoritative
+calendar date is interpreted in its supplied timezone; later local dates and
+ambiguous same-day observations cannot establish current review authority. An
+explicit supplied instant permits decisions at or before that instant. Missing
+clock authority holds review admission. Raw replies and rejection reasons stay
+visible, including exact replays; a valid earlier reply remains available when a
+separately identified later reply is inadmissible. No cutoff time is inferred.
+
+These checks do not change Finance event admission, budget accounting, exception
+coverage, cancellation resolution or financial closure rules. Passing source
+admission is not a new human approval or evidence of final submission compliance.

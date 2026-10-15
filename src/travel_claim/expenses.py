@@ -8,9 +8,44 @@ from calendar import monthrange
 from datetime import date
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP, localcontext
 import hashlib
+import re
 from pathlib import Path
 
 from .exceptions import validate_exception, apply_coverage, finding
+
+
+class SourceEvidenceError(ValueError):
+    """Retained values cannot establish eligibility without verified provenance."""
+
+
+def require_expense_source(row, observations, label):
+    identity, digest, locator = (row.get(k) for k in ('source_id', 'source_sha256', 'locator'))
+    if (not isinstance(identity, str) or not identity.strip() or identity != identity.strip()
+            or any(c in identity for c in '@#')
+            or not isinstance(digest, str) or re.fullmatch(r'[0-9a-f]{64}', digest) is None
+            or not isinstance(locator, str) or not locator.strip() or locator != locator.strip()):
+        raise SourceEvidenceError(f'{label} source reference is missing or malformed')
+    matches = [o for o in observations if isinstance(o, dict) and o.get('source_id') == identity and o.get('sha256') == digest]
+    if not matches or any(o.get('status') != 'read' or o.get('missing_scope') != [] for o in matches):
+        raise SourceEvidenceError(f'{label} source hash is unobserved, mismatched or not fully verified')
+    # Native parsers retain page/row locators. Validate their format and any
+    # supplied page/cell metadata; a file hash cannot legitimize a broken locator.
+    for observation in matches:
+        path = str(observation.get('path') or '')
+        if path.endswith('.pdf'):
+            page = re.fullmatch(r'PDF page ([1-9][0-9]*)(?:, receipt [1-9][0-9]*)?', locator)
+            if not page or ('page' in row and row['page'] != int(page[1])):
+                raise SourceEvidenceError(f'{label} source page reference is invalid')
+        if path.endswith('.xlsx'):
+            location = re.fullmatch(r"tab '([^']+)', row ([1-9][0-9]*)", locator)
+            if not location:
+                raise SourceEvidenceError(f'{label} source workbook reference is invalid')
+            for value in row.get('values', {}).values():
+                cell = value.get('cell')
+                if cell and (not re.fullmatch(r'[A-Z]+[1-9][0-9]*', str(cell))
+                             or int(re.search(r'[0-9]+$', str(cell))[0]) != int(location[2])):
+                    raise SourceEvidenceError(f'{label} source cell does not match its row reference')
+
 
 POLICY_SHA256 = 'f547ee77729be8ad431a5ddf2e2907f94f29ad50092231191abd2f72c04f54d2'
 
@@ -89,6 +124,22 @@ def evaluate_expenses(*, lines, parsed, employee, trip_id, trip, record, history
         ms = [r for r in merchants if fields(r).get('Expense reference') == line['cost_id']]
         line['source_refs'] += [ref(r) for r in rs + ms] + policy_refs
         try:
+            require_expense_source(record, observations, 'Claim')
+            trips = [r for r in table(parsed, 'trips', 'Trips')
+                     if fields(r).get('Trip reference') == trip_id and fields(r) == trip]
+            if len(trips) != 1:
+                raise SourceEvidenceError('Trip source record does not match the supplied expense context')
+            line['source_refs'].append(ref(trips[0]))
+            require_expense_source(trips[0], observations, 'Trip')
+            directory = [r for r in people if fields(r).get('Employee ID') == employee]
+            if len(directory) != 1:
+                raise SourceEvidenceError('Employee directory source record is missing or ambiguous')
+            line['source_refs'].append(ref(directory[0]))
+            require_expense_source(directory[0], observations, 'Employee directory')
+            for receipt in rs:
+                require_expense_source(receipt, observations, 'Receipt')
+            for payment in ms:
+                require_expense_source(payment, observations, 'Merchant payment')
             gross = number(line['original_amount'])
             if not employee or not trip_id or gross <= 0 or len(rs) != 1:
                 raise ValueError('Missing receipt or nonpositive purchase')
@@ -143,12 +194,13 @@ def evaluate_expenses(*, lines, parsed, employee, trip_id, trip, record, history
                 cs = [c for c in cs if local_date(fields(c).get('Effective from')) <= paid <= local_date(fields(c).get('Effective to'))]
                 if len(cs) != 1:
                     raise ValueError('Missing or ambiguous applicable cap')
+                line['source_refs'].append(ref(cs[0]))
+                require_expense_source(cs[0], observations, 'Applicable cap')
                 cap = number(fields(cs[0]).get('Amount per unit'))
                 with localcontext() as ctx:
                     ctx.prec = max(50, len(str(cap)) + len(str(units)) + 20)
                     allowed = min(gross, cap * units)
                 cap_evidence = dict(amount_per_unit=str(cap), units=str(units), source_ref=ref(cs[0]))
-                line['source_refs'].append(ref(cs[0]))
             line['base_allowed_original_amount'] = str(allowed)
             deadline = filing_deadline(trip.get('End date'))
             submitted = local_date(line['first_submitted_date'])
@@ -161,8 +213,9 @@ def evaluate_expenses(*, lines, parsed, employee, trip_id, trip, record, history
                     if (fields(pr).get('Employee') == employee and fields(pr).get('Trip reference') == trip_id
                             and all(old.get(k) == line.get(k) for k in ('cost_id', 'receipt_id', 'currency'))
                             and number(old['original_amount']) == gross):
-                        submitted = local_date(old['first_submitted_date'])
                         line['source_refs'] += old['source_refs']
+                        require_expense_source(pr, observations, 'Prior submission')
+                        submitted = local_date(old['first_submitted_date'])
                         first_supported = True
                         break
                 if first_supported:
@@ -191,6 +244,8 @@ def evaluate_expenses(*, lines, parsed, employee, trip_id, trip, record, history
                       and local_date(fields(r).get('Rate date')) == paid]
                 if len(fx) != 1:
                     raise ValueError('Missing or ambiguous payment-date Finance FX rate')
+                line['source_refs'].append(ref(fx[0]))
+                require_expense_source(fx[0], observations, 'Finance FX rate')
                 rate = number(fields(fx[0]).get('EUR per currency unit')); rate_refs = [ref(fx[0])]
                 if rate <= 0:
                     raise ValueError('FX rate must be positive')
@@ -216,6 +271,8 @@ def evaluate_expenses(*, lines, parsed, employee, trip_id, trip, record, history
             line.update(eligibility_status='PASS', status='supported',
                         reason='Supported paid expense; exact Finance coverage retained' if exception['status'] == 'valid'
                         else 'Supported paid expense calculation and timely filing')
+        except SourceEvidenceError as exc:
+            line.update(evidence_status='BLOCKED', calculation_status='BLOCKED', calculated_cents=None, reason=str(exc))
         except (ValueError, TypeError, InvalidOperation, OverflowError) as exc:
             line['reason'] = str(exc)
     complete = bool(lines) and len({l['cost_id'] for l in lines}) == len(lines) and all(

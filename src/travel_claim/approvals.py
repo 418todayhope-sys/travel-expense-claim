@@ -7,6 +7,7 @@ import json
 import re
 from zoneinfo import ZoneInfo
 
+from .event_validation import observation_error
 from .exceptions import source_bound
 from .expenses import policy_valid, local_date
 from .workflow import _revision, row_values
@@ -126,6 +127,9 @@ def evaluate_reviews(*, parsed, kind, subject_id, revision, trip_record, employe
             budget_refs=set(str(pv.get('Budget record references') or '').splitlines())
             if not budget_refs or not budget_refs<=budget_ids: raise ValueError('Missing referenced budget records; no budget decision inferred')
             stamp=utc_time(dv.get('Decision time (UTC)'))
+            cutoff_error=observation_error(stamp, parsed.get('event_clock') or parsed.get('case_clock'))
+            if cutoff_error:
+                raise ValueError(f'Review case-clock admission: {cutoff_error}')
             payload={k:v for k,v in dv.items() if k!='Arrival batch'}
             if identity in identities and identities[identity][0]!=payload:
                 conflicts.add(identity)

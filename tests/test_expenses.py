@@ -36,6 +36,10 @@ def setfield(row, key, value):
 
 
 def evaluate(parsed, record, trip, history=()):
+    # Mutated dates in these synthetic probes belong to the bound trip record.
+    for key,value in trip.items():
+        bound_trip = table(parsed, 'trips', 'Trips')[0]
+        if fields(bound_trip).get(key) != value: setfield(bound_trip, key, value)
     lines = expense_lines(record)
     result = evaluate_expenses(lines=lines, parsed=parsed, employee='EMP-01', trip_id='T01',
         trip=trip, record=record, history=history, fields=fields, ref=ref, table=table)
@@ -74,6 +78,7 @@ def test_categories_and_caps(category, units, amount):
     parsed['records']['caps'] = [dict(source_id='synthetic-cap', source_sha256='a'*64, locator='synthetic cap',
         values={k:dict(value=v) for k,v in {'Destination':trip['Destination'], 'Category':category,
         'Currency':'EUR','Effective from':'2026-09-01','Effective to':'2026-09-01','Amount per unit':'40.00'}.items()})]
+    parsed['source_observations'].append(dict(source_id='synthetic-cap', sha256='a'*64, status='read', missing_scope=[]))
     result, lines = evaluate(parsed, record, trip)
     assert result['calculated_cents'] == amount
     if category in {'lodging','meals'}:
@@ -120,6 +125,7 @@ def test_exact_payment_date_fx_half_up(rate, expected):
     setfield(parsed['records']['receipts'][0],'Currency','USD'); setfield(merchant(parsed),'Currency','USD')
     parsed['records']['fx_rates'] = [dict(source_id='synthetic-fx',source_sha256='b'*64,locator='exact FX',
         values={k:dict(value=v) for k,v in {'Currency':'USD','Rate date':'2026-09-01','EUR per currency unit':rate}.items()})]
+    parsed['source_observations'].append(dict(source_id='synthetic-fx', sha256='b'*64, status='read', missing_scope=[]))
     result, lines = evaluate(parsed, record, trip)
     assert result['calculated_cents'] == expected
     assert lines[0]['conversion']['eur_rate'] == rate
@@ -213,6 +219,7 @@ def test_round_each_line_then_sum_and_independent_missing_evidence():
     record['text'] += '\n2 COST-NEW R-COST-NEW 2026-09-01 100.00 USD\n'
     parsed['records']['fx_rates'] = [dict(source_id='synthetic-fx',source_sha256='b'*64,locator='FX half cent',
         values={k:dict(value=v) for k,v in {'Currency':'USD','Rate date':'2026-09-01','EUR per currency unit':'0.90005'}.items()})]
+    parsed['source_observations'].append(dict(source_id='synthetic-fx', sha256='b'*64, status='read', missing_scope=[]))
     result, lines = evaluate(parsed,record,trip)
     assert result['calculated_cents'] == 18002
     assert [l['calculated_cents'] for l in lines] == [9001,9001]

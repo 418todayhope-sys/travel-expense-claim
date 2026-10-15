@@ -86,6 +86,7 @@ def test_exact_coverage_is_independent_and_keeps_original_findings():
     context=[finding('late_permit','Originally late permit',['source#permit']),
              finding('permit_unapproved','Original missing approval',['source#approval'])]
     lines=expense_lines(record); trip['End date']='2026-06-01'
+    setfield(table(parsed,'trips','Trips')[0], 'End date', trip['End date'])
     result=evaluate_expenses(lines=lines,parsed=parsed,employee='EMP-01',trip_id='T01',trip=trip,record=record,
         history=[],fields=fields,ref=ref,table=table,eligibility_findings=context)
     findings={f['issue']:f for f in lines[0]['eligibility_findings']}
@@ -130,6 +131,7 @@ def test_replacement_uses_original_currency_then_exact_fx_rounding():
     setfield(parsed['records']['receipts'][0],'Currency','USD');setfield(merchant(parsed),'Currency','USD')
     parsed['records']['fx_rates']=[dict(source_id='synthetic-fx',source_sha256='a'*64,locator='FX',
         values={k:dict(value=v) for k,v in {'Currency':'USD','Rate date':'2026-09-01','EUR per currency unit':'0.90005'}.items()})]
+    parsed['source_observations'].append(dict(source_id='synthetic-fx',sha256='a'*64,status='read',missing_scope=[]))
     exception(record,amount='50.00')
     result,lines=evaluate(parsed,record,trip)
     assert result['calculated_cents']==4500 and lines[0]['exception']['currency']=='USD'

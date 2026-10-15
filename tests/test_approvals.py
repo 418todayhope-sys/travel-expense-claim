@@ -172,6 +172,7 @@ def test_actual_retained_claim_and_permit_packets_roles_and_outcomes():
     from travel_claim.expenses import load_expense_policy
     p=json.loads((Path(__file__).parent/'fixtures/retained_approval_records.json').read_text())
     p['expense_policy']=load_expense_policy(Path(__file__).parent/'fixtures/POL-2026.2-browser-copy.txt')
+    p['event_clock']={'date':'2026-11-15','timezone':'Europe/Amsterdam'}  # verified policy line 3; no instant
     for claim,amount,expected in [('C01',10000,'approved'),('C02',54000,'approved'),('C09',8000,'returned'),
                                  ('C14',4000,'rejected'),('C21',8000,'returned'),('C46',4500,'approved')]:
         record=next(r for r in p['records']['claim_revisions'] if fields(r)['Claim reference']==claim and fields(r)['Revision']=='1')
