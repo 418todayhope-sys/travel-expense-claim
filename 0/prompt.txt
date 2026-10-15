@@ -1372,3 +1372,47 @@ Do not fabricate approvals, case times, policy rules, or Finance decisions.
 Do not stage, commit, or push during Step 184.
 
 Report the exact passing test count, files changed, confirmed fixes, remaining limitations, and preservation status. Stop for review.
+
+---
+
+Project D — Step 185: Verify, commit, and push the Step 184 evidence-admission milestone.
+
+Starting from HEAD 791c8c787bbd617a7b7d3114f13c000249169151:
+
+Verify the current branch, HEAD, Git status, and complete diff.
+
+Confirm implementation changes are limited to the seven reviewed Step 184 files.
+
+Rerun the full automated test suite and Git diff checks.
+
+Verify all 132 files in the Step 184 start baseline remain unchanged. Report explicitly that the original historical 129-file manifest is unavailable.
+
+Stage only:
+
+README.md
+
+src/travel_claim/approvals.py
+
+src/travel_claim/expenses.py
+
+tests/test_approvals.py
+
+tests/test_evidence_admission.py
+
+tests/test_exceptions.py
+
+tests/test_expenses.py
+
+Verify the staged diff contains exactly these seven files.
+
+Commit with message: fix: enforce source-bound expenses and reviewer clock admission
+
+Push normally to origin main without force-pushing, using the existing Entire.io hooks.
+
+Verify remote main matches the local commit and all Entire.io checkpoint references match remotely.
+
+Do not stage unrelated audit reports, previous run artifacts, or user-provided policy provenance files.
+
+Report the full commit SHA, final passing test count, exact committed files, preservation status, and Entire.io checkpoint verification.
+
+If any verification fails, stop and explain the issue.
