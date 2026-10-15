@@ -5,11 +5,12 @@ user's browser copy into a successful native Notion capture or grant approval.
 """
 from copy import deepcopy
 from calendar import monthrange
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP, localcontext
 import hashlib
 import re
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from .exceptions import validate_exception, apply_coverage, finding
 
@@ -75,6 +76,54 @@ def local_date(value):
     return result
 
 
+class EmployeeDateError(ValueError):
+    """Verified source content is excluded from current employee evidence."""
+
+
+def employee_case_date(parsed):
+    """Calendar facts use the authoritative local day, not an invented cutoff."""
+    binding = parsed.get('expense_policy') or {}
+    policy_clock = re.search(r'Case clock: (\d{4}-\d{2}-\d{2}), ([A-Za-z_/]+)\.', binding.get('text', '')) if policy_valid(binding) else None
+    clock = parsed.get('event_clock') or parsed.get('case_clock')
+    if clock is None and policy_clock:
+        clock = {'date': policy_clock[1], 'timezone': policy_clock[2]}
+    try:
+        if isinstance(clock, dict):
+            zone = ZoneInfo(clock['timezone'])
+            return local_date(clock['date']), zone
+        if isinstance(clock, str):
+            stamp = datetime.fromisoformat(clock.replace('Z', '+00:00'))
+            if stamp.utcoffset() is None:
+                raise ValueError('Clock lacks timezone')
+            zone = ZoneInfo(policy_clock[2]) if policy_clock else stamp.tzinfo
+            return stamp.astimezone(zone).date(), zone
+    except (ValueError, TypeError, KeyError) as exc:
+        raise EmployeeDateError('Authoritative employee-evidence case date is invalid') from exc
+    raise EmployeeDateError('Authoritative employee-evidence case date is unavailable')
+
+
+def validate_employee_date(value, label, parsed, line, refs):
+    day = local_date(value)
+    cutoff, zone = employee_case_date(parsed)
+    fact = dict(fact=label, original_value=value, local_date=day.isoformat(), case_date=cutoff.isoformat(),
+                timezone=str(zone), precision='calendar-date', source_refs=list(refs),
+                status='BLOCKED' if day > cutoff else 'PASS')
+    binding = parsed.get('expense_policy') or {}
+    if policy_valid(binding):
+        clock_ref = f"{binding.get('path')}@{POLICY_SHA256}#line 3"
+        fact['clock_policy_ref'] = clock_ref
+        line['source_refs'] = list(dict.fromkeys(line['source_refs'] + [clock_ref]))
+    fact['supplied_clock'] = parsed.get('event_clock') or parsed.get('case_clock')
+    line.setdefault('employee_date_checks', []).append(fact)
+    if day == cutoff and isinstance(parsed.get('event_clock') or parsed.get('case_clock'), str):
+        fact.update(status='BLOCKED', reason='Same-day ordering against the supplied instant is unconfirmed; employee evidence supplies only a date')
+        raise EmployeeDateError(f'{label}: same-day cutoff ordering is unconfirmed; no employee time of day inferred')
+    if day > cutoff:
+        fact['reason'] = 'Future local calendar date; retained but excluded from current entitlement'
+        raise EmployeeDateError(f'{label} is future-dated ({day}) after authoritative case date {cutoff} {zone}; retained but excluded from current entitlement')
+    return day
+
+
 def filing_deadline(trip_end):
     end = local_date(trip_end)
     month = end.year * 12 + end.month - 1 + 2
@@ -104,7 +153,7 @@ def evaluate_expenses(*, lines, parsed, employee, trip_id, trip, record, history
     people = table(parsed, 'people', 'People')
     for line in lines:
         line.update(allowed_cents=None, calculated_cents=None, status='unresolved', evidence_status='BLOCKED',
-                    filing_status='BLOCKED', calculation_status='BLOCKED', reason='Missing or conflicting evidence')
+                    filing_status='BLOCKED', calculation_status='BLOCKED', reason='Missing or conflicting evidence', employee_date_checks=[])
         line['eligibility_findings'] = deepcopy(eligibility_findings or [])
         line['eligibility_status'] = 'BLOCKED'
         exception = validate_exception(record=record, line=line, employee=employee, people=people,
@@ -172,6 +221,10 @@ def evaluate_expenses(*, lines, parsed, employee, trip_id, trip, record, history
             line.update(evidence_status='PASS', category=rv.get('Category'), documented_units=rv.get('Documented units'), paid_dates=dates)
             if not verified:
                 raise ValueError('Verified expense policy binding required')
+            validate_employee_date(fields(record).get('Submitted date'), 'Claim submission date', parsed, line, [ref(record)])
+            validate_employee_date(line['first_submitted_date'], 'Cost first submission date', parsed, line, [ref(record)])
+            for payment in ms:
+                validate_employee_date(fields(payment).get('Paid date'), 'Employee payment date', parsed, line, [ref(payment)])
             # Different payment dates require an explicit allocation; do not choose a rate/cap.
             if len(dates) != 1:
                 raise ValueError('Multiple payment dates require source-supported allocation')
@@ -215,7 +268,7 @@ def evaluate_expenses(*, lines, parsed, employee, trip_id, trip, record, history
                             and number(old['original_amount']) == gross):
                         line['source_refs'] += old['source_refs']
                         require_expense_source(pr, observations, 'Prior submission')
-                        submitted = local_date(old['first_submitted_date'])
+                        submitted = validate_employee_date(old['first_submitted_date'], 'Retained original cost submission date', parsed, line, [ref(pr)])
                         first_supported = True
                         break
                 if first_supported:
@@ -271,6 +324,8 @@ def evaluate_expenses(*, lines, parsed, employee, trip_id, trip, record, history
             line.update(eligibility_status='PASS', status='supported',
                         reason='Supported paid expense; exact Finance coverage retained' if exception['status'] == 'valid'
                         else 'Supported paid expense calculation and timely filing')
+        except EmployeeDateError as exc:
+            line.update(evidence_status='BLOCKED', calculation_status='BLOCKED', calculated_cents=None, reason=str(exc))
         except SourceEvidenceError as exc:
             line.update(evidence_status='BLOCKED', calculation_status='BLOCKED', calculated_cents=None, reason=str(exc))
         except (ValueError, TypeError, InvalidOperation, OverflowError) as exc:

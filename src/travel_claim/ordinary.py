@@ -189,26 +189,38 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
         withdrawn=linked and values.get('Status')=='withdrawn' and trusted(record),
         cancellation_ids=[f['travel_cancellation_id'] for f in eligibility if f['issue']=='travel_cancellation'],budget_context=budget_view,
         cancellation_times=[c['confirmed_at'] for c in affected if c['status']=='confirmed' and c['cancellation_id'] in {f.get('travel_cancellation_id') for f in eligibility}])
+    from .completion import financial_evidence_basis
+    financial_basis = financial_evidence_basis(
+        rows=[record] + trips + people + dependencies, record=record, policy=policy_binding,
+        prior_workflow=prior_workflow, prior_finance=prior_finance, revision=revision, arrival_batch=arrival_batch)
     observed=claim_review['deliveries']
+    latest_change = financial_basis['latest_change']
+    # Retain supplied reviews as history; payment readiness must use replies
+    # consumed no earlier than the latest material basis, including repeat edits.
+    from .workflow import _revision
+    basis_reviews_current = not latest_change or all(
+        (_revision(fields(d['raw_record']).get('Arrival batch')) or 0) >= latest_change['arrival_batch']
+        for d in observed if d['active'] and d['outcome']=='approve')
     # Preserve Step 175's extra binding requirement on material Finance replacements.
     for decision in observed:
         decision['exception_binding_valid']=(not replacement_review or review_binds_exception(
             decision['raw_record'],record,same_revision_change=same_revision_change,fields=fields,ref=ref))
         if not decision['exception_binding_valid']:
             decision['evidence_valid']=False
-    approvals=claim_review['approved'] and all(d['evidence_valid'] for d in observed if d['active'])
+    approvals=claim_review['approved'] and basis_reviews_current and all(d['evidence_valid'] for d in observed if d['active'])
     budget_replies=[d for d in observed if 'budget_owner' in d['roles']]
     budget_authorized=any(d['active'] and d['evidence_valid'] and d.get('budget_evidence_valid',True) and d['outcome']=='approve' for d in budget_replies)
     stage('budget_owner_authorization',budget_authorized,budget_view['source_refs']+[r for d in budget_replies for r in d['source_refs']],
         '; '.join(dict.fromkeys(d['budget_revalidation_reason'] for d in budget_replies if d.get('budget_revalidation_reason'))) or 'Current discretionary budget-owner authorization required; funds alone are insufficient',
         budget_view['owner'],'Supply a current budget-owner response bound to the complete scope ledger and this claim/version')
     review_refs=claim_review['source_refs']
-    reviews_ok=all(claim_review['role_states'].get(role) not in {'missing','conflicting'} for role in claim_review['required_roles']) and all(d['evidence_valid'] for d in observed if d['active'])
+    reviews_ok=basis_reviews_current and all(claim_review['role_states'].get(role) not in {'missing','conflicting'} for role in claim_review['required_roles']) and all(d['evidence_valid'] for d in observed if d['active'])
     stage('review_evidence',reviews_ok,review_refs,
           'Current subject/version/role/actor/source/reason and complete review packets; rejected imports remain in history',
           lead,'Supply current source-bound replies and complete packets; answer the concrete return repair requests')
     stage('required_approvals',approvals,review_refs + policy_refs,
-          f"Claim approval state: {claim_review['state']}; required roles: {', '.join(claim_review['required_roles'])}",
+          f"Claim approval state: {claim_review['state']}; required roles: {', '.join(claim_review['required_roles'])}"
+          + ('; replies predate the latest material financial evidence basis' if not basis_reviews_current else ''),
           lead,'Obtain the outstanding current-version human decisions; permit replies never approve a claim')
 
     for reply in observed:
@@ -254,10 +266,10 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
 
     from .completion import financial_dependencies, supported_clock
     dependencies = financial_dependencies(finance=finance, revision=revision, allowed=allowed,
-        cancellations=affected, review=claim_review)
+        cancellations=affected, review=claim_review, basis=financial_basis)
     stage('finance_resolution', dependencies['status']=='PASS', dependencies['source_refs'],
           '; '.join(r['reason'] for r in dependencies['requirements'] if not r['resolved_by']) or 'Required admitted, current request-bound Finance resolutions agree',
-          finance_owner, 'Supply explicit current-revision Finance resolution naming each affected event/request and cancellation; retain cash history')
+          finance_owner, 'Supply explicit current-revision Finance resolution naming affected events/requests/cancellations and current changed source versions in Source revisions; retain cash history')
     cancellation_ok = bool(dependencies['cancellation_clear'] and calculation['status']=='PASS' and approvals)
     stage('cancellation_readiness', not affected or cancellation_ok, [r for c in affected for r in c.get('source_refs',[])],
           'Business cancellation retires arrangements; supported reimbursement disposition and current post-confirmation reviews are evaluated separately',
@@ -288,7 +300,7 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
     return dict(claim_id=claim_id, revision=revision, trip_id=trip_id, trip_revision=claim.get('trip_revision'),
                 mode=parsed.get('evidence_mode', 'offline-replay'), status=disposition or ('held' if business_state in {'rejected','withdrawn'} else ('closed-reimbursed' if allowed else 'closed-no-payment') if closed else 'pending'),
                 claim_approval=claim_review,permit_approval=permit_review,
-                financial_dependencies=dependencies, budget_view=budget_view, expense_calculation=calculation, exception_revalidation=dict(required=replacement_review, same_revision_change=same_revision_change, status='PASS' if exception_revalidated else 'BLOCKED'), allowed_cents=allowed, balance_cents=finance['balance_cents'], lines=lines, stages=stages,
+                financial_dependencies=dependencies, financial_basis=financial_basis, financial_basis_review_current=basis_reviews_current, budget_view=budget_view, expense_calculation=calculation, exception_revalidation=dict(required=replacement_review, same_revision_change=same_revision_change, status='PASS' if exception_revalidated else 'BLOCKED'), allowed_cents=allowed, balance_cents=finance['balance_cents'], lines=lines, stages=stages,
                 observed_reviews=observed, request=deepcopy(requests[0]) if request_ok else None,
                 source_refs=list(dict.fromkeys([ref(record)] + [r for s in stages for r in s['source_refs']])),
                 next_owner=None if closed or disposition else (finance_owner if business_state in {'rejected','withdrawn'} else pending['owner']),
