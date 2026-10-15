@@ -124,6 +124,7 @@ def _issue_from_item(item: dict[str, Any]) -> dict[str, Any]:
         "source_refs": item["source_refs"],
         "run_id": item["run_id"],
         "batch_id": item["batch_id"],
+        "status": item.get("status", "open"),
     }
 
 
@@ -132,6 +133,10 @@ def _open_issue_for_subject(
     revision: int, refs: list[str], reason: str, owner: str, next_action: str,
     run_id: str, batch_id: str,
 ) -> None:
+    for old_id, old_item in queue.get("items", {}).items():
+        if old_item.get("subject_type") == subject_type and old_item.get("subject_id") == subject_id:
+            if old_item.get("status") == "open" and old_item.get("revision", 0) < revision:
+                old_item["status"] = "superseded"
     if item_id not in queue["items"]:
         add_repair_item(
             queue, item_id=item_id, subject_type=subject_type, subject_id=subject_id,
@@ -716,7 +721,7 @@ def integrate_arrival_batch(
 
     _sync_ordinary_repairs(domain, run_id=run_id, batch_id=batch_id)
     schema_issues = list(blockers) + list(domain.get("structural_blockers", []))
-    schema_issues.extend(_issue_from_item(item) for item in domain["repair_queue"]["items"].values() if item["status"] == "open")
+    schema_issues.extend(_issue_from_item(item) for item in domain["repair_queue"]["items"].values() if item["status"] in ("open", "superseded"))
     # Every cancellation issue reference must resolve in issues[].record_id.
     known_issue_ids = {issue["record_id"] for issue in schema_issues}
     for cancellation in cancellation_rows:

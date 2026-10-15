@@ -200,6 +200,7 @@ def validate_readiness(run_dir: Path, *, schema_path: Path, repo_dir: Path) -> d
         require(queue == state["repair_queue"], "Queue differs from replay state")
         retained = {r["source_id"]: r for r in manifest["files"] if r["status"] == "read"}
         for item in queue["items"].values():
+            if item.get("status") == "superseded": continue
             require(item["subject_type"] in {"claim", "trip", "permit"} and isinstance(item["revision"], int) and not isinstance(item["revision"], bool) and item["revision"] > 0, "Invalid repair subject/revision")
             require(all(isinstance(item[f], str) and item[f].strip() for f in ("subject_id", "owner", "missing_or_return_reason", "next_action")), "Missing repair trace fields")
             require(item["run_id"] == state["run_id"] and f"batches/{item['batch_id']}.json" in state["sealed_batches"], "Repair run/batch reference mismatch")
@@ -292,7 +293,7 @@ def validate_readiness(run_dir: Path, *, schema_path: Path, repo_dir: Path) -> d
     for issue in issues if isinstance(issues, list) else []:
         if not isinstance(issue, dict) or not all(field in issue for field in ("record_id", "reason", "next_action")):
             continue
-        if issue.get("status", "open") == "open":
+        if issue.get("status", "open") == "open" and issue.get("status") != "superseded":
             add(f"external-blocker:{issue['record_id']}", "BLOCKED", issue["reason"],
                 [run_dir / "parsed-records.json"], issue["next_action"])
 

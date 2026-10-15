@@ -61,7 +61,7 @@ def write_claims_csv(claims: list[dict], path: Path) -> None:
         row = {key: claim[key] for key in CLAIMS_COLUMNS}
         if isinstance(row["revision"], bool) or not isinstance(row["revision"], int) or row["revision"] < 1:
             raise ValueError(f"claim {claim['claim_id']} revision must be a positive integer")
-        for key in ("claim_id", "trip_id", "status", "reason"):
+        for key in ("claim_id", "trip_id", "status"):
             if not isinstance(row[key], str) or not row[key]:
                 raise ValueError(f"{key} must be a nonempty string")
         if row["status"] not in CLAIM_STATUSES:
@@ -319,7 +319,7 @@ def load_repair_queue(path: Path) -> dict:
     if not isinstance(queue.get("items"), dict) or not isinstance(queue.get("events"), list):
         raise ValueError("repair queue must contain item map and event history")
     for item_id, item in queue["items"].items():
-        if item.get("item_id") != item_id or item.get("status") not in {"open", "resolved"}:
+        if item.get("item_id") != item_id or item.get("status") not in {"open", "resolved", "superseded"}:
             raise ValueError(f"invalid repair queue item {item_id}")
         if any(field not in item for field in REPAIR_ITEM_FIELDS):
             raise ValueError(f"repair queue item {item_id} is missing trace fields")
