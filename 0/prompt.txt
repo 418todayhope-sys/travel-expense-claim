@@ -790,3 +790,45 @@ Report the final test count, changed files and unresolved issues.
 Do not stage, commit or push yet.
 
 Stop after completing Step 175 implementation verification.
+
+---
+
+Project D — Step 176: Commit and push the verified Step 175 Finance exception milestone.
+
+Verify the current Git branch, status, and complete Step 175 diff.
+
+Confirm the eight changed files are limited to Finance exception handling, supporting integration, documentation, fixtures, and tests.
+
+Rerun the complete test suite and Git diff checks.
+
+Verify the 128 preserved files remain unchanged, including the policy, interview, prior outputs, and event-integrity implementation.
+
+Stage only these eight reviewed files:
+
+README.md
+
+src/travel_claim/exceptions.py
+
+src/travel_claim/expenses.py
+
+src/travel_claim/ordinary.py
+
+src/travel_claim/integration.py
+
+tests/test_exceptions.py
+
+tests/test_ordinary.py
+
+tests/fixtures/retained_exception_records.json
+
+Commit with message: feat: validate source-bound finance exceptions
+
+Push normally to origin main without force-pushing.
+
+Verify remote main matches the local commit and all Entire.io checkpoint references match remotely.
+
+Do not stage unrelated audit reports or untracked provenance files.
+
+Report the full commit SHA, passing test count, changed files, and Entire.io verification.
+
+If any verification fails, stop and report the issue.
