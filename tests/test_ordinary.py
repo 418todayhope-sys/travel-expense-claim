@@ -93,13 +93,14 @@ def test_actual_c01_connects_evidence_reviews_and_ledger_but_never_fabricates_cl
     assert current['trip_id'] == 'T01' and current['trip_revision'] == 1
     for name in ('claim_trip_link', 'supporting_evidence', 'review_evidence', 'financial_reconciliation', 'travel_permission', 'required_approvals'):
         assert checks[name]['status'] == 'PASS'
-    for name in ('policy_eligibility', 'request_obligation', 'financial_closure'):
+    assert checks['policy_eligibility']['status'] == 'PASS'
+    for name in ('request_obligation', 'financial_closure'):
         assert checks[name]['status'] == 'BLOCKED'
         assert checks[name]['owner'] and checks[name]['next_action']
-    assert current['status'] == 'pending' and current['allowed_cents'] is None
+    assert current['status'] == 'pending' and current['allowed_cents'] == 10000
     line = current['lines'][0]
     assert line['cost_id'] == 'COST-01' and line['original_cents'] == 10000
-    assert line['evidence_status'] == 'PASS' and line['allowed_cents'] is None
+    assert line['evidence_status'] == 'PASS' and line['allowed_cents'] == 10000
     assert any("#tab 'Merchant payments', row 6" in ref for ref in line['source_refs'])
     assert any('#PDF page 1, receipt 1' in ref for ref in line['source_refs'])
     assert len(current['observed_reviews']) == 3
@@ -138,20 +139,19 @@ def test_synthetic_connected_path_moves_from_pending_to_supported_closure_and_ke
 
 
 @pytest.mark.parametrize('missing', ['receipt', 'settled-proof', 'policy', 'policy-source', 'review',
-                                  'request', 'request-amount', 'revision', 'closure-authority', 'clock'])
+                                  'request', 'request-amount', 'revision', 'clock'])
 def test_synthetic_path_cannot_close_when_a_required_condition_is_missing(missing):
     parsed = synthetic(); records = parsed['records']
     if missing == 'receipt': records['receipts'] = []
     elif missing == 'settled-proof':
         next(s for s in parsed['workbook_sheets'] if s['name'] == 'Merchant payments')['records'][0]['values']['Payment status']['value'] = 'pending'
-    elif missing == 'policy': records['workflow_policy_rules'] = []
-    elif missing == 'policy-source': records['workflow_policy_rules'][0]['source_sha256'] = '0' * 64
+    elif missing == 'policy': parsed.pop('expense_policy')
+    elif missing == 'policy-source': parsed['expense_policy']['sha256'] = '0' * 64
     elif missing == 'review': records['decisions'][0]['values']['Outcome']['value'] = 'return'
     elif missing == 'request': records['reimbursement_requests'] = []
     elif missing == 'request-amount': records['reimbursement_requests'][0]['values']['Amount (EUR)']['value'] = 80
     elif missing == 'revision': records['finance_events'][0]['values']['Claim revision']['value'] = 2
-    elif missing == 'closure-authority': records['closure_authorities'] = []
-    else: parsed['case_clock'] = None
+    else: parsed['case_clock'] = None; parsed['event_clock'] = None
     result = batches(parsed)[-1]
     assert workflow(result)['status'] == 'pending'
     assert any(stage['status'] != 'PASS' for stage in workflow(result)['stages'])
@@ -283,6 +283,7 @@ def test_conflicting_current_claim_revision_blocks_even_if_last_record_looks_com
 
 def test_finance_or_workbook_source_cannot_be_misrepresented_as_a_policy_definition():
     parsed = synthetic()
+    parsed.pop('expense_policy')
     policy = parsed['records']['workflow_policy_rules'][0]
     policy['source_id'] = 'synthetic-travel-registers-workbook'
     policy['source_sha256'] = hashlib.sha256(policy['source_id'].encode()).hexdigest()

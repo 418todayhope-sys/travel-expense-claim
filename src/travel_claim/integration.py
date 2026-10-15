@@ -317,8 +317,8 @@ def _cancellation_rows(
         confirmation_values = row_values(confirmation) if confirmation else {}
         trip_id = request_values.get("Trip reference")
         trip_revision = _as_batch(request_values.get("Trip revision"))
-        permit_id = request_values.get("Permit reference") if target["subject_type"] == "permit" else None
-        permit_revision = request_values.get("Permit revision") if target["subject_type"] == "permit" else None
+        permit_id = request_values.get("Permit reference")
+        permit_revision = request_values.get("Permit revision")
         permit_revision = _as_batch(permit_revision) if permit_revision is not None else None
         affected = []
         current_affected = []
@@ -390,6 +390,7 @@ def _cancellation_rows(
             "original_request_ids": sorted({row_values(r).get("Request reference") for r in domain["finance_records"]
                 if row_values(r).get("Claim reference") in affected and row_values(r).get("Request reference")}),
             "financial_status": "unresolved",
+            "validation_status": "BLOCKED" if any(i.get("cancellation_id")==cancellation_id for i in reduced["issues"]) else "PASS",
             "next_owner": "Finance",
             "reason": str(request_values.get("Business reason") or "Travel cancellation recorded; financial effect remains unresolved"),
             "issue_record_ids": [cancellation_issue],
@@ -652,6 +653,28 @@ def integrate_arrival_batch(
         domain["ordinary_workflows"][claim_id] = workflow
         domain["ordinary_workflow_history"].append({"batch_id": batch_id, "workflow": deepcopy(workflow)})
     domain["finance_reconciliations"] = finance_results
+    # Projection only: never alter admitted cancellation or Finance history.
+    from .expenses import policy_valid
+    domain['completion_evidence'] = {'clock': deepcopy(parsed.get('event_clock') or parsed.get('case_clock')),
+        'policy_verified': policy_valid(parsed.get('expense_policy'))}
+    for cancellation in cancellation_rows:
+        linked = cancellation['affected_claim_ids']
+        resolved = (bool(linked) and cancellation['status']=='confirmed'
+            and cancellation.get('validation_status')=='PASS'
+            and all(domain['ordinary_workflows'][cid]['status'].startswith('closed-') for cid in linked))
+        if resolved:
+            cancellation.update(financial_status='resolved', next_owner=None)
+        from .completion import no_claim_financial_effect_refs
+        absence_refs = no_claim_financial_effect_refs(parsed, domain, cancellation, source_observations or [], arrival_batch)
+        if absence_refs:
+            cancellation.update(financial_status='no-financial-effect', next_owner=None)
+            resolved = True
+        cancellation['financial_source_refs'] = list(dict.fromkeys(absence_refs + [r for cid in linked
+            for r in domain['ordinary_workflows'][cid]['source_refs']]))
+        record_evidence_validation(domain['repair_queue'], item_id=f"cancellation-financial:{cancellation['cancellation_id']}",
+            supported=resolved, source_refs=cancellation['source_refs'] + absence_refs + [r for cid in linked
+                for r in domain['ordinary_workflows'][cid]['source_refs']], run_id=run_id, batch_id=batch_id)
+    domain.setdefault('cancellation_financial_history', []).append({'batch_id': batch_id, 'cancellations': deepcopy(cancellation_rows)})
     for scope in budgets['scopes'].values():
         for request in scope['requests'].values():
             result=finance_results.get(request['claim_id'],{})
@@ -788,7 +811,7 @@ def integrate_arrival_batch(
         "budget_reconciliation": deepcopy(budgets),
         "requests": [{"request_id": row_values(w["request"])["Request reference"], "claim_id": w["claim_id"],
                       "revision": w["revision"], "amount_cents": w["allowed_cents"],
-                      "payee": row_values(w["request"])["Payee ID"], "currency": "EUR", "status": "held" if any(w["claim_id"] in c["affected_claim_ids"] for c in cancellation_rows) else "accepted",
+                      "payee": row_values(w["request"])["Payee ID"], "currency": "EUR", "status": "held" if any(w["claim_id"] in c["affected_claim_ids"] and c["financial_status"]=="unresolved" for c in cancellation_rows) else "accepted",
                       "decision_ids": list(dict.fromkeys(d["decision_id"] for d in w["observed_reviews"] if d["outcome"] == "approve" and d.get('active') and d.get('evidence_valid'))),
                       "source_refs": [_ref_text(_ref(w["request"]))], "origin": "observed source request; no request sent"}
                      for w in domain["ordinary_workflows"].values() if w["request"] is not None],

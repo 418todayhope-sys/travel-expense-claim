@@ -150,9 +150,11 @@ def travel_findings(*, trip, employee, decisions, people, cancellations, fields,
                 result.append(finding('permit_unapproved', 'Matching approved permit roles are missing or invalid; cancellation does not revoke historical approvals', refs))
             else:
                 from .expenses import local_date
-                commitment = local_date(trip.get('First commitment date'))
+                # Retained XLSX rows omit empty cells; the Trips schema's blank
+                # first-commitment cell explicitly means no commitment yet.
+                commitment = local_date(trip['First commitment date']) if trip.get('First commitment date') not in (None, '') else None
                 approval_day = max(times).astimezone(ZoneInfo('Europe/Amsterdam')).date()
-                if approval_day >= commitment:
+                if commitment is not None and approval_day >= commitment:
                     result.append(finding('late_permit', 'Permit approved after first commitment' if approval_day > commitment
                                           else 'Same-day permit/commitment ordering is unconfirmed', refs))
         except (ValueError, TypeError, InvalidOperation, KeyError) as exc:

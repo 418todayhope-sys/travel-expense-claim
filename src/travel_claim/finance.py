@@ -79,13 +79,17 @@ def _recorded_obligations(history: list[dict], *, claim_id: str, current_revisio
     """
     groups: dict[str, list[dict]] = defaultdict(list)
     for event in history:
-        if event['classification'] in {'obligation_accepted', 'finance_adjustment', 'finance_resolution'}:
+        if event['classification'] in {'obligation_accepted', 'finance_adjustment', 'finance_resolution'} or (
+                event['classification'] == 'finance_cancelled' and not event.get('original_activity_id')):
             groups[event['event_id']].append(event)
     records = []
     problem = None
     for event_id, occurrences in groups.items():
         event = occurrences[0]
         values = event['source_record']
+        event = deepcopy(event)
+        if event['classification'] == 'finance_cancelled':
+            event['obligation_cents'] = 0  # Request-bound cancellation is noncash commitment release.
         batches = [e['source_record'].get('Arrival batch') for e in occurrences]
         first_batch = min((_positive_integer(b) for b in batches if _positive_integer(b)), default=None)
         context_rows = [r for r in revisions if first_batch is not None
@@ -97,7 +101,7 @@ def _recorded_obligations(history: list[dict], *, claim_id: str, current_revisio
         link = ('explicit_current' if explicit == current_revision else 'explicit_historical') if matches else 'arrival_context_only' if context else 'unmatched'
         refs = [_reference_text(e['source_ref']) for e in occurrences]
         record = {
-            'event_id': event_id, 'event_type': event['event_type'], 'claim_id': claim_id,
+            'event_id': event_id, 'event_type': event['event_type'], 'classification': event['classification'], 'claim_id': claim_id,
             'request_id': values.get('Request reference'), 'finance_officer': values.get('Finance officer'),
             'payee_id': values.get('Payee ID'), 'currency': event['currency'],
             'amount_cents': event['obligation_cents'], 'activity_time_utc': values.get('Activity time (UTC)'),
@@ -135,6 +139,13 @@ def _recorded_obligations(history: list[dict], *, claim_id: str, current_revisio
                     problem = 'Conflicting obligation amounts have the same event time'
         except (ValueError, TypeError, AttributeError):
             problem = 'Multiple obligation observations lack unambiguous UTC ordering'
+    commitment = None
+    for record in records:
+        if record['classification'] == 'finance_resolution':
+            if commitment is None or record['amount_cents'] != commitment['amount_cents']:
+                problem = 'Finance resolution cannot create or change an accepted commitment; explicit acceptance/adjustment/cancellation is required'
+        else:
+            commitment = record
     return records, deepcopy(records[-1]) if not problem else None, problem
 
 

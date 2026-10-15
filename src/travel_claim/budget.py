@@ -157,7 +157,7 @@ def reconcile_budgets(*, parsed, history, finances, arrival_batch, observations,
                 if category=='finance_cancelled' and event.get('original_activity_id'):
                     issue(tuple(entry['scope'][k] for k in SCOPE) if entry['scope'] else None,'attempt-cancel:'+event['event_id'],
                           'Finance cancellation names a transfer activity; disposition of the accepted request commitment remains unconfirmed',req['source_refs'])
-                elif category in {'obligation_accepted','finance_adjustment','finance_resolution','finance_cancelled'}:
+                elif category in {'obligation_accepted','finance_adjustment','finance_cancelled'}:
                     controls.append(event)
                 if category=='confirmed_payment':req['confirmed_payment_cents']+=event['amount_cents']
                 if category=='confirmed_refund':req['confirmed_refund_cents']+=event['amount_cents']
@@ -165,6 +165,12 @@ def reconcile_budgets(*, parsed, history, finances, arrival_batch, observations,
             for left,right in zip(controls,controls[1:]):
                 if utc_time(left['source_record']['Activity time (UTC)'])==utc_time(right['source_record']['Activity time (UTC)']) and left['obligation_cents']!=right['obligation_cents']:
                     issue(tuple(entry['scope'][k] for k in SCOPE) if entry['scope'] else None,'control-order:'+request,'Request controls conflict at the same UTC time',req['source_refs'])
+            for resolution in (e for e in req['events'] if e['classification']=='finance_resolution'):
+                earlier=[e for e in controls if utc_time(e['source_record']['Activity time (UTC)'])<=utc_time(resolution['source_record']['Activity time (UTC)'])]
+                amount=(0 if earlier[-1]['classification']=='finance_cancelled' else earlier[-1]['obligation_cents']) if earlier else None
+                if amount is None or resolution['obligation_cents'] != amount:
+                    issue(tuple(entry['scope'][k] for k in SCOPE) if entry['scope'] else None,'resolution-basis:'+resolution['event_id'],
+                          'Finance resolution cannot create/change a commitment without acceptance, adjustment or request cancellation',req['source_refs'])
             accepted=[e for e in controls if e['classification']=='obligation_accepted']
             if accepted:
                 req['commitment_cents']=0 if controls[-1]['classification']=='finance_cancelled' else controls[-1]['obligation_cents']

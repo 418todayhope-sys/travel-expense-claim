@@ -52,7 +52,7 @@ def evidence_digest(rows, amount):
 
 def evaluate_reviews(*, parsed, kind, subject_id, revision, trip_record, employee,
                      subject_record, amount_cents, decisions, arrival_batch, observations,
-                     cost_ids=(), prior=None, dependency_rows=(), withdrawn=False, cancellation_ids=(), budget_context=None):
+                     cost_ids=(), prior=None, dependency_rows=(), withdrawn=False, cancellation_ids=(), budget_context=None, cancellation_times=()):
     """Evaluate supplied replies only. Invalid/stale imports stay in deliveries."""
     trip=fields(trip_record); policy=policy_valid(parsed.get('expense_policy'))
     people=[r for r in table(parsed,'people','People') if fields(r).get('Employee ID')==employee]
@@ -130,6 +130,8 @@ def evaluate_reviews(*, parsed, kind, subject_id, revision, trip_record, employe
             cutoff_error=observation_error(stamp, parsed.get('event_clock') or parsed.get('case_clock'))
             if cutoff_error:
                 raise ValueError(f'Review case-clock admission: {cutoff_error}')
+            if kind == 'claim' and any(stamp <= utc_time(t) for t in cancellation_times):
+                raise ValueError('Review predates current confirmed cancellation context')
             payload={k:v for k,v in dv.items() if k!='Arrival batch'}
             if identity in identities and identities[identity][0]!=payload:
                 conflicts.add(identity)

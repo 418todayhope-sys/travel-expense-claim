@@ -87,11 +87,11 @@ def test_native_corrections_keep_ledger_history_and_revalidate_authority_only_wh
     assert final['finance_reconciliations']['C09']['recorded_obligation']['arrival_revision_context'] == 2
     assert final['finance_reconciliations']['C12']['recorded_obligation']['amount_cents'] == 7000
     assert final['finance_reconciliations']['C01']['recorded_obligation'] == first['finance_reconciliations']['C01']['recorded_obligation']
-    # C18 correction has no newly bound accepted amount. Retain r1 context;
-    # neither cancellation nor a fresh payment silently reauthorizes revision 2.
+    # Request-bound Finance cancellation releases the old commitment, preserving
+    # acceptance history and cash. It supplies no revised entitlement.
     c18 = final['finance_reconciliations']['C18']
     assert c18['claim_revision'] == 2
-    assert c18['recorded_obligation']['arrival_revision_context'] == 1
+    assert c18['recorded_obligation_history'][0]['arrival_revision_context'] == 1
     assert c18['authorized_obligation'] is None
     assert c18['confirmed_payment_cents'] == 10000
     item = final['domain']['repair_queue']['items']['finance:finance-obligation-missing:C09:1']
@@ -112,7 +112,8 @@ def test_native_refund_and_finance_cancellation_are_independent_of_business_canc
     assert cancellations['TC121']['target_type'] == 'permit'
     assert all(c['financial_status'] == 'unresolved' for c in cancellations.values())
     c18 = final['finance_reconciliations']['C18']
-    assert c18['recorded_obligation']['amount_cents'] == 10000
+    assert c18['recorded_obligation']['amount_cents'] == 0
+    assert c18['recorded_ledger_balance_cents'] == -10000
     assert c18['confirmed_refund_cents'] == 0  # cancelled transfer is not a refund
     c20 = final['finance_reconciliations']['C20']
     assert c20['recorded_obligation']['amount_cents'] == 10000
@@ -133,10 +134,12 @@ def test_duplicate_refund_and_accepted_redelivery_keep_identity_and_original_rev
     parsed['records']['finance_events'].extend([accepted, refund])
     final = _batches(parsed)[-1]
     c18 = final['finance_reconciliations']['C18']
-    assert len(c18['recorded_obligation_history']) == 1
-    assert c18['recorded_obligation']['delivery_batches'] == [1, 4]
-    assert c18['recorded_obligation']['arrival_revision_context'] == 1
-    assert len(c18['recorded_obligation']['source_refs']) == 2
+    assert len(c18['recorded_obligation_history']) == 2
+    acceptance=c18['recorded_obligation_history'][0]
+    assert acceptance['delivery_batches'] == [1, 4]
+    assert acceptance['arrival_revision_context'] == 1
+    assert len(acceptance['source_refs']) == 2
+    assert c18['recorded_obligation']['amount_cents'] == 0
     assert final['finance_reconciliations']['C20']['confirmed_refund_cents'] == 1000
 
 

@@ -84,11 +84,15 @@ def verification_document(domain, cancellations, *, run_id):
                   f"Current linked claims: {detail['current_claim_ids']}; historical linked claims: {cancellation['affected_claim_ids']}. "
                   f"Observed request IDs: {cancellation['original_request_ids']}.", '',
                   f"Actor verification: {detail['actor_status']}. Finance disposition: {detail['disposition_status']}. "
-                  f"Financial completion: {cancellation['financial_status']}; next owner: Finance.", '',
+                  f"Financial completion: {cancellation['financial_status']}; next owner: {cancellation['next_owner'] or 'none'}.", '',
                   f"Source references: {'; '.join(detail['source_refs'])}", '',
                   f"Recorded dispositions (not full claim closure): `{detail['dispositions']}`", '']
+    evidence = domain.get('completion_evidence', {})
+    clock = evidence.get('clock')
     lines += ['## Remaining external blockers', '',
-              'The native Notion policy remains inaccessible and the authoritative case clock remains unconfirmed. '
-              'Policy eligibility, current authorization and final closure remain pending where unsupported. '
+              f"Retained case clock: {clock if clock else 'unconfirmed'}. "
+              f"Verified supplemental browser policy: {bool(evidence.get('policy_verified'))}. "
+              'Supplemental evidence does not establish successful native Notion retrieval. '
+              'Current authorization and final closure remain pending where unsupported. '
               'A cancelled transfer is a noncash event; only confirmed payments and linked refunds affect cash.', '']
     return data, '\n'.join(lines)

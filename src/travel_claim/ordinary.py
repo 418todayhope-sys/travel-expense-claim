@@ -6,7 +6,6 @@ review outcomes, or Finance acceptance. Missing authority remains blocked.
 from __future__ import annotations
 
 from copy import deepcopy
-from datetime import datetime, timezone
 from decimal import Decimal
 import re
 
@@ -15,9 +14,6 @@ from .workflow import row_values
 from .expenses import evaluate_expenses, policy_valid
 from .exceptions import travel_findings, review_binds_exception, source_bound
 from .approvals import evaluate_reviews, evaluate_permit
-
-ROLE_FIELDS = {"administration": "Administration reviewer", "budget_owner": "Budget owner",
-               "supervisor": "Supervisor", "director": "Director"}
 
 
 def ref(row):
@@ -86,22 +82,11 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
     lead = person.get('Administration reviewer') or 'Travel Administration Lead'
     finance_owner = person.get('Finance officer') or 'Finance'
 
-    policy_source_ids = {'synthetic-policy'} if parsed.get('evidence_mode') == 'synthetic-test' else {'policy-pol-2026-2'}
-    rules = [r for r in table(parsed, 'workflow_policy_rules', 'Workflow policy rules')
-             if r.get('source_id') in policy_source_ids and trusted(r) and visible(r)]
-    policy_record = rules[0] if len(rules) == 1 else None
-    policy = fields(policy_record) if policy_record else {}
-    policy_supported = (policy.get('Rule set') == 'exact-paid-costs-v1'
-                        and isinstance(policy.get('Policy revision'), str) and bool(policy.get('Policy revision'))
-                        and isinstance(policy.get('Eligible categories'), list)
-                        and isinstance(policy.get('Uncapped categories'), list)
-                        and isinstance(policy.get('Required claim roles'), list) and bool(policy.get('Required claim roles'))
-                        and set(policy.get('Required claim roles')) <= set(ROLE_FIELDS)
-                        and policy.get('Receipt required') is True and policy.get('Settled merchant proof required') is True
-                        and policy.get('No self review') is True and policy.get('FX date basis') == 'paid-date'
-                        and policy.get('Closure rule') == 'entitlement-authorization-net-cash-no-blockers'
-                        and isinstance(policy.get('Domestic permit required'), bool))
-    policy_refs = [ref(policy_record)] if policy_record else []
+    # The exact verified browser policy supplies definitions and completion
+    # conditions. Legacy synthetic rule/closure tables are not human authority.
+    policy_supported = policy_valid(parsed.get('expense_policy'))
+    policy_binding = parsed.get('expense_policy') or {}
+    policy_refs = [f"{policy_binding.get('path')}@{policy_binding.get('sha256')}#line {n}" for n in (9,17,19,23,31,33)] if policy_supported else []
     affected = [c for c in cancellations if claim_id in c['affected_claim_ids']]
     from .budget import permit_budget_context
     permit_budget=permit_budget_context(parsed=parsed,trip_record=trips[0] if len(trips)==1 else {},
@@ -202,7 +187,8 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
         observations=source_observations,cost_ids=[line['cost_id'] for line in lines],
         dependency_rows=dependencies,prior=(prior_workflow or {}).get('claim_approval'),
         withdrawn=linked and values.get('Status')=='withdrawn' and trusted(record),
-        cancellation_ids=[f['travel_cancellation_id'] for f in eligibility if f['issue']=='travel_cancellation'],budget_context=budget_view)
+        cancellation_ids=[f['travel_cancellation_id'] for f in eligibility if f['issue']=='travel_cancellation'],budget_context=budget_view,
+        cancellation_times=[c['confirmed_at'] for c in affected if c['status']=='confirmed' and c['cancellation_id'] in {f.get('travel_cancellation_id') for f in eligibility}])
     observed=claim_review['deliveries']
     # Preserve Step 175's extra binding requirement on material Finance replacements.
     for decision in observed:
@@ -251,58 +237,45 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
     stage('request_obligation', request_ok, request_refs,
           'Recorded request/obligation linkage requires explicit claim revision, payee, amount and approval references; ledger arrival context is not authorization',
           finance_owner, 'Provide the exact-revision reimbursement request and Finance acceptance linked to its approvals and authorized amount')
-    if request_ok:
+    clean_zero = bool(policy_ok and approvals and allowed == 0 and not finance['event_history'] and not requests and not affected)
+    if request_ok or clean_zero:
         authorization = dict(amount_cents=allowed, claim_revision=revision, source_refs=request_refs + review_refs + policy_refs)
         finance = reconcile_finance_events(finance_events, claim_id=claim_id, current_revision=revision,
             revision_history=finance['revision_history'], previous_reconciliation=prior_finance,
             authorized_obligation=authorization, source_classifications=source_classifications, event_context=finance.get("event_context"))
     reconciled = finance.get('recorded_ledger_balance_cents') is not None and not finance['unresolved_event_ids'] and not finance['conflicting_events']
+    reconciled = reconciled or (clean_zero and finance['balance_cents'] == 0)
+    if clean_zero:
+        next(s for s in stages if s['stage']=='request_obligation').update(status='PASS', detail='Approved zero entitlement; no Finance request or transfer is required or invented')
     stage('financial_reconciliation', reconciled,
           [ref(e) for e in finance_events if fields(e).get('Claim reference') == claim_id],
           f"Confirmed net cash {finance['net_confirmed_cents']} cents; recorded ledger difference {finance.get('recorded_ledger_balance_cents')}; authorized balance {finance['balance_cents']}",
           finance_owner, 'Resolve missing obligations, conflicting or unclassified events, request/payee links and outstanding balances')
 
-    authorities = [r for r in table(parsed, 'closure_authorities', 'Closure authorities') if trusted(r) and visible(r)
-                   and fields(r).get('Claim reference') == claim_id and fields(r).get('Revision') == revision]
-    clock_ok = False
-    try:
-        clock_ok = datetime.fromisoformat(parsed['case_clock'].replace('Z', '+00:00')).utcoffset() is not None
-    except (KeyError, ValueError, TypeError, AttributeError):
-        pass
-    closure_authority = (len(authorities) == 1 and fields(authorities[0]).get('Confirmation') == 'financial-completion-conditions'
-                         and bool(fields(authorities[0]).get('Authority')) and fields(authorities[0]).get('Case clock') == parsed.get('case_clock'))
-    external = [i for i in parsed.get('unresolved_issues', []) if i.get('status', 'open') == 'open'
-                and (i.get('subject_type') in {'policy', 'scenario'} or i.get('subject_id') in {claim_id, trip_id, trip.get('Permit reference')})]
-    control_events = [e for e in finance['event_history'] if e['classification'] in {
-        'failed_transfer', 'retry_authorization', 'finance_cancellation_requested', 'finance_cancelled'}]
-    resolved_controls = set()
-    def event_stamp(event):
-        stamp = datetime.fromisoformat(event['source_record']['Activity time (UTC)'].replace('Z', '+00:00'))
-        return stamp.replace(tzinfo=timezone.utc) if stamp.utcoffset() is None else stamp
-    for event in finance['event_history']:
-        value = event['source_record']
-        if (event['classification'] == 'finance_resolution' and value.get('Claim revision') == revision
-                and obligation and value.get('Request reference') == obligation['request_id']
-                and value.get('Finance officer') == finance_owner):
-            named = set(str(value.get('Resolved activity references') or '').splitlines())
-            for control in control_events:
-                try:
-                    if (control['event_id'] in named
-                            and control['source_record'].get('Request reference') == value['Request reference']
-                            and event_stamp(event) >= event_stamp(control)):
-                        resolved_controls.add(control['event_id'])
-                except (KeyError, ValueError, TypeError, AttributeError):
-                    pass
-    controls_clear = not finance['pending_transfer_event_ids'] and all(e['event_id'] in resolved_controls for e in control_events)
-    cancellation_refs = [source for c in affected for source in c.get("source_refs", [])]
-    stage('cancellation_readiness', not affected, cancellation_refs,
-          'Linked current or historical trip/permit cancellation requires specific Finance disposition and resolution; prior permission and money history are preserved' if affected else 'No linked cancellation dependency',
-          finance_owner, 'Verify cancellation-bound disposition, current request authority and monetary resolution before releasing payment readiness')
-    closed = (all(s['status'] == 'PASS' for s in stages) and controls_clear and request_ok and finance['balance_cents'] == 0
-              and not finance['repair_issues'] and not affected and clock_ok and closure_authority and not external)
-    stage('financial_closure', closed, [ref(r) for r in authorities] + request_refs + policy_refs,
-          'Closure requires supported completion conditions, authoritative clock, current evidence/approvals, entitlement/obligation/net cash agreement and no affected unresolved issue',
-          finance_owner, 'Confirm completion conditions and the authoritative clock; resolve every affected approval, Finance or cancellation dependency')
+    from .completion import financial_dependencies, supported_clock
+    dependencies = financial_dependencies(finance=finance, revision=revision, allowed=allowed,
+        cancellations=affected, review=claim_review)
+    stage('finance_resolution', dependencies['status']=='PASS', dependencies['source_refs'],
+          '; '.join(r['reason'] for r in dependencies['requirements'] if not r['resolved_by']) or 'Required admitted, current request-bound Finance resolutions agree',
+          finance_owner, 'Supply explicit current-revision Finance resolution naming each affected event/request and cancellation; retain cash history')
+    cancellation_ok = bool(dependencies['cancellation_clear'] and calculation['status']=='PASS' and approvals)
+    stage('cancellation_readiness', not affected or cancellation_ok, [r for c in affected for r in c.get('source_refs',[])],
+          'Business cancellation retires arrangements; supported reimbursement disposition and current post-confirmation reviews are evaluated separately',
+          finance_owner, 'Obtain cancellation-bound cost disposition, fresh current reviews and any required Finance resolution')
+    # Native-source access blocks live compliance; it is not missing policy wording
+    # once the explicitly bound browser policy supplies that evidence.
+    external = [i for i in parsed.get('unresolved_issues', []) if i.get('status','open')=='open'
+                and i.get('affected_scope') != 'fresh native-source compliance; supplemental policy wording is available'
+                and (i.get('subject_type') in {'policy','scenario'} or i.get('subject_id') in {claim_id,trip_id,trip.get('Permit reference')})]
+    ready_stages = all(s['status']=='PASS' for s in stages if s['stage']!='travel_permission')
+    closed = bool(ready_stages and reimbursement_permission and (request_ok or clean_zero)
+        and finance['balance_cents']==0 and not finance['repair_issues'] and supported_clock(parsed) and not external)
+    if closed and affected and not permission:
+        next(s for s in stages if s['stage']=='travel_permission').update(status='PASS',
+            detail='Reimbursement permission supported; cancelled travel arrangements remain retired and are not reauthorized')
+    stage('financial_closure', closed, evidence_refs + review_refs + request_refs + policy_refs + dependencies['source_refs'],
+          'Current policy, approvals, authorized obligation, net cash and required resolutions must agree; a calendar-date clock does not invent an instant',
+          finance_owner, 'Resolve the listed current evidence and monetary dependencies; no extra generic closure approval is invented')
     business_state=claim_review['state']
     financial_clean=(len(trips)==1 and trusted(trips[0]) and not finance.get('recorded_obligation') and not finance['net_confirmed_cents']
         and not finance['event_history'] and not requests and not affected)
@@ -315,11 +288,11 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
     return dict(claim_id=claim_id, revision=revision, trip_id=trip_id, trip_revision=claim.get('trip_revision'),
                 mode=parsed.get('evidence_mode', 'offline-replay'), status=disposition or ('held' if business_state in {'rejected','withdrawn'} else ('closed-reimbursed' if allowed else 'closed-no-payment') if closed else 'pending'),
                 claim_approval=claim_review,permit_approval=permit_review,
-                budget_view=budget_view, expense_calculation=calculation, exception_revalidation=dict(required=replacement_review, same_revision_change=same_revision_change, status='PASS' if exception_revalidated else 'BLOCKED'), allowed_cents=allowed, balance_cents=finance['balance_cents'], lines=lines, stages=stages,
+                financial_dependencies=dependencies, budget_view=budget_view, expense_calculation=calculation, exception_revalidation=dict(required=replacement_review, same_revision_change=same_revision_change, status='PASS' if exception_revalidated else 'BLOCKED'), allowed_cents=allowed, balance_cents=finance['balance_cents'], lines=lines, stages=stages,
                 observed_reviews=observed, request=deepcopy(requests[0]) if request_ok else None,
                 source_refs=list(dict.fromkeys([ref(record)] + [r for s in stages for r in s['source_refs']])),
                 next_owner=None if closed or disposition else (finance_owner if business_state in {'rejected','withdrawn'} else pending['owner']),
-                reason=f"Clean business {disposition}: " + (values.get('Claim reason','') if disposition=='withdrawn' else '; '.join(d['reason'] for d in observed if d['active'] and d['outcome']=='reject')) if disposition else 'Supported financial closure' if closed else pending['detail'],
+                reason=f"Clean business {disposition}: " + (values.get('Claim reason','') if disposition=='withdrawn' else '; '.join(d['reason'] for d in observed if d['active'] and d['outcome']=='reject')) if disposition else ('Approved zero entitlement; no unresolved financial effect' if allowed == 0 else 'Supported financial closure') if closed else pending['detail'],
                 finance=finance)
 
 

@@ -111,7 +111,7 @@ Offline replay connects Finance ledger observations to claim IDs and request IDs
 
 The interview's acceptance description is retained at `interviews/project-d-travel-expense-claim-20261013-2210.md:425`; native headers and examples are retained in `Finance activity`, row 5 and rows 23–25/33. Native Finance rows have no claim-revision column. Replay therefore records the source-observed revision context at **first delivery**, leaving the explicit revision null. Redelivery never rebinds an old event to a corrected revision. An explicit `Claim revision` field, if supplied in source records, is checked against retained revision history.
 
-The sidecar and optional claim `finance_evidence` projection expose recorded obligation history and `recorded_ledger_balance_cents` (recorded obligation minus confirmed net cash for the same request/payee). Adjustments/resolutions record amounts, not additive payment events. Unknown ordering, conflicting events, missing links, or undefined reversal semantics leave the affected ledger difference unresolved. Transfer cancellation does not itself erase the obligation or reverse cash. Corrections preserve historical cash/commitments and reopen revision-dependent review; unrelated claim evidence remains intact.
+The sidecar and optional claim `finance_evidence` projection expose recorded obligation history and `recorded_ledger_balance_cents` (recorded obligation minus confirmed net cash for the same request/payee). Adjustments record commitment amounts, not additive payments. A resolution must agree with an existing accepted/adjusted commitment; it cannot create or change one. A request-bound Finance cancellation releases that commitment to zero while preserving its history and all cash. Cancellation naming a transfer attempt does not establish release of the request commitment. Unknown ordering, conflicting events, missing links, or undefined reversal semantics leave the affected ledger difference unresolved. Corrections preserve historical cash/commitments and reopen revision-dependent review; unrelated claim evidence remains intact.
 
 This ledger arithmetic is separate from current-revision authorization and reviewed entitlement. Without separately supported authorization, `allowed_cents` and `balance_cents` remain null/blank and claims remain pending. A zero ledger difference does not establish policy eligibility, complete approvals, or closure. The exact CSV header is unchanged; `report.md` explains recorded financial facts separately from unresolved repairs and external blockers.
 
@@ -392,3 +392,38 @@ separately identified later reply is inadmissible. No cutoff time is inferred.
 These checks do not change Finance event admission, budget accounting, exception
 coverage, cancellation resolution or financial closure rules. Passing source
 admission is not a new human approval or evidence of final submission compliance.
+
+## Step 186: financial completion and cancellation dependencies
+
+The verified supplemental POL-2026.2 browser policy now supplies the connected
+workflow's policy definitions and completion conditions directly. Legacy
+synthetic rule and generic closure-authority tables are not required. The
+policy's calendar date is sufficient for clock validation; event/review admission
+still holds ambiguous same-day observations. Native Notion acquisition remains
+separately blocked and an offline replay never certifies fresh execution.
+
+Closure requires current evidence, approvals, request/obligation authorization,
+balanced admitted net cash and every required Finance resolution. A material
+correction after acceptance or an adjustment after payment requires an admitted,
+current-revision resolution naming the affected event/request and agreeing with
+the supported amount. Partial settlement, overpayment, conflicting deliveries
+and unresolved dependent evidence stay pending. A later transfer reopens the
+case without changing an earlier snapshot. Approved zero entitlement with no
+request or financial effects can close with an explicit non-payment reason.
+
+Pre-acceptance business cancellation can complete after exact cost disposition,
+post-confirmation cancellation-aware claim reviews and settlement of its first
+accepted request. Cancellation after acceptance additionally needs explicit
+Finance resolution naming the cancellation. Reimbursement completion never
+restores retired travel arrangements. Cancellation consequences, requests and
+repair items are projected consistently while admitted initiation/confirmation
+history remains intact. A no-claim cancellation can be recorded as having no
+financial effect only after all four batches and the complete verified source
+inventory establish no commitment, cost or unmatched financial effect. Missing
+inventory, relevant costs or ambiguous deliveries preserve a pending state.
+
+The retained Finance schema omits explicit claim revision and resolution-link
+fields. Arrival context and free-text reasons do not supply that authority.
+Synthetic completion tests explicitly supply those fields; they do not authorize
+real retained claims. Blank first-commitment cells in the native Trips schema
+mean no commitment yet, as the policy states, rather than an invented late permit.
