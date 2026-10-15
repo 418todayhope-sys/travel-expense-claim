@@ -1450,3 +1450,44 @@ Do not overwrite prior run artifacts or change original source evidence.
 Do not stage, commit, or push anything during Step 186.
 
 Report confirmed defects, fixes, exact passing test count, changed files, preservation results, and remaining blockers. Stop for review.
+
+---
+
+Verify the current branch, Git status, complete working diff, and existing repository instructions.
+
+Confirm that the implementation changes are limited to the 12 Step 186 files:
+
+README.md
+src/travel_claim/approvals.py
+src/travel_claim/budget.py
+src/travel_claim/completion.py
+src/travel_claim/exceptions.py
+src/travel_claim/finance.py
+src/travel_claim/integration.py
+src/travel_claim/ordinary.py
+src/travel_claim/revalidation.py
+tests/test_completion.py
+tests/test_ordinary.py
+tests/test_retained_finance.py
+
+Run the full automated test suite and Git diff checks.
+
+Verify all 124 retained-data hashes against the available preservation manifest. Check the 132-file Step 184 baseline, distinguishing intentionally modified implementation files from protected evidence. Do not claim verification against the unavailable historical 129-file manifest.
+
+Review the financial closure and cancellation regressions for unsupported authorization, erased payment history, fabricated resolutions, or accidental changes to source admission.
+
+If all checks pass, stage exactly the 12 reviewed files and verify the staged diff.
+
+Commit with message:
+
+fix: enforce financial completion and cancellation dependencies
+
+Push normally to origin main without force-pushing, using existing Entire.io hooks.
+
+Verify that remote main matches the local commit and every Entire.io checkpoint reference matches remotely.
+
+Do not stage unrelated audit reports, retained run artifacts, or user-provided policy provenance files.
+
+Report the full commit SHA, final passing test count, exact committed file list, preservation results, and Entire.io checkpoint verification.
+
+If any verification fails, stop and report the issue without proceeding.
