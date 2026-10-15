@@ -289,7 +289,7 @@ def test_finance_or_workbook_source_cannot_be_misrepresented_as_a_policy_definit
     assert stages(workflow(batches(parsed)[-1]))['policy_eligibility']['status'] == 'BLOCKED'
 
 
-def test_affected_cancellation_holds_closure_without_erasing_supported_entitlement_or_cash():
+def test_affected_cancellation_holds_eligibility_without_erasing_calculation_or_cash():
     parsed = synthetic()
     native_rows = json.loads((Path(__file__).parent / 'fixtures/retained_finance_records.json').read_text())['records']['cancellation_activities']
     for source in native_rows:
@@ -303,7 +303,9 @@ def test_affected_cancellation_holds_closure_without_erasing_supported_entitleme
     final = batches(parsed)[-1]
     value = workflow(final)
     assert stages(value)['travel_permission']['status'] == 'PASS'
-    assert value['allowed_cents'] == 10000
+    assert value['allowed_cents'] is None
+    assert value['lines'][0]['calculated_cents'] == 10000
+    assert any(f['issue'] == 'travel_cancellation' and f['status'] == 'unresolved' for f in value['lines'][0]['eligibility_findings'])
     assert final['snapshot']['claims'][0]['paid_cents'] == 10000
     assert value['status'] == 'pending'
     assert stages(value)['financial_closure']['status'] == 'BLOCKED'

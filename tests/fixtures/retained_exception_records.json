@@ -1,0 +1,1941 @@
+{
+  "provenance": {
+    "kind": "verbatim selected retained records; not a new source read or new financial conclusion",
+    "parsed_records_path": "artifacts/runs/project-d-live-20261014T204849Z/parsed-records.json",
+    "source_manifest": {
+      "path": "sources.json",
+      "sha256": "4e82f727ab9d894291ab400ef7148b2aa06a0da8eda85e463c9c03edfcb7b0fb"
+    }
+  },
+  "records": {
+    "claim_revisions": [
+      {
+        "source_id": "initial-claim-binder",
+        "source_sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+        "locator": "PDF page 12",
+        "page": 12,
+        "record_types": [
+          "claim_revision"
+        ],
+        "claim_id": "C12",
+        "receipt_ids": [],
+        "fields": [
+          {
+            "line": "7",
+            "label": "Claim reference",
+            "value": "C12"
+          },
+          {
+            "line": "9",
+            "label": "Revision",
+            "value": "1"
+          },
+          {
+            "line": "11",
+            "label": "Arrival batch",
+            "value": "1"
+          },
+          {
+            "line": "13",
+            "label": "Employee",
+            "value": "EMP-01"
+          },
+          {
+            "line": "15",
+            "label": "Trip reference",
+            "value": "T12"
+          },
+          {
+            "line": "17",
+            "label": "Trip revision",
+            "value": "1"
+          },
+          {
+            "line": "19",
+            "label": "Submitted date",
+            "value": "2026-09-02"
+          },
+          {
+            "line": "21",
+            "label": "Status",
+            "value": "submitted"
+          },
+          {
+            "line": "23",
+            "label": "Claim reason",
+            "value": "Business travel reimbursement"
+          },
+          {
+            "line": "25",
+            "label": "Related earlier claims",
+            "value": "None"
+          },
+          {
+            "line": "38",
+            "label": "Finance exception",
+            "value": "Not supplied"
+          }
+        ],
+        "text": "Travel expense claim\n\nEmployee submission and supporting expense references\n\n\n\nClaim reference: C12\n\nRevision: 1\n\nArrival batch: 1\n\nEmployee: EMP-01\n\nTrip reference: T12\n\nTrip revision: 1\n\nSubmitted date: 2026-09-02\n\nStatus: submitted\n\nClaim reason: Business travel reimbursement\n\nRelated earlier claims: None\n\n\n  Expense details\n\n\n\n Line    Expense reference            Receipt reference               First submitted date     Original amount        Currency\n\n\n 1       COST-12                      R-COST-12                       2026-09-02               70.00                  EUR\n\n\nFinance exception: Not supplied\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAlderbridge Consulting - synthetic business exercise - SRC-D-3                                                        Page 12 of 120"
+      },
+      {
+        "source_id": "initial-claim-binder",
+        "source_sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+        "locator": "PDF page 19",
+        "page": 19,
+        "record_types": [
+          "claim_revision"
+        ],
+        "claim_id": "C19",
+        "receipt_ids": [],
+        "fields": [
+          {
+            "line": "7",
+            "label": "Claim reference",
+            "value": "C19"
+          },
+          {
+            "line": "9",
+            "label": "Revision",
+            "value": "1"
+          },
+          {
+            "line": "11",
+            "label": "Arrival batch",
+            "value": "1"
+          },
+          {
+            "line": "13",
+            "label": "Employee",
+            "value": "EMP-01"
+          },
+          {
+            "line": "15",
+            "label": "Trip reference",
+            "value": "T19"
+          },
+          {
+            "line": "17",
+            "label": "Trip revision",
+            "value": "1"
+          },
+          {
+            "line": "19",
+            "label": "Submitted date",
+            "value": "2026-09-01"
+          },
+          {
+            "line": "21",
+            "label": "Status",
+            "value": "submitted"
+          },
+          {
+            "line": "23",
+            "label": "Claim reason",
+            "value": "Business travel reimbursement"
+          },
+          {
+            "line": "25",
+            "label": "Related earlier claims",
+            "value": "None"
+          },
+          {
+            "line": "38",
+            "label": "Finance exception",
+            "value": "Not supplied"
+          }
+        ],
+        "text": "Travel expense claim\n\nEmployee submission and supporting expense references\n\n\n\nClaim reference: C19\n\nRevision: 1\n\nArrival batch: 1\n\nEmployee: EMP-01\n\nTrip reference: T19\n\nTrip revision: 1\n\nSubmitted date: 2026-09-01\n\nStatus: submitted\n\nClaim reason: Business travel reimbursement\n\nRelated earlier claims: None\n\n\n  Expense details\n\n\n\n Line    Expense reference            Receipt reference               First submitted date     Original amount        Currency\n\n\n 1       COST-19                      R-COST-19                       2026-09-01               100.00                 EUR\n\n\nFinance exception: Not supplied\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAlderbridge Consulting - synthetic business exercise - SRC-D-3                                                        Page 19 of 120"
+      },
+      {
+        "source_id": "initial-claim-binder",
+        "source_sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+        "locator": "PDF page 120",
+        "page": 120,
+        "record_types": [
+          "claim_revision"
+        ],
+        "claim_id": "C121",
+        "receipt_ids": [],
+        "fields": [
+          {
+            "line": "7",
+            "label": "Claim reference",
+            "value": "C121"
+          },
+          {
+            "line": "9",
+            "label": "Revision",
+            "value": "1"
+          },
+          {
+            "line": "11",
+            "label": "Arrival batch",
+            "value": "1"
+          },
+          {
+            "line": "13",
+            "label": "Employee",
+            "value": "EMP-01"
+          },
+          {
+            "line": "15",
+            "label": "Trip reference",
+            "value": "T121"
+          },
+          {
+            "line": "17",
+            "label": "Trip revision",
+            "value": "1"
+          },
+          {
+            "line": "19",
+            "label": "Submitted date",
+            "value": "2026-09-01"
+          },
+          {
+            "line": "21",
+            "label": "Status",
+            "value": "submitted"
+          },
+          {
+            "line": "23",
+            "label": "Claim reason",
+            "value": "Paid travel booking reimbursement"
+          },
+          {
+            "line": "25",
+            "label": "Related earlier claims",
+            "value": "None"
+          },
+          {
+            "line": "38",
+            "label": "Finance exception",
+            "value": "Not supplied"
+          }
+        ],
+        "text": "Travel expense claim\n\nEmployee submission and supporting expense references\n\n\n\nClaim reference: C121\n\nRevision: 1\n\nArrival batch: 1\n\nEmployee: EMP-01\n\nTrip reference: T121\n\nTrip revision: 1\n\nSubmitted date: 2026-09-01\n\nStatus: submitted\n\nClaim reason: Paid travel booking reimbursement\n\nRelated earlier claims: None\n\n\n  Expense details\n\n\n\n Line    Expense reference            Receipt reference               First submitted date     Original amount        Currency\n\n\n 1       COST-121                     R-COST-121                      2026-09-01               30.00                  EUR\n\n\nFinance exception: Not supplied\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAlderbridge Consulting - synthetic business exercise - SRC-D-3                                                       Page 120 of 120"
+      },
+      {
+        "source_id": "claim-updates-binder",
+        "source_sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+        "locator": "PDF page 2",
+        "page": 2,
+        "record_types": [
+          "claim_revision"
+        ],
+        "claim_id": "C19",
+        "receipt_ids": [],
+        "fields": [
+          {
+            "line": "7",
+            "label": "Claim reference",
+            "value": "C19"
+          },
+          {
+            "line": "9",
+            "label": "Revision",
+            "value": "2"
+          },
+          {
+            "line": "11",
+            "label": "Arrival batch",
+            "value": "3"
+          },
+          {
+            "line": "13",
+            "label": "Employee",
+            "value": "EMP-01"
+          },
+          {
+            "line": "15",
+            "label": "Trip reference",
+            "value": "T19"
+          },
+          {
+            "line": "17",
+            "label": "Trip revision",
+            "value": "1"
+          },
+          {
+            "line": "19",
+            "label": "Submitted date",
+            "value": "2026-09-01"
+          },
+          {
+            "line": "21",
+            "label": "Status",
+            "value": "submitted"
+          },
+          {
+            "line": "23",
+            "label": "Claim reason",
+            "value": "Finance approved corrected supported amount"
+          },
+          {
+            "line": "25",
+            "label": "Related earlier claims",
+            "value": "None"
+          },
+          {
+            "line": "42",
+            "label": "Authorizing Finance officer",
+            "value": "FIN-01"
+          },
+          {
+            "line": "44",
+            "label": "Applies to claim",
+            "value": "C19"
+          },
+          {
+            "line": "46",
+            "label": "Applies to revision",
+            "value": "2"
+          },
+          {
+            "line": "48",
+            "label": "Expense reference",
+            "value": "COST-19"
+          },
+          {
+            "line": "50",
+            "label": "Allowed original amount",
+            "value": "80.00"
+          },
+          {
+            "line": "52",
+            "label": "Covered issues",
+            "value": "None"
+          },
+          {
+            "line": "54",
+            "label": "Exception reason",
+            "value": "Corrected business portion confirmed"
+          }
+        ],
+        "text": "Travel expense claim\n\nEmployee submission and supporting expense references\n\n\n\nClaim reference: C19\n\nRevision: 2\n\nArrival batch: 3\n\nEmployee: EMP-01\n\nTrip reference: T19\n\nTrip revision: 1\n\nSubmitted date: 2026-09-01\n\nStatus: submitted\n\nClaim reason: Finance approved corrected supported amount\n\nRelated earlier claims: None\n\n\n  Expense details\n\n\n\n Line    Expense reference            Receipt reference              First submitted date     Original amount       Currency\n\n\n 1       COST-19                      R-COST-19                      2026-09-01               100.00                EUR\n\n\n\n  Finance exception\n\n\nAuthorizing Finance officer: FIN-01\n\nApplies to claim: C19\n\nApplies to revision: 2\n\nExpense reference: COST-19\n\nAllowed original amount: 80.00\n\nCovered issues: None\n\nException reason: Corrected business portion confirmed\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAlderbridge Consulting - synthetic business exercise - SRC-D-3                                                          Page 2 of 7"
+      },
+      {
+        "source_id": "claim-updates-binder",
+        "source_sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+        "locator": "PDF page 5",
+        "page": 5,
+        "record_types": [
+          "claim_revision"
+        ],
+        "claim_id": "C12",
+        "receipt_ids": [],
+        "fields": [
+          {
+            "line": "7",
+            "label": "Claim reference",
+            "value": "C12"
+          },
+          {
+            "line": "9",
+            "label": "Revision",
+            "value": "2"
+          },
+          {
+            "line": "11",
+            "label": "Arrival batch",
+            "value": "3"
+          },
+          {
+            "line": "13",
+            "label": "Employee",
+            "value": "EMP-01"
+          },
+          {
+            "line": "15",
+            "label": "Trip reference",
+            "value": "T12"
+          },
+          {
+            "line": "17",
+            "label": "Trip revision",
+            "value": "1"
+          },
+          {
+            "line": "19",
+            "label": "Submitted date",
+            "value": "2026-09-02"
+          },
+          {
+            "line": "21",
+            "label": "Status",
+            "value": "submitted"
+          },
+          {
+            "line": "23",
+            "label": "Claim reason",
+            "value": "Finance grants the documented late-filing exception"
+          },
+          {
+            "line": "25",
+            "label": "Related earlier claims",
+            "value": "None"
+          },
+          {
+            "line": "42",
+            "label": "Authorizing Finance officer",
+            "value": "FIN-01"
+          },
+          {
+            "line": "44",
+            "label": "Applies to claim",
+            "value": "C12"
+          },
+          {
+            "line": "46",
+            "label": "Applies to revision",
+            "value": "2"
+          },
+          {
+            "line": "48",
+            "label": "Expense reference",
+            "value": "COST-12"
+          },
+          {
+            "line": "50",
+            "label": "Allowed original amount",
+            "value": "70.00"
+          },
+          {
+            "line": "52",
+            "label": "Covered issues",
+            "value": "Late filing"
+          },
+          {
+            "line": "54",
+            "label": "Exception reason",
+            "value": "Employee documented delayed access during client emergency"
+          }
+        ],
+        "text": "Travel expense claim\n\nEmployee submission and supporting expense references\n\n\n\nClaim reference: C12\n\nRevision: 2\n\nArrival batch: 3\n\nEmployee: EMP-01\n\nTrip reference: T12\n\nTrip revision: 1\n\nSubmitted date: 2026-09-02\n\nStatus: submitted\n\nClaim reason: Finance grants the documented late-filing exception\n\nRelated earlier claims: None\n\n\n  Expense details\n\n\n\n Line    Expense reference            Receipt reference               First submitted date    Original amount        Currency\n\n\n 1       COST-12                      R-COST-12                       2026-09-02              70.00                  EUR\n\n\n\n  Finance exception\n\n\nAuthorizing Finance officer: FIN-01\n\nApplies to claim: C12\n\nApplies to revision: 2\n\nExpense reference: COST-12\n\nAllowed original amount: 70.00\n\nCovered issues: Late filing\n\nException reason: Employee documented delayed access during client emergency\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAlderbridge Consulting - synthetic business exercise - SRC-D-3                                                           Page 5 of 7"
+      },
+      {
+        "source_id": "claim-updates-binder",
+        "source_sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+        "locator": "PDF page 6",
+        "page": 6,
+        "record_types": [
+          "claim_revision"
+        ],
+        "claim_id": "C121",
+        "receipt_ids": [],
+        "fields": [
+          {
+            "line": "7",
+            "label": "Claim reference",
+            "value": "C121"
+          },
+          {
+            "line": "9",
+            "label": "Revision",
+            "value": "2"
+          },
+          {
+            "line": "11",
+            "label": "Arrival batch",
+            "value": "3"
+          },
+          {
+            "line": "13",
+            "label": "Employee",
+            "value": "EMP-01"
+          },
+          {
+            "line": "15",
+            "label": "Trip reference",
+            "value": "T121"
+          },
+          {
+            "line": "17",
+            "label": "Trip revision",
+            "value": "1"
+          },
+          {
+            "line": "19",
+            "label": "Submitted date",
+            "value": "2026-09-01"
+          },
+          {
+            "line": "21",
+            "label": "Status",
+            "value": "submitted"
+          },
+          {
+            "line": "23",
+            "label": "Claim reason",
+            "value": "Finance confirms supported remaining cost after permit cancellation"
+          },
+          {
+            "line": "25",
+            "label": "Related earlier claims",
+            "value": "None"
+          },
+          {
+            "line": "42",
+            "label": "Authorizing Finance officer",
+            "value": "FIN-01"
+          },
+          {
+            "line": "44",
+            "label": "Applies to claim",
+            "value": "C121"
+          },
+          {
+            "line": "46",
+            "label": "Applies to revision",
+            "value": "2"
+          },
+          {
+            "line": "48",
+            "label": "Expense reference",
+            "value": "COST-121"
+          },
+          {
+            "line": "50",
+            "label": "Allowed original amount",
+            "value": "20.00"
+          },
+          {
+            "line": "52",
+            "label": "Covered issues",
+            "value": "Travel cancellation"
+          },
+          {
+            "line": "54",
+            "label": "Travel cancellation reference",
+            "value": "TC121"
+          },
+          {
+            "line": "56",
+            "label": "Exception reason",
+            "value": "Confirmed cancellation leaves a supported non-refundable business cost of EUR 20.00"
+          }
+        ],
+        "text": "Travel expense claim\n\nEmployee submission and supporting expense references\n\n\n\nClaim reference: C121\n\nRevision: 2\n\nArrival batch: 3\n\nEmployee: EMP-01\n\nTrip reference: T121\n\nTrip revision: 1\n\nSubmitted date: 2026-09-01\n\nStatus: submitted\n\nClaim reason: Finance confirms supported remaining cost after permit cancellation\n\nRelated earlier claims: None\n\n\n  Expense details\n\n\n\n Line    Expense reference            Receipt reference               First submitted date     Original amount       Currency\n\n\n 1       COST-121                     R-COST-121                      2026-09-01               30.00                 EUR\n\n\n\n  Finance exception\n\n\nAuthorizing Finance officer: FIN-01\n\nApplies to claim: C121\n\nApplies to revision: 2\n\nExpense reference: COST-121\n\nAllowed original amount: 20.00\n\nCovered issues: Travel cancellation\n\nTravel cancellation reference: TC121\n\nException reason: Confirmed cancellation leaves a supported non-refundable business cost of EUR 20.00\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAlderbridge Consulting - synthetic business exercise - SRC-D-3                                                           Page 6 of 7"
+      },
+      {
+        "source_id": "claim-updates-binder",
+        "source_sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+        "locator": "PDF page 7",
+        "page": 7,
+        "record_types": [
+          "claim_revision"
+        ],
+        "claim_id": "C19",
+        "receipt_ids": [],
+        "fields": [
+          {
+            "line": "7",
+            "label": "Claim reference",
+            "value": "C19"
+          },
+          {
+            "line": "9",
+            "label": "Revision",
+            "value": "3"
+          },
+          {
+            "line": "11",
+            "label": "Arrival batch",
+            "value": "4"
+          },
+          {
+            "line": "13",
+            "label": "Employee",
+            "value": "EMP-01"
+          },
+          {
+            "line": "15",
+            "label": "Trip reference",
+            "value": "T19"
+          },
+          {
+            "line": "17",
+            "label": "Trip revision",
+            "value": "1"
+          },
+          {
+            "line": "19",
+            "label": "Submitted date",
+            "value": "2026-09-01"
+          },
+          {
+            "line": "21",
+            "label": "Status",
+            "value": "submitted"
+          },
+          {
+            "line": "23",
+            "label": "Claim reason",
+            "value": "Finance confirms retained business cost after trip cancellation"
+          },
+          {
+            "line": "25",
+            "label": "Related earlier claims",
+            "value": "None"
+          },
+          {
+            "line": "42",
+            "label": "Authorizing Finance officer",
+            "value": "FIN-01"
+          },
+          {
+            "line": "44",
+            "label": "Applies to claim",
+            "value": "C19"
+          },
+          {
+            "line": "46",
+            "label": "Applies to revision",
+            "value": "3"
+          },
+          {
+            "line": "48",
+            "label": "Expense reference",
+            "value": "COST-19"
+          },
+          {
+            "line": "50",
+            "label": "Allowed original amount",
+            "value": "80.00"
+          },
+          {
+            "line": "52",
+            "label": "Covered issues",
+            "value": "Travel cancellation"
+          },
+          {
+            "line": "54",
+            "label": "Travel cancellation reference",
+            "value": "TC019"
+          },
+          {
+            "line": "56",
+            "label": "Exception reason",
+            "value": "Confirmed trip cancellation retains EUR 80.00 of supported business cost; linked EUR 20.00"
+          }
+        ],
+        "text": "Travel expense claim\n\nEmployee submission and supporting expense references\n\n\n\nClaim reference: C19\n\nRevision: 3\n\nArrival batch: 4\n\nEmployee: EMP-01\n\nTrip reference: T19\n\nTrip revision: 1\n\nSubmitted date: 2026-09-01\n\nStatus: submitted\n\nClaim reason: Finance confirms retained business cost after trip cancellation\n\nRelated earlier claims: None\n\n\n  Expense details\n\n\n\n Line    Expense reference            Receipt reference               First submitted date     Original amount        Currency\n\n\n 1       COST-19                      R-COST-19                       2026-09-01               100.00                 EUR\n\n\n\n  Finance exception\n\n\nAuthorizing Finance officer: FIN-01\n\nApplies to claim: C19\n\nApplies to revision: 3\n\nExpense reference: COST-19\n\nAllowed original amount: 80.00\n\nCovered issues: Travel cancellation\n\nTravel cancellation reference: TC019\n\nException reason: Confirmed trip cancellation retains EUR 80.00 of supported business cost; linked EUR 20.00\nrefund reconciles prior reimbursement\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAlderbridge Consulting - synthetic business exercise - SRC-D-3                                                            Page 7 of 7"
+      }
+    ],
+    "receipts": [
+      {
+        "source_id": "receipt-binder",
+        "source_sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+        "locator": "PDF page 6, receipt 2",
+        "receipt_id": "R-COST-12",
+        "fields": [
+          {
+            "line": "1",
+            "label": "Receipt reference",
+            "value": "R-COST-12"
+          },
+          {
+            "line": "3",
+            "label": "Expense reference",
+            "value": "COST-12"
+          },
+          {
+            "line": "5",
+            "label": "Employee",
+            "value": "EMP-01"
+          },
+          {
+            "line": "7",
+            "label": "Trip reference",
+            "value": "T12"
+          },
+          {
+            "line": "9",
+            "label": "Category",
+            "value": "transport"
+          },
+          {
+            "line": "11",
+            "label": "Currency",
+            "value": "EUR"
+          },
+          {
+            "line": "13",
+            "label": "Gross amount",
+            "value": "70.00"
+          },
+          {
+            "line": "15",
+            "label": "Documented units",
+            "value": "1"
+          },
+          {
+            "line": "17",
+            "label": "Description",
+            "value": "Travel purchase"
+          },
+          {
+            "line": "19",
+            "label": "Issued date",
+            "value": "2026-09-01"
+          }
+        ],
+        "text": "Receipt reference: R-COST-12\n\n   Expense reference: COST-12\n\n   Employee: EMP-01\n\n   Trip reference: T12\n\n   Category: transport\n\n   Currency: EUR\n\n   Gross amount: 70.00\n\n   Documented units: 1\n\n   Description: Travel purchase\n\n   Issued date: 2026-09-01\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAlderbridge Consulting - synthetic business exercise - SRC-D-3                                                 Page 6 of 102"
+      },
+      {
+        "source_id": "receipt-binder",
+        "source_sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+        "locator": "PDF page 10, receipt 1",
+        "receipt_id": "R-COST-19",
+        "fields": [
+          {
+            "line": "1",
+            "label": "Receipt reference",
+            "value": "R-COST-19"
+          },
+          {
+            "line": "3",
+            "label": "Expense reference",
+            "value": "COST-19"
+          },
+          {
+            "line": "5",
+            "label": "Employee",
+            "value": "EMP-01"
+          },
+          {
+            "line": "7",
+            "label": "Trip reference",
+            "value": "T19"
+          },
+          {
+            "line": "9",
+            "label": "Category",
+            "value": "transport"
+          },
+          {
+            "line": "11",
+            "label": "Currency",
+            "value": "EUR"
+          },
+          {
+            "line": "13",
+            "label": "Gross amount",
+            "value": "100.00"
+          },
+          {
+            "line": "15",
+            "label": "Documented units",
+            "value": "1"
+          },
+          {
+            "line": "17",
+            "label": "Description",
+            "value": "Travel purchase"
+          },
+          {
+            "line": "19",
+            "label": "Issued date",
+            "value": "2026-09-01"
+          }
+        ],
+        "text": "Receipt reference: R-COST-19\n\n   Expense reference: COST-19\n\n   Employee: EMP-01\n\n   Trip reference: T19\n\n   Category: transport\n\n   Currency: EUR\n\n   Gross amount: 100.00\n\n   Documented units: 1\n\n   Description: Travel purchase\n\n   Issued date: 2026-09-01"
+      },
+      {
+        "source_id": "receipt-binder",
+        "source_sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+        "locator": "PDF page 102, receipt 1",
+        "receipt_id": "R-COST-121",
+        "fields": [
+          {
+            "line": "1",
+            "label": "Receipt reference",
+            "value": "R-COST-121"
+          },
+          {
+            "line": "3",
+            "label": "Expense reference",
+            "value": "COST-121"
+          },
+          {
+            "line": "5",
+            "label": "Employee",
+            "value": "EMP-01"
+          },
+          {
+            "line": "7",
+            "label": "Trip reference",
+            "value": "T121"
+          },
+          {
+            "line": "9",
+            "label": "Category",
+            "value": "transport"
+          },
+          {
+            "line": "11",
+            "label": "Currency",
+            "value": "EUR"
+          },
+          {
+            "line": "13",
+            "label": "Gross amount",
+            "value": "30.00"
+          },
+          {
+            "line": "15",
+            "label": "Documented units",
+            "value": "1"
+          },
+          {
+            "line": "17",
+            "label": "Description",
+            "value": "Paid booking before permit cancellation"
+          },
+          {
+            "line": "19",
+            "label": "Issued date",
+            "value": "2026-09-01"
+          }
+        ],
+        "text": "Receipt reference: R-COST-121\n\n   Expense reference: COST-121\n\n   Employee: EMP-01\n\n   Trip reference: T121\n\n   Category: transport\n\n   Currency: EUR\n\n   Gross amount: 30.00\n\n   Documented units: 1\n\n   Description: Paid booking before permit cancellation\n\n   Issued date: 2026-09-01\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAlderbridge Consulting - synthetic business exercise - SRC-D-3                                                Page 102 of 102"
+      }
+    ],
+    "people": [
+      {
+        "source_id": "travel-registers-workbook",
+        "source_sha256": "3cf8b225b20b9ac99b8d493b14a95fdde261d677aab77daaf399a37fb4dcef2f",
+        "locator": "tab 'People', row 6",
+        "row": 6,
+        "values": {
+          "Employee ID": {
+            "value": "EMP-01",
+            "source_text": "EMP-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "A6"
+          },
+          "Department": {
+            "value": "Consulting",
+            "source_text": "Consulting",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "B6"
+          },
+          "Project": {
+            "value": "Client-A",
+            "source_text": "Client-A",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "C6"
+          },
+          "Budget period": {
+            "value": "2026",
+            "source_text": "2026",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "D6"
+          },
+          "Payee ID": {
+            "value": "EMP-01",
+            "source_text": "EMP-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "E6"
+          },
+          "Administration reviewer": {
+            "value": "ADMIN-01",
+            "source_text": "ADMIN-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "F6"
+          },
+          "Budget owner": {
+            "value": "LEAD-01",
+            "source_text": "LEAD-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "G6"
+          },
+          "Supervisor": {
+            "value": "SUP-01",
+            "source_text": "SUP-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "H6"
+          },
+          "Director": {
+            "value": "DIR-01",
+            "source_text": "DIR-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "I6"
+          },
+          "Finance officer": {
+            "value": "FIN-01",
+            "source_text": "FIN-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "J6"
+          }
+        }
+      }
+    ],
+    "merchant_payments": [
+      {
+        "source_id": "travel-registers-workbook",
+        "source_sha256": "3cf8b225b20b9ac99b8d493b14a95fdde261d677aab77daaf399a37fb4dcef2f",
+        "locator": "tab 'Merchant payments', row 16",
+        "row": 16,
+        "values": {
+          "Transaction reference": {
+            "value": "M-COST-12",
+            "source_text": "M-COST-12",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "A16"
+          },
+          "Expense reference": {
+            "value": "COST-12",
+            "source_text": "COST-12",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "B16"
+          },
+          "Employee ID": {
+            "value": "EMP-01",
+            "source_text": "EMP-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "C16"
+          },
+          "Trip reference": {
+            "value": "T12",
+            "source_text": "T12",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "D16"
+          },
+          "Currency": {
+            "value": "EUR",
+            "source_text": "EUR",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "E16"
+          },
+          "Gross amount": {
+            "value": 70.0,
+            "source_text": "70.0",
+            "number_format": "0.00",
+            "data_type": "n",
+            "cell": "F16"
+          },
+          "Paid date": {
+            "value": "2026-09-01T00:00:00",
+            "source_text": "2026-09-01 00:00:00",
+            "number_format": "yyyy-mm-dd",
+            "data_type": "d",
+            "cell": "G16"
+          },
+          "Payment status": {
+            "value": "settled",
+            "source_text": "settled",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "H16"
+          },
+          "Receipt reference": {
+            "value": "R-COST-12",
+            "source_text": "R-COST-12",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "I16"
+          }
+        }
+      },
+      {
+        "source_id": "travel-registers-workbook",
+        "source_sha256": "3cf8b225b20b9ac99b8d493b14a95fdde261d677aab77daaf399a37fb4dcef2f",
+        "locator": "tab 'Merchant payments', row 23",
+        "row": 23,
+        "values": {
+          "Transaction reference": {
+            "value": "M-COST-19",
+            "source_text": "M-COST-19",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "A23"
+          },
+          "Expense reference": {
+            "value": "COST-19",
+            "source_text": "COST-19",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "B23"
+          },
+          "Employee ID": {
+            "value": "EMP-01",
+            "source_text": "EMP-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "C23"
+          },
+          "Trip reference": {
+            "value": "T19",
+            "source_text": "T19",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "D23"
+          },
+          "Currency": {
+            "value": "EUR",
+            "source_text": "EUR",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "E23"
+          },
+          "Gross amount": {
+            "value": 100.0,
+            "source_text": "100.0",
+            "number_format": "0.00",
+            "data_type": "n",
+            "cell": "F23"
+          },
+          "Paid date": {
+            "value": "2026-09-01T00:00:00",
+            "source_text": "2026-09-01 00:00:00",
+            "number_format": "yyyy-mm-dd",
+            "data_type": "d",
+            "cell": "G23"
+          },
+          "Payment status": {
+            "value": "settled",
+            "source_text": "settled",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "H23"
+          },
+          "Receipt reference": {
+            "value": "R-COST-19",
+            "source_text": "R-COST-19",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "I23"
+          }
+        }
+      },
+      {
+        "source_id": "travel-registers-workbook",
+        "source_sha256": "3cf8b225b20b9ac99b8d493b14a95fdde261d677aab77daaf399a37fb4dcef2f",
+        "locator": "tab 'Merchant payments', row 206",
+        "row": 206,
+        "values": {
+          "Transaction reference": {
+            "value": "M-COST-121",
+            "source_text": "M-COST-121",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "A206"
+          },
+          "Expense reference": {
+            "value": "COST-121",
+            "source_text": "COST-121",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "B206"
+          },
+          "Employee ID": {
+            "value": "EMP-01",
+            "source_text": "EMP-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "C206"
+          },
+          "Trip reference": {
+            "value": "T121",
+            "source_text": "T121",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "D206"
+          },
+          "Currency": {
+            "value": "EUR",
+            "source_text": "EUR",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "E206"
+          },
+          "Gross amount": {
+            "value": 30.0,
+            "source_text": "30.0",
+            "number_format": "0.00",
+            "data_type": "n",
+            "cell": "F206"
+          },
+          "Paid date": {
+            "value": "2026-09-01T00:00:00",
+            "source_text": "2026-09-01 00:00:00",
+            "number_format": "yyyy-mm-dd",
+            "data_type": "d",
+            "cell": "G206"
+          },
+          "Payment status": {
+            "value": "settled",
+            "source_text": "settled",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "H206"
+          },
+          "Receipt reference": {
+            "value": "R-COST-121",
+            "source_text": "R-COST-121",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "I206"
+          }
+        }
+      }
+    ],
+    "trips": [
+      {
+        "source_id": "travel-registers-workbook",
+        "source_sha256": "3cf8b225b20b9ac99b8d493b14a95fdde261d677aab77daaf399a37fb4dcef2f",
+        "locator": "tab 'Trips', row 17",
+        "row": 17,
+        "values": {
+          "Trip reference": {
+            "value": "T12",
+            "source_text": "T12",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "A17"
+          },
+          "Employee ID": {
+            "value": "EMP-01",
+            "source_text": "EMP-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "B17"
+          },
+          "Destination": {
+            "value": "NL",
+            "source_text": "NL",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "C17"
+          },
+          "International": {
+            "value": false,
+            "source_text": "False",
+            "number_format": "General",
+            "data_type": "b",
+            "cell": "D17"
+          },
+          "Start date": {
+            "value": "2026-06-29T00:00:00",
+            "source_text": "2026-06-29 00:00:00",
+            "number_format": "yyyy-mm-dd",
+            "data_type": "d",
+            "cell": "E17"
+          },
+          "End date": {
+            "value": "2026-07-01T00:00:00",
+            "source_text": "2026-07-01 00:00:00",
+            "number_format": "yyyy-mm-dd",
+            "data_type": "d",
+            "cell": "F17"
+          },
+          "First commitment date": {
+            "value": "2026-06-01T00:00:00",
+            "source_text": "2026-06-01 00:00:00",
+            "number_format": "yyyy-mm-dd",
+            "data_type": "d",
+            "cell": "G17"
+          },
+          "Estimate (EUR)": {
+            "value": 100.0,
+            "source_text": "100.0",
+            "number_format": "#,##0.00",
+            "data_type": "n",
+            "cell": "H17"
+          },
+          "Business purpose": {
+            "value": "Client workshop and delivery planning",
+            "source_text": "Client workshop and delivery planning",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "I17"
+          },
+          "Client": {
+            "value": "Client-A",
+            "source_text": "Client-A",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "J17"
+          },
+          "Schedule coverage": {
+            "value": "Team colleague covers routine support",
+            "source_text": "Team colleague covers routine support",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "K17"
+          },
+          "Alternatives considered": {
+            "value": "Remote participation considered; onsite workshop requested",
+            "source_text": "Remote participation considered; onsite workshop requested",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "L17"
+          },
+          "Trip revision": {
+            "value": 1.0,
+            "source_text": "1.0",
+            "number_format": "0",
+            "data_type": "n",
+            "cell": "N17"
+          }
+        }
+      },
+      {
+        "source_id": "travel-registers-workbook",
+        "source_sha256": "3cf8b225b20b9ac99b8d493b14a95fdde261d677aab77daaf399a37fb4dcef2f",
+        "locator": "tab 'Trips', row 24",
+        "row": 24,
+        "values": {
+          "Trip reference": {
+            "value": "T19",
+            "source_text": "T19",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "A24"
+          },
+          "Employee ID": {
+            "value": "EMP-01",
+            "source_text": "EMP-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "B24"
+          },
+          "Destination": {
+            "value": "NL",
+            "source_text": "NL",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "C24"
+          },
+          "International": {
+            "value": false,
+            "source_text": "False",
+            "number_format": "General",
+            "data_type": "b",
+            "cell": "D24"
+          },
+          "Start date": {
+            "value": "2026-10-02T00:00:00",
+            "source_text": "2026-10-02 00:00:00",
+            "number_format": "yyyy-mm-dd",
+            "data_type": "d",
+            "cell": "E24"
+          },
+          "End date": {
+            "value": "2026-10-05T00:00:00",
+            "source_text": "2026-10-05 00:00:00",
+            "number_format": "yyyy-mm-dd",
+            "data_type": "d",
+            "cell": "F24"
+          },
+          "First commitment date": {
+            "value": "2026-09-01T00:00:00",
+            "source_text": "2026-09-01 00:00:00",
+            "number_format": "yyyy-mm-dd",
+            "data_type": "d",
+            "cell": "G24"
+          },
+          "Estimate (EUR)": {
+            "value": 100.0,
+            "source_text": "100.0",
+            "number_format": "#,##0.00",
+            "data_type": "n",
+            "cell": "H24"
+          },
+          "Business purpose": {
+            "value": "Client workshop and delivery planning",
+            "source_text": "Client workshop and delivery planning",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "I24"
+          },
+          "Client": {
+            "value": "Client-A",
+            "source_text": "Client-A",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "J24"
+          },
+          "Schedule coverage": {
+            "value": "Team colleague covers routine support",
+            "source_text": "Team colleague covers routine support",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "K24"
+          },
+          "Alternatives considered": {
+            "value": "Remote participation considered; onsite workshop requested",
+            "source_text": "Remote participation considered; onsite workshop requested",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "L24"
+          },
+          "Trip revision": {
+            "value": 1.0,
+            "source_text": "1.0",
+            "number_format": "0",
+            "data_type": "n",
+            "cell": "N24"
+          }
+        }
+      },
+      {
+        "source_id": "travel-registers-workbook",
+        "source_sha256": "3cf8b225b20b9ac99b8d493b14a95fdde261d677aab77daaf399a37fb4dcef2f",
+        "locator": "tab 'Trips', row 127",
+        "row": 127,
+        "values": {
+          "Trip reference": {
+            "value": "T121",
+            "source_text": "T121",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "A127"
+          },
+          "Employee ID": {
+            "value": "EMP-01",
+            "source_text": "EMP-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "B127"
+          },
+          "Destination": {
+            "value": "BE",
+            "source_text": "BE",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "C127"
+          },
+          "International": {
+            "value": true,
+            "source_text": "True",
+            "number_format": "General",
+            "data_type": "b",
+            "cell": "D127"
+          },
+          "Start date": {
+            "value": "2026-09-20T00:00:00",
+            "source_text": "2026-09-20 00:00:00",
+            "number_format": "yyyy-mm-dd",
+            "data_type": "d",
+            "cell": "E127"
+          },
+          "End date": {
+            "value": "2026-09-22T00:00:00",
+            "source_text": "2026-09-22 00:00:00",
+            "number_format": "yyyy-mm-dd",
+            "data_type": "d",
+            "cell": "F127"
+          },
+          "First commitment date": {
+            "value": "2026-09-01T00:00:00",
+            "source_text": "2026-09-01 00:00:00",
+            "number_format": "yyyy-mm-dd",
+            "data_type": "d",
+            "cell": "G127"
+          },
+          "Estimate (EUR)": {
+            "value": 300.0,
+            "source_text": "300.0",
+            "number_format": "#,##0.00",
+            "data_type": "n",
+            "cell": "H127"
+          },
+          "Business purpose": {
+            "value": "Client workshop and delivery planning",
+            "source_text": "Client workshop and delivery planning",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "I127"
+          },
+          "Client": {
+            "value": "Client-A",
+            "source_text": "Client-A",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "J127"
+          },
+          "Schedule coverage": {
+            "value": "Team colleague covers routine support",
+            "source_text": "Team colleague covers routine support",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "K127"
+          },
+          "Alternatives considered": {
+            "value": "Remote participation considered; onsite workshop requested",
+            "source_text": "Remote participation considered; onsite workshop requested",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "L127"
+          },
+          "Permit reference": {
+            "value": "P121",
+            "source_text": "P121",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "M127"
+          },
+          "Trip revision": {
+            "value": 1.0,
+            "source_text": "1.0",
+            "number_format": "0",
+            "data_type": "n",
+            "cell": "N127"
+          },
+          "Permit revision": {
+            "value": 1.0,
+            "source_text": "1.0",
+            "number_format": "0",
+            "data_type": "n",
+            "cell": "O127"
+          }
+        }
+      }
+    ],
+    "cancellation_activities": [
+      {
+        "source_id": "travel-registers-workbook",
+        "source_sha256": "3cf8b225b20b9ac99b8d493b14a95fdde261d677aab77daaf399a37fb4dcef2f",
+        "locator": "tab 'Travel cancellations', row 8",
+        "row": 8,
+        "values": {
+          "Cancellation activity reference": {
+            "value": "TC121-requested",
+            "source_text": "TC121-requested",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "A8"
+          },
+          "Cancellation reference": {
+            "value": "TC121",
+            "source_text": "TC121",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "B8"
+          },
+          "Action": {
+            "value": "requested",
+            "source_text": "requested",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "C8"
+          },
+          "Cancelled subject": {
+            "value": "permit",
+            "source_text": "permit",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "D8"
+          },
+          "Trip reference": {
+            "value": "T121",
+            "source_text": "T121",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "E8"
+          },
+          "Trip revision": {
+            "value": 1.0,
+            "source_text": "1.0",
+            "number_format": "0",
+            "data_type": "n",
+            "cell": "F8"
+          },
+          "Permit reference": {
+            "value": "P121",
+            "source_text": "P121",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "G8"
+          },
+          "Permit revision": {
+            "value": 1.0,
+            "source_text": "1.0",
+            "number_format": "0",
+            "data_type": "n",
+            "cell": "H8"
+          },
+          "Acting employee or supervisor": {
+            "value": "EMP-01",
+            "source_text": "EMP-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "J8"
+          },
+          "Activity time (UTC)": {
+            "value": "2026-09-10T10:00:00",
+            "source_text": "2026-09-10 10:00:00",
+            "number_format": "yyyy-mm-dd hh:mm:ss \"UTC\"",
+            "data_type": "d",
+            "cell": "K8"
+          },
+          "Arrival batch": {
+            "value": 1.0,
+            "source_text": "1.0",
+            "number_format": "0",
+            "data_type": "n",
+            "cell": "M8"
+          },
+          "Business reason": {
+            "value": "Employee requests cancellation after client rescheduling",
+            "source_text": "Employee requests cancellation after client rescheduling",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "N8"
+          }
+        }
+      },
+      {
+        "source_id": "travel-registers-workbook",
+        "source_sha256": "3cf8b225b20b9ac99b8d493b14a95fdde261d677aab77daaf399a37fb4dcef2f",
+        "locator": "tab 'Travel cancellations', row 9",
+        "row": 9,
+        "values": {
+          "Cancellation activity reference": {
+            "value": "TC121-confirmed",
+            "source_text": "TC121-confirmed",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "A9"
+          },
+          "Cancellation reference": {
+            "value": "TC121",
+            "source_text": "TC121",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "B9"
+          },
+          "Action": {
+            "value": "confirmed",
+            "source_text": "confirmed",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "C9"
+          },
+          "Cancelled subject": {
+            "value": "permit",
+            "source_text": "permit",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "D9"
+          },
+          "Trip reference": {
+            "value": "T121",
+            "source_text": "T121",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "E9"
+          },
+          "Trip revision": {
+            "value": 1.0,
+            "source_text": "1.0",
+            "number_format": "0",
+            "data_type": "n",
+            "cell": "F9"
+          },
+          "Permit reference": {
+            "value": "P121",
+            "source_text": "P121",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "G9"
+          },
+          "Permit revision": {
+            "value": 1.0,
+            "source_text": "1.0",
+            "number_format": "0",
+            "data_type": "n",
+            "cell": "H9"
+          },
+          "Initiation activity reference": {
+            "value": "TC121-requested",
+            "source_text": "TC121-requested",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "I9"
+          },
+          "Acting employee or supervisor": {
+            "value": "SUP-01",
+            "source_text": "SUP-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "J9"
+          },
+          "Activity time (UTC)": {
+            "value": "2026-09-12T10:00:00",
+            "source_text": "2026-09-12 10:00:00",
+            "number_format": "yyyy-mm-dd hh:mm:ss \"UTC\"",
+            "data_type": "d",
+            "cell": "K9"
+          },
+          "Effective time (UTC)": {
+            "value": "2026-09-12T10:00:00",
+            "source_text": "2026-09-12 10:00:00",
+            "number_format": "yyyy-mm-dd hh:mm:ss \"UTC\"",
+            "data_type": "d",
+            "cell": "L9"
+          },
+          "Arrival batch": {
+            "value": 2.0,
+            "source_text": "2.0",
+            "number_format": "0",
+            "data_type": "n",
+            "cell": "M9"
+          },
+          "Business reason": {
+            "value": "Supervisor confirms the requested business cancellation",
+            "source_text": "Supervisor confirms the requested business cancellation",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "N9"
+          }
+        }
+      },
+      {
+        "source_id": "travel-registers-workbook",
+        "source_sha256": "3cf8b225b20b9ac99b8d493b14a95fdde261d677aab77daaf399a37fb4dcef2f",
+        "locator": "tab 'Travel cancellations', row 12",
+        "row": 12,
+        "values": {
+          "Cancellation activity reference": {
+            "value": "TC019-requested",
+            "source_text": "TC019-requested",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "A12"
+          },
+          "Cancellation reference": {
+            "value": "TC019",
+            "source_text": "TC019",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "B12"
+          },
+          "Action": {
+            "value": "requested",
+            "source_text": "requested",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "C12"
+          },
+          "Cancelled subject": {
+            "value": "trip",
+            "source_text": "trip",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "D12"
+          },
+          "Trip reference": {
+            "value": "T19",
+            "source_text": "T19",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "E12"
+          },
+          "Trip revision": {
+            "value": 1.0,
+            "source_text": "1.0",
+            "number_format": "0",
+            "data_type": "n",
+            "cell": "F12"
+          },
+          "Acting employee or supervisor": {
+            "value": "EMP-01",
+            "source_text": "EMP-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "J12"
+          },
+          "Activity time (UTC)": {
+            "value": "2026-09-13T08:00:00",
+            "source_text": "2026-09-13 08:00:00",
+            "number_format": "yyyy-mm-dd hh:mm:ss \"UTC\"",
+            "data_type": "d",
+            "cell": "K12"
+          },
+          "Arrival batch": {
+            "value": 3.0,
+            "source_text": "3.0",
+            "number_format": "0",
+            "data_type": "n",
+            "cell": "M12"
+          },
+          "Business reason": {
+            "value": "Employee requests cancellation after client rescheduling",
+            "source_text": "Employee requests cancellation after client rescheduling",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "N12"
+          }
+        }
+      },
+      {
+        "source_id": "travel-registers-workbook",
+        "source_sha256": "3cf8b225b20b9ac99b8d493b14a95fdde261d677aab77daaf399a37fb4dcef2f",
+        "locator": "tab 'Travel cancellations', row 13",
+        "row": 13,
+        "values": {
+          "Cancellation activity reference": {
+            "value": "TC019-confirmed",
+            "source_text": "TC019-confirmed",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "A13"
+          },
+          "Cancellation reference": {
+            "value": "TC019",
+            "source_text": "TC019",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "B13"
+          },
+          "Action": {
+            "value": "confirmed",
+            "source_text": "confirmed",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "C13"
+          },
+          "Cancelled subject": {
+            "value": "trip",
+            "source_text": "trip",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "D13"
+          },
+          "Trip reference": {
+            "value": "T19",
+            "source_text": "T19",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "E13"
+          },
+          "Trip revision": {
+            "value": 1.0,
+            "source_text": "1.0",
+            "number_format": "0",
+            "data_type": "n",
+            "cell": "F13"
+          },
+          "Initiation activity reference": {
+            "value": "TC019-requested",
+            "source_text": "TC019-requested",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "I13"
+          },
+          "Acting employee or supervisor": {
+            "value": "SUP-01",
+            "source_text": "SUP-01",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "J13"
+          },
+          "Activity time (UTC)": {
+            "value": "2026-09-13T09:00:00",
+            "source_text": "2026-09-13 09:00:00",
+            "number_format": "yyyy-mm-dd hh:mm:ss \"UTC\"",
+            "data_type": "d",
+            "cell": "K13"
+          },
+          "Effective time (UTC)": {
+            "value": "2026-09-13T09:00:00",
+            "source_text": "2026-09-13 09:00:00",
+            "number_format": "yyyy-mm-dd hh:mm:ss \"UTC\"",
+            "data_type": "d",
+            "cell": "L13"
+          },
+          "Arrival batch": {
+            "value": 3.0,
+            "source_text": "3.0",
+            "number_format": "0",
+            "data_type": "n",
+            "cell": "M13"
+          },
+          "Business reason": {
+            "value": "Supervisor confirms the requested business cancellation",
+            "source_text": "Supervisor confirms the requested business cancellation",
+            "number_format": "General",
+            "data_type": "s",
+            "cell": "N13"
+          }
+        }
+      }
+    ]
+  },
+  "source_observations": [
+    {
+      "source_id": "policy-pol-2026-2",
+      "path": null,
+      "sha256": null,
+      "status": "unavailable",
+      "error": "HTTP response contained a generic Notion shell; policy page content was not accessible",
+      "url": "https://private-pecorino-70e.notion.site/Project-D-Alderbridge-travel-reimbursement-policy-POL-2026-1-3d80b700541e81ed93ebd386abc1dcb0",
+      "locator": "Notion policy page body",
+      "observed_at": "2026-10-14T20:50:12Z",
+      "version": null,
+      "scope": "Travel reimbursement policy POL-2026.2",
+      "missing_scope": [
+        "Travel reimbursement policy POL-2026.2"
+      ],
+      "observation": {
+        "method": "fresh-http-native",
+        "requested_url": "https://private-pecorino-70e.notion.site/Project-D-Alderbridge-travel-reimbursement-policy-POL-2026-1-3d80b700541e81ed93ebd386abc1dcb0",
+        "final_url": "https://private-pecorino-70e.notion.site/Project-D-Alderbridge-travel-reimbursement-policy-POL-2026-1-3d80b700541e81ed93ebd386abc1dcb0",
+        "http_status": 200,
+        "started_at": "2026-10-14T20:50:11Z",
+        "completed_at": "2026-10-14T20:50:12Z",
+        "response_headers": {
+          "etag": "W/\"7c923e44877205ba92198dafc0d06930\"",
+          "last-modified": "Wed, 14 Oct 2026 19:41:34 GMT",
+          "content-type": "text/html; charset=utf-8"
+        },
+        "response_path": "responses/policy-pol-2026-2.body",
+        "response_sha256": "6a4b0bb68942555473cc5f0dd8778146d710513eabe4323eb93fbb51bac21c2c",
+        "response_bytes": 20022,
+        "content_version": "6a4b0bb68942555473cc5f0dd8778146d710513eabe4323eb93fbb51bac21c2c",
+        "cache_fallback_used": false
+      }
+    },
+    {
+      "source_id": "initial-claim-binder",
+      "path": "sources/initial-claim-binder.pdf",
+      "sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+      "status": "read",
+      "error": null,
+      "url": "https://drive.google.com/file/d/13sRj6s_kMeP1hsYGstWWmfkb6SCN1YOS/view",
+      "locator": "Complete PDF document",
+      "observed_at": "2026-10-14T20:50:14Z",
+      "version": "Sat, 12 Sep 2026 02:56:31 GMT",
+      "scope": "Initial claim binder",
+      "missing_scope": [],
+      "observation": {
+        "method": "fresh-http-export",
+        "requested_url": "https://drive.google.com/uc?export=download&id=13sRj6s_kMeP1hsYGstWWmfkb6SCN1YOS",
+        "final_url": "https://drive.usercontent.google.com/download?id=13sRj6s_kMeP1hsYGstWWmfkb6SCN1YOS&export=download",
+        "http_status": 200,
+        "started_at": "2026-10-14T20:50:12Z",
+        "completed_at": "2026-10-14T20:50:14Z",
+        "response_headers": {
+          "last-modified": "Sat, 12 Sep 2026 02:56:31 GMT",
+          "content-type": "application/octet-stream",
+          "content-length": "182878"
+        },
+        "response_path": "responses/initial-claim-binder.body",
+        "response_sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+        "response_bytes": 182878,
+        "content_version": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+        "cache_fallback_used": false
+      }
+    },
+    {
+      "source_id": "claim-updates-binder",
+      "path": "sources/claim-updates-binder.pdf",
+      "sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+      "status": "read",
+      "error": null,
+      "url": "https://drive.google.com/file/d/16829RwrGrMCK9oq5TnWuytFewGk_8xQP/view",
+      "locator": "Complete PDF document",
+      "observed_at": "2026-10-14T20:50:16Z",
+      "version": "Sat, 12 Sep 2026 02:56:29 GMT",
+      "scope": "Claim updates binder",
+      "missing_scope": [],
+      "observation": {
+        "method": "fresh-http-export",
+        "requested_url": "https://drive.google.com/uc?export=download&id=16829RwrGrMCK9oq5TnWuytFewGk_8xQP",
+        "final_url": "https://drive.usercontent.google.com/download?id=16829RwrGrMCK9oq5TnWuytFewGk_8xQP&export=download",
+        "http_status": 200,
+        "started_at": "2026-10-14T20:50:15Z",
+        "completed_at": "2026-10-14T20:50:16Z",
+        "response_headers": {
+          "last-modified": "Sat, 12 Sep 2026 02:56:29 GMT",
+          "content-type": "application/octet-stream",
+          "content-length": "12336"
+        },
+        "response_path": "responses/claim-updates-binder.body",
+        "response_sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+        "response_bytes": 12336,
+        "content_version": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+        "cache_fallback_used": false
+      }
+    },
+    {
+      "source_id": "receipt-binder",
+      "path": "sources/receipt-binder.pdf",
+      "sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+      "status": "read",
+      "error": null,
+      "url": "https://drive.google.com/file/d/1Ynn1VLH-faRIy91xy95rOWwCBhy5mjjM/view",
+      "locator": "Complete PDF document",
+      "observed_at": "2026-10-14T20:50:18Z",
+      "version": "Sat, 12 Sep 2026 02:56:31 GMT",
+      "scope": "Receipt binder",
+      "missing_scope": [],
+      "observation": {
+        "method": "fresh-http-export",
+        "requested_url": "https://drive.google.com/uc?export=download&id=1Ynn1VLH-faRIy91xy95rOWwCBhy5mjjM",
+        "final_url": "https://drive.usercontent.google.com/download?id=1Ynn1VLH-faRIy91xy95rOWwCBhy5mjjM&export=download",
+        "http_status": 200,
+        "started_at": "2026-10-14T20:50:16Z",
+        "completed_at": "2026-10-14T20:50:18Z",
+        "response_headers": {
+          "last-modified": "Sat, 12 Sep 2026 02:56:31 GMT",
+          "content-type": "application/octet-stream",
+          "content-length": "166630"
+        },
+        "response_path": "responses/receipt-binder.body",
+        "response_sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+        "response_bytes": 166630,
+        "content_version": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+        "cache_fallback_used": false
+      }
+    },
+    {
+      "source_id": "travel-registers-workbook",
+      "path": "sources/travel-registers-workbook.xlsx",
+      "sha256": "3cf8b225b20b9ac99b8d493b14a95fdde261d677aab77daaf399a37fb4dcef2f",
+      "status": "read",
+      "error": null,
+      "url": "https://docs.google.com/spreadsheets/d/1338nvKD6rgAdLgGRhYCMMlQyDNLK0sE8pvFWrZAaaxg/edit",
+      "locator": "All workbook tabs via native XLSX export",
+      "observed_at": "2026-10-14T20:50:21Z",
+      "version": null,
+      "scope": "Travel registers workbook",
+      "missing_scope": [],
+      "observation": {
+        "method": "fresh-http-export",
+        "requested_url": "https://docs.google.com/spreadsheets/d/1338nvKD6rgAdLgGRhYCMMlQyDNLK0sE8pvFWrZAaaxg/export?format=xlsx",
+        "final_url": "https://doc-08-48-sheets.googleusercontent.com/export/f3kk9gtum31ktuqh54kn7i1e14/nebdmd7q3kpd801f7n70pdg6bo/1792011015000/116538737177717635516/*/1338nvKD6rgAdLgGRhYCMMlQyDNLK0sE8pvFWrZAaaxg?format=xlsx",
+        "http_status": 200,
+        "started_at": "2026-10-14T20:50:19Z",
+        "completed_at": "2026-10-14T20:50:21Z",
+        "response_headers": {
+          "content-type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        },
+        "response_path": "responses/travel-registers-workbook.body",
+        "response_sha256": "3cf8b225b20b9ac99b8d493b14a95fdde261d677aab77daaf399a37fb4dcef2f",
+        "response_bytes": 136469,
+        "content_version": "3cf8b225b20b9ac99b8d493b14a95fdde261d677aab77daaf399a37fb4dcef2f",
+        "cache_fallback_used": false
+      }
+    }
+  ]
+}

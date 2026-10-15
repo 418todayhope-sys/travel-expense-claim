@@ -614,7 +614,8 @@ def integrate_arrival_batch(
             finance_events=domain["finance_records"], finance=finance_results[claim_id],
             cancellations=cancellation_rows, arrival_batch=arrival_batch,
             source_observations=source_observations or [], prior_finance=prior_finance,
-            source_classifications=domain["source_classifications"])
+            source_classifications=domain["source_classifications"],
+            prior_workflow=before_batch.get("ordinary_workflows", {}).get(claim_id))
         finance_results[claim_id] = workflow.pop("finance")
         domain["ordinary_workflows"][claim_id] = workflow
         domain["ordinary_workflow_history"].append({"batch_id": batch_id, "workflow": deepcopy(workflow)})

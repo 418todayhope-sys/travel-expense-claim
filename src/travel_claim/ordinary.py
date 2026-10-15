@@ -7,11 +7,13 @@ from __future__ import annotations
 
 from copy import deepcopy
 from datetime import datetime, timezone
+from decimal import Decimal
 import re
 
 from .finance import _cents, reconcile_finance_events
 from .workflow import row_values
-from .expenses import evaluate_expenses
+from .expenses import evaluate_expenses, policy_valid
+from .exceptions import travel_findings, review_binds_exception, source_bound
 
 ROLE_FIELDS = {"administration": "Administration reviewer", "budget_owner": "Budget owner",
                "supervisor": "Supervisor", "director": "Director"}
@@ -49,7 +51,7 @@ def expense_lines(record):
 
 
 def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancellations,
-                  arrival_batch, source_observations, prior_finance=None, source_classifications=None):
+                  arrival_batch, source_observations, prior_finance=None, source_classifications=None, prior_workflow=None):
     """Evaluate an ordinary path; each result keeps its evidence and owner."""
     record = claim['record']; values = fields(record)
     claim_id, revision = claim['subject_id'], claim['revision']
@@ -134,8 +136,12 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
           lead, 'Obtain the policy-defined permission requirement and matching permit approvals/timing; resolve affected cancellations')
 
     lines = expense_lines(record)
+    eligibility = travel_findings(trip=trip, employee=employee, decisions=decisions, people=table(parsed, 'people', 'People'),
+        cancellations=cancellations, fields=fields, ref=ref, observations=source_observations,
+        trip_source_refs=[ref(r) for r in trips]) if policy_valid(parsed.get('expense_policy')) else []
     calculation = evaluate_expenses(lines=lines, parsed=parsed, employee=employee, trip_id=trip_id,
-        trip=trip, record=record, history=finance['revision_history'], fields=fields, ref=ref, table=table)
+        trip=trip, record=record, history=finance['revision_history'], fields=fields, ref=ref, table=table,
+        eligibility_findings=eligibility, observations=source_observations)
     evidence_ok = bool(lines) and len({line['cost_id'] for line in lines}) == len(lines) and all(
         line['evidence_status'] == 'PASS' for line in lines)
     evidence_refs = [ref(record)] + [r for line in lines for r in line['source_refs']]
@@ -146,7 +152,10 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
     stage('filing_deadline', filing_ok, evidence_refs,
           '; '.join(f"{line['cost_id']}: {line['reason']}" for line in lines) or 'Missing expense submissions',
           finance_owner, 'Verify cost-specific original submission dates, trip end and employee payment; obtain explicit Finance exception for late filing')
-    policy_ok = policy_supported and evidence_ok and linked and permission and calculation['status'] == 'PASS'
+    waived_permission = bool(eligibility and any(f['issue'] in {'late_permit', 'permit_unapproved'} for f in eligibility)
+        and lines and all(l['eligibility_status'] == 'PASS' for l in lines))
+    reimbursement_permission = permission or (linked and policy_supported and waived_permission)
+    policy_ok = policy_supported and evidence_ok and linked and reimbursement_permission and calculation['status'] == 'PASS'
     for line in lines:
         line['allowed_cents'] = line['calculated_cents'] if policy_ok else None
         if not policy_ok:
@@ -156,6 +165,33 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
           'Expense calculation and filing are separate from travel permission, reviewed policy definitions and approvals',
           lead, 'Resolve line findings and remaining policy/permission evidence before treating calculated amounts as entitlement')
 
+    for line in lines:
+        exception = line['exception']
+        if exception['status'] != 'absent':
+            stage(f"finance_exception:{line['cost_id']}", exception['status'] == 'valid', line['source_refs'],
+                  exception.get('reason', 'Source-bound Finance exception'), finance_owner,
+                  'Supply exact Finance actor, current claim/revision/cost, replacement amount, reason and covered issues')
+        for item in line['eligibility_findings']:
+            name = f"eligibility:{line['cost_id']}:{item['issue']}" + (f":{item['travel_cancellation_id']}" if item.get('travel_cancellation_id') else '')
+            stage(name, item['status'] == 'covered_for_reimbursement', item['source_refs'] + item['exception_source_refs'],
+                  item['original_finding'] + '; ' + item['status'], finance_owner,
+                  'Obtain explicit Finance coverage for this exact eligibility finding and affected expense; retain original arrangement history')
+
+    prior_lines = {l['cost_id']: l for l in (prior_workflow or {}).get('lines', [])}
+    def changed_exception_amount(line):
+        old = prior_lines.get(line['cost_id'], {})
+        before = old.get('conversion', {}).get('allowed_original_amount')
+        after = line.get('conversion', {}).get('allowed_original_amount')
+        # Unknown-to-known evidence and decimal display precision are not proof
+        # of a material replacement-amount change.
+        return bool(before is not None and after is not None
+            and (line.get('exception', {}).get('status') == 'valid' or old.get('exception', {}).get('status') == 'valid')
+            and Decimal(before) != Decimal(after))
+    same_revision_change = bool(prior_workflow and prior_workflow.get('revision') == revision and (
+        any(changed_exception_amount(line) for line in lines)
+        or prior_workflow.get('exception_revalidation', {}).get('same_revision_change')))
+    replacement_review = same_revision_change or any(
+        line.get('replacement_amount_changed') or changed_exception_amount(line) for line in lines)
     current = [r for r in decisions if fields(r).get('Subject type') == 'claim'
                and fields(r).get('Subject reference') == claim_id and fields(r).get('Revision') == revision]
     unique_decisions = {}; decision_conflict = False
@@ -184,7 +220,11 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
                                    and dv.get('Reviewer') != employee for role in roles))
         if policy_record:
             valid = valid and pv.get('Policy revision') == policy.get('Policy revision')
-        observed.append(dict(decision_id=dv.get('Decision reference'), outcome=dv.get('Outcome'), roles=roles,
+        exception_binding = (not replacement_review or (source_bound(decision, source_observations)
+            and all(source_bound(p, source_observations) for p in ps)
+            and review_binds_exception(decision, record, same_revision_change=same_revision_change, fields=fields, ref=ref)))
+        valid = valid and exception_binding
+        observed.append(dict(exception_binding_valid=exception_binding, decision_id=dv.get('Decision reference'), outcome=dv.get('Outcome'), roles=roles,
                              evidence_valid=bool(valid), source_refs=[ref(decision)] + [ref(p) for p in ps]))
         reviews_ok = reviews_ok and valid
     review_refs = [r for d in observed for r in d['source_refs']] + [ref(p) for p in people]
@@ -204,12 +244,17 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
           'All policy-required roles must have matching current-revision approvals; no decisions are created',
           lead, 'Confirm policy-required review roles and obtain their current-revision human approvals')
 
+    exception_revalidated = not replacement_review or approvals
+    stage('exception_revalidation', exception_revalidated, evidence_refs + review_refs,
+          'Replacement amounts require current claim reviews bound to the replacement source version; earlier reviews remain historical',
+          lead, 'Obtain current revision/source-bound reviews of the Finance replacement amount and a matching reimbursement authorization')
+
     requests = [r for r in table(parsed, 'reimbursement_requests', 'Reimbursement requests')
                 if trusted(r) and visible(r) and fields(r).get('Claim reference') == claim_id and fields(r).get('Revision') == revision]
     request = fields(requests[0]) if len(requests) == 1 else {}
     obligation = finance.get('recorded_obligation')
     approved_ids = {d['decision_id'] for d in observed if d['outcome'] == 'approve' and d['evidence_valid']}
-    request_ok = bool(linked and permission and policy_ok and approvals and obligation and len(requests) == 1
+    request_ok = bool(linked and reimbursement_permission and policy_ok and approvals and obligation and len(requests) == 1
                       and request.get('Request reference') == obligation['request_id']
                       and request.get('Payee ID') == person.get('Payee ID') == obligation['payee_id']
                       and request.get('Currency') == 'EUR' and _cents(request.get('Amount (EUR)')) == allowed == obligation['amount_cents']
@@ -275,7 +320,7 @@ def connect_claim(*, parsed, claim, decisions, finance_events, finance, cancella
     pending = next((s for s in stages if s['status'] != 'PASS'), None)
     return dict(claim_id=claim_id, revision=revision, trip_id=trip_id, trip_revision=claim.get('trip_revision'),
                 mode=parsed.get('evidence_mode', 'offline-replay'), status=('closed-reimbursed' if allowed else 'closed-no-payment') if closed else 'pending',
-                expense_calculation=calculation, allowed_cents=allowed, balance_cents=finance['balance_cents'], lines=lines, stages=stages,
+                expense_calculation=calculation, exception_revalidation=dict(required=replacement_review, same_revision_change=same_revision_change, status='PASS' if exception_revalidated else 'BLOCKED'), allowed_cents=allowed, balance_cents=finance['balance_cents'], lines=lines, stages=stages,
                 observed_reviews=observed, request=deepcopy(requests[0]) if request_ok else None,
                 source_refs=list(dict.fromkeys([ref(record)] + [r for s in stages for r in s['source_refs']])),
                 next_owner=None if closed else pending['owner'], reason='Supported financial closure' if closed else pending['detail'],

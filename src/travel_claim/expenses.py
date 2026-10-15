@@ -3,11 +3,14 @@
 The policy is explicitly bound by its original bytes; this does not convert the
 user's browser copy into a successful native Notion capture or grant approval.
 """
+from copy import deepcopy
 from calendar import monthrange
 from datetime import date
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP, localcontext
 import hashlib
 from pathlib import Path
+
+from .exceptions import validate_exception, apply_coverage, finding
 
 POLICY_SHA256 = 'f547ee77729be8ad431a5ddf2e2907f94f29ad50092231191abd2f72c04f54d2'
 
@@ -53,7 +56,7 @@ def number(value):
     return result
 
 
-def evaluate_expenses(*, lines, parsed, employee, trip_id, trip, record, history, fields, ref, table):
+def evaluate_expenses(*, lines, parsed, employee, trip_id, trip, record, history, fields, ref, table, eligibility_findings=None, observations=None):
     """Evaluate each line independently, retaining unresolved evidence and reasons."""
     binding = parsed.get('expense_policy')
     verified = policy_valid(binding)
@@ -62,9 +65,26 @@ def evaluate_expenses(*, lines, parsed, employee, trip_id, trip, record, history
     merchants = table(parsed, 'merchant_payments', 'Merchant payments')
     rates = table(parsed, 'fx_rates', 'FX')
     caps = table(parsed, 'caps', 'Caps')
+    observations = parsed.get('source_observations', []) if observations is None else observations
+    people = table(parsed, 'people', 'People')
     for line in lines:
         line.update(allowed_cents=None, calculated_cents=None, status='unresolved', evidence_status='BLOCKED',
                     filing_status='BLOCKED', calculation_status='BLOCKED', reason='Missing or conflicting evidence')
+        line['eligibility_findings'] = deepcopy(eligibility_findings or [])
+        line['eligibility_status'] = 'BLOCKED'
+        exception = validate_exception(record=record, line=line, employee=employee, people=people,
+            observations=observations, fields=fields, ref=ref)
+        # An exception for another *present* cost has no effect on this line.
+        target = fields(record).get('Expense reference')
+        if target != line['cost_id'] and target in {l['cost_id'] for l in lines}:
+            exception = dict(status='absent', source_refs=[], covered_issues=[], raw_fields={})
+        if (exception['status'] == 'valid' and 'travel_cancellation' in exception['covered_issues']
+                and not any(f['issue'] == 'travel_cancellation' and f.get('travel_cancellation_id') == exception.get('travel_cancellation_id')
+                            for f in line['eligibility_findings'])):
+            exception.update(status='BLOCKED', reason='Exception cancellation reference does not match an affected current expense')
+        line['source_refs'] += [r for f in line['eligibility_findings'] for r in f['source_refs']]
+        line['exception'] = exception
+        line['source_refs'] += exception['source_refs']
         rs = [r for r in receipts if fields(r).get('Receipt reference') == line['receipt_id']]
         ms = [r for r in merchants if fields(r).get('Expense reference') == line['cost_id']]
         line['source_refs'] += [ref(r) for r in rs + ms] + policy_refs
@@ -129,26 +149,7 @@ def evaluate_expenses(*, lines, parsed, employee, trip_id, trip, record, history
                     allowed = min(gross, cap * units)
                 cap_evidence = dict(amount_per_unit=str(cap), units=str(units), source_ref=ref(cs[0]))
                 line['source_refs'].append(ref(cs[0]))
-            if line['currency'] == 'EUR':
-                rate = Decimal(1); rate_refs = policy_refs
-            else:
-                fx = [r for r in rates if fields(r).get('Currency') == line['currency']
-                      and local_date(fields(r).get('Rate date')) == paid]
-                if len(fx) != 1:
-                    raise ValueError('Missing or ambiguous payment-date Finance FX rate')
-                rate = number(fields(fx[0]).get('EUR per currency unit')); rate_refs = [ref(fx[0])]
-                if rate <= 0:
-                    raise ValueError('FX rate must be positive')
-            with localcontext() as ctx:
-                ctx.prec = max(50, len(str(gross)) + len(str(rate)) + 20)
-                converted = allowed * rate
-                cents = int((converted * 100).quantize(Decimal('1'), rounding=ROUND_HALF_UP))
-            line['source_refs'] += rate_refs
-            line.update(calculated_cents=cents, calculation_status='PASS',
-                        conversion=dict(original_amount=str(gross), allowed_original_amount=str(allowed),
-                                        currency=line['currency'], payment_date=paid.isoformat(), eur_rate=str(rate),
-                                        unrounded_eur=str(converted), rounded_cents=cents, rounding='ROUND_HALF_UP',
-                                        rate_source_refs=rate_refs, cap=cap_evidence))
+            line['base_allowed_original_amount'] = str(allowed)
             deadline = filing_deadline(trip.get('End date'))
             submitted = local_date(line['first_submitted_date'])
             # Earlier, unchanged cost submissions remain authoritative after a correction.
@@ -173,31 +174,52 @@ def evaluate_expenses(*, lines, parsed, employee, trip_id, trip, record, history
             line['filing'] = dict(first_submission_date=submitted.isoformat(), deadline=deadline.isoformat(),
                                   inclusive=True, source_refs=[ref(record)] + policy_refs)
             if submitted > deadline:
-                finding = 'Late filing held pending explicit version-bound Finance exception'
-                line['filing']['original_finding'] = finding
-                ev = fields(record)
-                people = [fields(r) for r in table(parsed, 'people', 'People') if fields(r).get('Employee ID') == employee]
-                covered = {v.strip() for v in str(ev.get('Covered issues', '')).splitlines()}
-                valid_exception = (len(people) == 1 and people[0].get('Finance officer')
-                    and ev.get('Authorizing Finance officer') == people[0]['Finance officer']
-                    and ev.get('Applies to claim') == ev.get('Claim reference')
-                    and str(ev.get('Applies to revision')) == str(ev.get('Revision'))
-                    and ev.get('Expense reference') == line['cost_id'] and ev.get('Exception reason')
-                    and bool(covered & {'Late filing', 'late_filing'}))
-                if not valid_exception:
-                    raise ValueError(finding)
-                replacement = number(ev.get('Allowed original amount'))
-                if replacement != allowed:
-                    raise ValueError('Finance exception changes amount; replacement eligibility needs separate review')
-                line['filing']['exception'] = dict(source_ref=ref(record), actor=ev['Authorizing Finance officer'],
-                    claim_id=ev['Applies to claim'], revision=ev['Applies to revision'], cost_id=line['cost_id'],
-                    reason=ev['Exception reason'], covered_issues=sorted(covered), replacement_original_amount=str(replacement))
-            line.update(filing_status='PASS', status='supported', reason='Supported paid expense calculation; filing supported by explicit Finance exception'
-                        if line.get('filing', {}).get('exception') else 'Supported paid expense calculation and timely filing')
+                original = 'Late filing held pending explicit version-bound Finance exception'
+                line['filing']['original_finding'] = original
+                line['eligibility_findings'].append(finding('late_filing', original, [ref(record)] + policy_refs))
+            if exception['status'] == 'valid':
+                replacement = Decimal(exception['replacement_original_amount'])
+                if category == 'personal' and replacement != 0:
+                    raise ValueError('Exception cannot turn a personal purchase into reimbursable business cost')
+                allowed = replacement
+                line['replacement_amount_changed'] = allowed != Decimal(line['base_allowed_original_amount'])
+            apply_coverage(line['eligibility_findings'], exception)
+            if line['currency'] == 'EUR':
+                rate = Decimal(1); rate_refs = policy_refs
+            else:
+                fx = [r for r in rates if fields(r).get('Currency') == line['currency']
+                      and local_date(fields(r).get('Rate date')) == paid]
+                if len(fx) != 1:
+                    raise ValueError('Missing or ambiguous payment-date Finance FX rate')
+                rate = number(fields(fx[0]).get('EUR per currency unit')); rate_refs = [ref(fx[0])]
+                if rate <= 0:
+                    raise ValueError('FX rate must be positive')
+            with localcontext() as ctx:
+                ctx.prec = max(50, len(str(gross)) + len(str(rate)) + 20)
+                converted = allowed * rate
+                cents = int((converted * 100).quantize(Decimal('1'), rounding=ROUND_HALF_UP))
+            line['source_refs'] += rate_refs
+            line.update(calculated_cents=cents, calculation_status='PASS',
+                        conversion=dict(original_amount=str(gross), allowed_original_amount=str(allowed),
+                                        currency=line['currency'], payment_date=paid.isoformat(), eur_rate=str(rate),
+                                        unrounded_eur=str(converted), rounded_cents=cents, rounding='ROUND_HALF_UP',
+                                        rate_source_refs=rate_refs, cap=cap_evidence))
+            line['filing_status'] = 'BLOCKED' if any(
+                f['issue'] == 'late_filing' and f['status'] == 'unresolved' for f in line['eligibility_findings']) else 'PASS'
+            if exception['status'] == 'valid' and any(f['issue'] == 'late_filing' and f['status'] == 'covered_for_reimbursement'
+                                                    for f in line['eligibility_findings']):
+                line['filing']['exception'] = deepcopy(exception)
+            if exception['status'] == 'BLOCKED':
+                raise ValueError(exception['reason'])
+            if any(f['status'] == 'unresolved' for f in line['eligibility_findings']):
+                raise ValueError('; '.join(f['original_finding'] for f in line['eligibility_findings'] if f['status'] == 'unresolved'))
+            line.update(eligibility_status='PASS', status='supported',
+                        reason='Supported paid expense; exact Finance coverage retained' if exception['status'] == 'valid'
+                        else 'Supported paid expense calculation and timely filing')
         except (ValueError, TypeError, InvalidOperation, OverflowError) as exc:
             line['reason'] = str(exc)
     complete = bool(lines) and len({l['cost_id'] for l in lines}) == len(lines) and all(
-        l['calculation_status'] == l['filing_status'] == 'PASS' for l in lines)
+        l['calculation_status'] == l['filing_status'] == l['eligibility_status'] == 'PASS' for l in lines)
     return dict(status='PASS' if complete else 'BLOCKED',
                 calculated_cents=sum(l['calculated_cents'] for l in lines) if complete else None,
                 policy_source_refs=policy_refs, policy_verified=verified)
