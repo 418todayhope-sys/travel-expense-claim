@@ -1170,3 +1170,53 @@ Run the full test suite and Git diff checks.
 Report the changed files, test count, preservation results, remaining blockers, and any failed checks.
 
 Stop if a requirement cannot be implemented without inventing evidence or changing protected financial decisions.
+
+---
+
+Project D — Step 183: Commit and Push Verified Step 182 Policy Integration
+
+Current starting HEAD:
+d494252163d4082dd9f086c5045496a73d53b237
+
+    Verify the current branch, Git status, and complete diff against the starting HEAD.
+
+    Confirm changes are limited to the nine reviewed Step 182 files.
+
+    Rerun the full test suite and Git diff checks.
+
+    Verify all 129 protected-file hashes still match.
+
+    Confirm prior snapshots, reports, policy provenance, and financial outputs remain unchanged.
+
+Stage ONLY:
+
+README.md
+
+skills/travel-expense-claim/SKILL.md
+
+snapshot.schema.json
+
+src/travel_claim/cli.py
+
+src/travel_claim/policy_evidence.py
+
+src/travel_claim/offline_replay.py
+
+src/travel_claim/readiness.py
+
+src/travel_claim/snapshots.py
+
+tests/test_policy_evidence.py
+
+Commit message:
+feat: integrate provenance-bound policy replay
+
+Push normally to origin main, using existing Entire.io hooks. Do not force-push.
+
+Verify that remote main matches the exact local commit and that every Entire.io checkpoint reference matches remotely.
+
+Do not stage unrelated audit reports, temporary replay artifacts, or user-provided policy provenance files.
+
+Report the full commit SHA, passing test count, committed files, protected-file verification, and Entire.io checkpoint results.
+
+If any verification fails, stop and report the issue.
