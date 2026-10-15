@@ -100,6 +100,12 @@ def build_parser() -> argparse.ArgumentParser:
     )
     replay.add_argument("run_dir", type=Path, help="existing retained-source run directory")
     replay.add_argument("--schema", type=Path, default=_default_schema_path(), help="snapshot schema path")
+    policy_replay = commands.add_parser('policy-replay', help='new offline retained-input run with separately verified browser policy evidence')
+    policy_replay.add_argument('source_run', type=Path)
+    policy_replay.add_argument('run_dir', type=Path)
+    policy_replay.add_argument('--run-id', required=True)
+    policy_replay.add_argument('--browser-policy', type=Path, required=True)
+    policy_replay.add_argument('--schema', type=Path, default=_default_schema_path())
     readiness = commands.add_parser("validate-readiness", help="check local submission evidence; PASS/BLOCKED/FAIL, never live compliance")
     readiness.add_argument("run_dir", type=Path)
     readiness.add_argument("--schema", type=Path, default=_default_schema_path())
@@ -110,6 +116,16 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if args.command == 'policy-replay':
+        from .policy_evidence import create_policy_replay
+        try:
+            result = create_policy_replay(args.source_run, args.run_dir, run_id=args.run_id,
+                browser_policy=args.browser_policy, schema_path=args.schema)
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            print(f'Policy replay failed: {exc}', file=sys.stderr)
+            return 1
+        print(f"OFFLINE REPLAY {result['run_id']}: supplemental user-provided browser policy; calendar date 2026-11-15 Europe/Amsterdam; no time inferred; native observations unchanged; final live compliance not established")
+        return 0
     if args.command == "validate-readiness":
         try:
             run_root = args.run_dir.resolve()

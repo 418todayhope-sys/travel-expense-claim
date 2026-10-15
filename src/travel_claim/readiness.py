@@ -83,6 +83,21 @@ def validate_readiness(run_dir: Path, *, schema_path: Path, repo_dir: Path) -> d
             [run_dir / "sources.json"], "No source-access repair required." if complete else
             f"Obtain authorized access to {source.url}, perform a fresh native read, and retain complete scope in a new run.")
 
+    supplemental_binding = None
+    def supplemental_evidence():
+        nonlocal supplemental_binding
+        from .policy_evidence import verify_policy_evidence, CLOCK
+        verified_binding = verify_policy_evidence(run_dir, parsed)
+        require(state.get('supplemental_policy_binding') == verified_binding and state.get('event_clock') == CLOCK,
+                'Replay state supplemental policy/clock binding mismatch')
+        supplemental_binding = verified_binding
+    supplemental_present = bool(parsed.get('supplemental_policy') or state.get('supplemental_policy_binding') or (run_dir / 'supplemental-policy.json').exists())
+    if supplemental_present:
+        check('supplemental-policy-evidence', [run_dir / 'supplemental-policy.json', run_dir / 'supplemental', run_dir / 'retained-input-lineage.json'], supplemental_evidence)
+    else:
+        add('supplemental-policy-evidence', 'BLOCKED', 'No supplemental browser policy supplied',
+            [run_dir / 'parsed-records.json'], 'Supply verified browser policy explicitly in a new policy-replay run if required.')
+
     clock = manifest.get("case_clock")
     clock_confirmed = False
     if clock:
@@ -91,10 +106,12 @@ def validate_readiness(run_dir: Path, *, schema_path: Path, repo_dir: Path) -> d
         except (ValueError, TypeError, AttributeError):
             pass
     clock_confirmed = clock_confirmed and parsed.get("case_clock") == clock and state.get("case_clock") == clock and not parsed.get("case_clock_issue")
+    clock_confirmed = clock_confirmed or bool(supplemental_binding)
     add("authoritative-case-clock", "PASS" if clock_confirmed else "BLOCKED",
+        "Verified browser policy supplies 2026-11-15 Europe/Amsterdam, calendar-date precision; same-day cutoff unknown" if supplemental_binding else
         "Consistent supplied timestamp recorded; authority is caller supplied" if clock_confirmed else "Authoritative scenario clock is unconfirmed or inconsistent",
         [run_dir / "sources.json", run_dir / "parsed-records.json"],
-        "Retain the supplied authority evidence." if clock_confirmed else "Obtain the facilitator's authoritative scenario date, time and timezone; do not infer a clock from observation timestamps.")
+        "Retain the supplied authority evidence." if clock_confirmed else "Obtain authoritative scenario clock evidence at its actual precision; do not infer time from observation timestamps.")
 
     mode = state.get("mode", "unverified")
     offline = mode == "offline-replay" and state.get("fresh_native_reads_performed") is False
@@ -144,6 +161,9 @@ def validate_readiness(run_dir: Path, *, schema_path: Path, repo_dir: Path) -> d
                 source_binding=observed["source_binding"], predecessor=observed["predecessor"],
                 prior_result=prior_result, source_observations=manifest['files'],
             )
+            if supplemental_binding:
+                current['snapshot']['supplemental_policy_binding'] = supplemental_binding
+                current['snapshot']['event_clock'] = parsed['event_clock']
             current["snapshot"]["issues"].append(dict(OFFLINE_MARKER))
             require(current["snapshot"] == observed, f"{path.name} content differs from retained evidence replay")
             prior_result = current
@@ -186,6 +206,10 @@ def validate_readiness(run_dir: Path, *, schema_path: Path, repo_dir: Path) -> d
             require(item["request_draft"] == {"status": "draft", "sent": False}, "Repair request is not an unsent draft")
             require(isinstance(item["source_refs"], list), "Repair source_refs must be an array")
             for ref in item["source_refs"]:
+                if supplemental_binding:
+                    from .policy_evidence import metadata
+                    if ref in metadata()['source_refs']:
+                        continue
                 sid_hash, locator = ref.split("#", 1)
                 sid, digest = sid_hash.split("@", 1)
                 require(sid in retained and retained[sid]["sha256"] == digest and bool(locator), "Repair source reference does not bind retained evidence")

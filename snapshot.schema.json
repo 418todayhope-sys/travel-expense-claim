@@ -563,6 +563,47 @@
           }
         ]
       }
+    },
+    "supplemental_policy_binding": {
+      "type": "object",
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "const": "supplemental-policy.json"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "additionalProperties": false
+    },
+    "event_clock": {
+      "type": "object",
+      "required": [
+        "date",
+        "timezone"
+      ],
+      "properties": {
+        "date": {
+          "const": "2026-11-15"
+        },
+        "timezone": {
+          "const": "Europe/Amsterdam"
+        }
+      },
+      "additionalProperties": false
     }
+  },
+  "dependentRequired": {
+    "supplemental_policy_binding": [
+      "event_clock"
+    ],
+    "event_clock": [
+      "supplemental_policy_binding"
+    ]
   }
 }

@@ -42,6 +42,7 @@ def _report(
         row.get("source_id") == "policy-pol-2026-2" and row.get("status") == "read" and not row.get("missing_scope")
         for row in json.loads((snapshots[0].parents[1] / "sources.json").read_text())["files"]
     )
+    supplemental = parsed.get('supplemental_policy')
     lines = [
         "# Project D operations handoff — OFFLINE REPLAY",
         "",
@@ -51,10 +52,12 @@ def _report(
         "- Mode: `offline-replay`",
         "- Fresh native reads in this run: **no**",
         f"- Retained `sources.json` SHA-256: `{manifest_hash}`",
-        (f"- Case clock: **supplied** (`{parsed['case_clock']}`; supplied authority remains subject to human review)."
+        ("- Case clock: **2026-11-15, Europe/Amsterdam — calendar date only**; verified supplemental browser policy, no time inferred."
+         if supplemental else f"- Case clock: **supplied** (`{parsed['case_clock']}`; supplied authority remains subject to human review)."
          if parsed.get("case_clock") else
          f"- Case clock: **unresolved** ({clock_issue.get('owner', 'Exercise facilitator')}; {clock_issue.get('next_action', 'obtain authoritative case clock')})"),
-        ("- Reimbursement policy POL-2026.2: **retained**; eligibility, entitlement, caps, readiness, and final closure remain unresolved."
+        ("- Reimbursement policy POL-2026.2: **supplemental browser copy retained**; native acquisition status remains separately recorded."
+         if supplemental else "- Reimbursement policy POL-2026.2: **retained**; eligibility, entitlement, caps, readiness, and final closure remain unresolved."
          if policy_retained else
          "- Reimbursement policy POL-2026.2: **unavailable**; eligibility, entitlement, caps, readiness, and final closure remain unresolved."),
         f"- Parsed input: `{OUTPUT_NAME}` SHA-256 `{hashlib.sha256((snapshots[0].parents[1] / OUTPUT_NAME).read_bytes()).hexdigest()}`; parsed source content remains in that file.",
@@ -64,9 +67,13 @@ def _report(
             )["files"]
         ) + ".",
         "",
-        "## Batch projections",
-        "",
     ]
+    lines.extend(["## Batch projections", ""])
+    if supplemental:
+        lines += ["## Supplemental policy evidence", "",
+            f"POL-2026.2: user-provided browser-visible copy, not native HTTP/API retrieval. `{supplemental['path']}` SHA-256 `{supplemental['sha256']}`.",
+            "Case date: **2026-11-15**, **Europe/Amsterdam**, calendar-date precision; no time of day inferred. Same-day cutoff decisions remain held where timing is material.",
+            "Native acquisition statuses are unchanged. Earlier missing-clock observations remain historical; native Notion access and financial closure are not established.", ""]
     for path in snapshots:
         snapshot = json.loads(path.read_text(encoding="utf-8"))
         lines.append(
@@ -155,7 +162,7 @@ def _report(
     lines.append("")
     lines.extend([
         "## Run-level external blockers", "",
-        "These retained policy and clock issues apply to the run as a whole and are separate from claim repairs. They remain unresolved in this offline replay; no case-clock date or policy rule is inferred.",
+        "The following unresolved source-access and run issues in this offline replay are separate from claim repairs. Supplemental browser evidence, when bound above, does not convert native acquisition failures into successes.",
         "",
     ])
     for blocker in parsed.get("unresolved_issues", []):
@@ -173,7 +180,7 @@ def _report(
         f"- Repair queue: `{output_paths['queue'].name}` (grouped by owner, item identity retained).",
         f"- Owner follow-up drafts: `{output_paths['drafts'].name}` (human review required; not sent).",
         "",
-        "For an authoritative live-source run, resume only after obtaining the authoritative case clock and an accessible native reimbursement policy, then perform fresh reads of all five source locations. This replay does not modify source content or send requests.",
+        "For an authoritative live-source run, perform fresh reads of all five source locations, retain accessible native policy content, and preserve clock evidence at its supplied precision. Supplemental browser evidence does not establish native access. This replay does not modify source content or send requests.",
         "",
     ])
     return "\n".join(lines)
@@ -193,6 +200,10 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
         raise ValueError("Parsed records run_id does not match the retained source manifest")
     if parsed.get("source_manifest") != {"path": "sources.json", "sha256": actual_manifest_hash}:
         raise ValueError("Parsed records are not bound to the current retained sources.json bytes")
+    supplemental_binding = None
+    if parsed.get('supplemental_policy') or (run_dir / 'supplemental-policy.json').exists():
+        from .policy_evidence import verify_policy_evidence
+        supplemental_binding = verify_policy_evidence(run_dir, parsed)
     batches = parsed.get("arrival_batches")
     if not isinstance(batches, list) or not batches or batches != list(range(1, len(batches) + 1)):
         raise ValueError("Retained arrival batches must be a nonempty contiguous explicit sequence starting at 1")
@@ -231,10 +242,15 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
             source_binding=binding, predecessor=predecessor, prior_result=previous,
             source_observations=manifest["files"],
         )
+        if supplemental_binding:
+            current['snapshot']['supplemental_policy_binding'] = supplemental_binding
+            current['snapshot']['event_clock'] = parsed['event_clock']
         current["snapshot"]["issues"].append(dict(OFFLINE_MARKER))
         path = seal_batch_snapshot(
             run_dir, run_id=manifest["run_id"], batch_id=batch_id,
             predecessor_path=previous_path, schema_path=schema_path,
+            supplemental_policy_binding=supplemental_binding,
+            event_clock=parsed.get('event_clock') if supplemental_binding else None,
             allow_unconfirmed_case_clock=True, **{
                 key: current["snapshot"][key]
                 for key in ("claims", "requests", "travel_cancellations", "admitted_event_ids", "issues", "permit_approvals", "budget_reconciliation")
@@ -279,6 +295,7 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
         "fresh_native_reads_performed": False,
         "run_id": manifest["run_id"],
         "case_clock": manifest.get("case_clock"),
+        **({'supplemental_policy_binding': supplemental_binding, 'event_clock': parsed['event_clock']} if supplemental_binding else {}),
         "source_manifest_sha256": actual_manifest_hash,
         "parsed_records_path": OUTPUT_NAME,
         "parsed_records_sha256": hashlib.sha256(parsed_path.read_bytes()).hexdigest(),

@@ -329,3 +329,44 @@ prepaid links; readiness compares budget state/history with deterministic replay
 Native request authorization, Finance exceptions and financial closure rules
 remain separate gates. Earlier policy/interview files and run artifacts are not
 rewritten.
+
+## Step 182: supplemental browser policy and calendar-date clock
+
+The verified POL-2026.2 file is a **user-provided browser-visible copy**, not a
+successful native Notion HTTP/API read. Its exact SHA-256 is
+`f547ee77729be8ad431a5ddf2e2907f94f29ad50092231191abd2f72c04f54d2`.
+It supplies case date **2026-11-15**, **Europe/Amsterdam**; no time of day or UTC
+cutoff is inferred. This supersedes the historical “policy wording/clock wholly
+unknown” description for supplemented runs, without altering earlier captures.
+
+From the repository root, create a distinct retained-input run with:
+
+```bash
+travel-claim policy-replay \
+  artifacts/runs/project-d-live-20261014T204849Z \
+  artifacts/runs/project-d-step182-policy-replay \
+  --run-id project-d-step182-policy-replay \
+  --browser-policy user-provided-sources/step-167/POL-2026.2-browser-copy.txt
+travel-claim validate-readiness artifacts/runs/project-d-step182-policy-replay \
+  --output-dir artifacts/verification/project-d-step182-policy-readiness
+```
+
+Both destination directories must be new. `policy-replay` verifies the original
+native manifest and parsed-record binding, copies retained source/response bytes,
+and preserves every native observation unchanged. The new manifest has a new run
+ID, not new retrieval observations. Original manifest and parsed bytes are retained
+under `supplemental/`, with hashes in `retained-input-lineage.json`. The exact policy
+copy, separate `supplemental-policy.json`, parsed input, replay state and every
+snapshot bind provenance, policy version, source references and date precision.
+No automatic cached fallback is added to `live-run`.
+
+Readiness checks supplemental bytes/provenance and native access separately.
+It can pass the calendar-date evidence check while native Notion access and final
+live-source compliance remain BLOCKED. Existing Finance/cancellation admission
+checks hold same-local-day cutoff observations; future observations remain held.
+No time is manufactured to release them. Legacy approval, budget, cancellation
+resolution and financial closure rules are unchanged: their remaining authority
+or schema gaps stay pending, even though expense/exception/review calculations
+can now consume the explicitly supplied policy evidence. This command does not
+create missing normalized business definitions, requests, approvals or closure
+authority. Drafts remain unsent and require human review.

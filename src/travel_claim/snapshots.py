@@ -70,6 +70,14 @@ def _verify_snapshot(
         return errors
     errors.extend(_check_semantics(snapshot))
     errors.extend(verify_source_manifest(run_dir))
+    if snapshot.get('supplemental_policy_binding') or (run_dir / 'supplemental-policy.json').exists():
+        try:
+            from .policy_evidence import verify_policy_evidence, CLOCK, POLICY_PATH
+            binding = verify_policy_evidence(run_dir)
+            if snapshot.get('supplemental_policy_binding') != binding or snapshot.get('event_clock') != CLOCK:
+                raise ValueError('Snapshot supplemental policy/clock binding mismatch')
+        except (OSError, ValueError, KeyError, TypeError) as exc:
+            errors.append(str(exc))
     try:
         manifest = json.loads((run_dir / "sources.json").read_text(encoding="utf-8"))
         if not isinstance(manifest, dict):
@@ -82,6 +90,8 @@ def _verify_snapshot(
             for record in files if isinstance(record, dict)
             if record.get("status") == "read"
         }
+        if snapshot.get('supplemental_policy_binding') and not errors:
+            retained_ids.add(POLICY_PATH)
         for claim in snapshot["claims"]:
             for line in claim["lines"]:
                 missing_sources = set(line["source_ids"]) - retained_ids
@@ -142,6 +152,8 @@ def seal_batch_snapshot(
     allow_unconfirmed_case_clock: bool = False,
     permit_approvals: dict | None = None,
     budget_reconciliation: dict | None = None,
+    supplemental_policy_binding: dict | None = None,
+    event_clock: dict | None = None,
 ) -> Path:
     """Seal one batch. Binding paths are relative to the run directory.
 
@@ -215,6 +227,9 @@ def seal_batch_snapshot(
         "admitted_event_ids": list(admitted_event_ids),
         "issues": copy.deepcopy(issues),
     }
+    if supplemental_policy_binding is not None:
+        snapshot['supplemental_policy_binding'] = copy.deepcopy(supplemental_policy_binding)
+        snapshot['event_clock'] = copy.deepcopy(event_clock)
     if budget_reconciliation is not None:
         snapshot["budget_reconciliation"] = copy.deepcopy(budget_reconciliation)
     if permit_approvals is not None:

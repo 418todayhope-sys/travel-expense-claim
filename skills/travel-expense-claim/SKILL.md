@@ -82,3 +82,41 @@ Unknown money is null in JSON and blank in CSV. Zero is a known amount. Never la
 - Retry a failed fresh retrieval only by making another live request and recording the new observation. Do not overwrite a prior run's manifest, retained bytes, or sealed snapshot.
 - On replay, preserve obligation/event identity and money; detect conflicting content under an existing event ID.
 - Implemented paths include fresh HTTP/export acquisition and source-bound transcription, plus explicitly offline connected claim, correction, independent cancellation and Finance replay. New source manifests retain response observations and partial/error bodies. Complete native policy access, rule interpretation, authoritative case clock and supported completion authority remain required for final live business compliance; acquisition or offline integrity alone does not establish it.
+
+## Supplemental browser policy replay (Step 182)
+
+The operator may explicitly supply the exact verified POL-2026.2 browser copy.
+This is separate supplemental evidence, never a successful native Notion read.
+From the repository root, use new destination names:
+
+```bash
+travel-claim policy-replay \
+  artifacts/runs/project-d-live-20261014T204849Z \
+  artifacts/runs/project-d-step182-policy-replay \
+  --run-id project-d-step182-policy-replay \
+  --browser-policy user-provided-sources/step-167/POL-2026.2-browser-copy.txt
+travel-claim validate-readiness artifacts/runs/project-d-step182-policy-replay \
+  --output-dir artifacts/verification/project-d-step182-policy-readiness
+```
+
+Verify SHA-256
+`f547ee77729be8ad431a5ddf2e2907f94f29ad50092231191abd2f72c04f54d2`.
+Retain the exact browser text and its user attestation separately in
+`supplemental-policy.json` and `supplemental/`. Check `retained-input-lineage.json`
+and the original native observations: none may be reclassified. This invocation
+is offline replay of retained inputs, with no new native reads. It cannot satisfy
+the fresh-five-source requirement. `live-run` remains a distinct acquisition path.
+
+Policy line 3 supplies calendar date 2026-11-15, Europe/Amsterdam. Do not request
+or invent a generic time of day to replace that precision. Existing event
+admission checks hold same-local-day cutoff observations; seek exact timing only
+where material. Native Notion access remains separately BLOCKED. Earlier generic
+missing-policy/clock statements above describe unsupplemented acquisition paths;
+the browser copy supplies wording and a case date, not fresh native acquisition.
+
+Run readiness after replay. Supplemental policy references are verified separately
+from native source references. A passing supplemental/date check is not approval,
+financial closure or final submission compliance. Legacy closure gates and other
+business rules are unchanged by this evidence adapter; report their remaining
+gaps rather than constructing missing business authority. Preserve every prior
+run and keep repair messages as human-review drafts.
