@@ -1907,3 +1907,106 @@ READY WITH DISCLOSED EXTERNAL BLOCKERS — submission is supportable with docume
 NOT READY — a specific locally fixable mandatory requirement remains unmet.
 
 Provide exact artifact paths and the evidence supporting the decision. Do not initiate unrelated improvements.
+
+---
+
+Project D — Stage 7 mandatory correction: terminal-claim output consistency.
+
+Use the fresh replay and submission assessment from 2026-10-16, run project-d-final-replay-20261016T105352Z-276e92.
+
+Fix the confirmed claims.csv projection defect for terminal claims C13 and C14.
+
+Requirements:
+
+Preserve the authoritative withdrawn/rejected business status and its source-backed disposition reason.
+
+Do not assign Finance as next owner or create actionable missing-authorization repairs solely because a terminal claim lacks payment authorization.
+
+Ensure claims.csv, report.md, repair queue, and readiness checks agree on terminal-claim disposition.
+
+Preserve historical Finance records, cancellation evidence, claim revisions, and valid unresolved repairs.
+
+Add regression tests covering C13, C14, and other terminal-status edge cases.
+
+Run the full test suite and regenerate the four-batch replay outputs using retained fresh-source evidence without misrepresenting the inaccessible native Notion policy.
+
+Revalidate output consistency, snapshot lineage, and retained evidence preservation.
+
+Do not change original evidence, fabricate approvals, or alter unrelated behavior.
+
+If all mandatory local checks pass, commit and push only the reviewed implementation and regression-test changes. Preserve unrelated artifacts and Entire.io references.
+
+Report exact tests, changed files, commit SHA, remote verification, and any remaining submission blockers.
+
+---
+
+Project D — Stage 7: Complete requirements coverage audit.
+
+Current verified commit: c2bee74ee639b1d981ca2c9f2af2235f52fb941f.
+
+Audit the entire project against:
+
+    The original Project D assignment and all available requirements gathered before "pink elephant."
+
+    The retained stakeholder interview transcript and every confirmed interview decision.
+
+    The five disclosed sources, arrival-batch rules, financial logic, exception handling, and required deliverables.
+
+    The implemented Agent Skill, source acquisition, snapshots, tests, generated outputs, and Entire.io evidence.
+
+    The files actually committed and uploaded to GitHub.
+
+Create a requirement-by-requirement coverage matrix with:
+
+Requirement and original source
+
+Implementation file/function
+
+Test or execution evidence
+
+GitHub/upload status
+
+PASS, FAIL, BLOCKED, or NOT VERIFIED
+
+Exact corrective action, if necessary
+
+Do not assume a requirement is satisfied merely because automated tests pass.
+
+Identify missing required deliverables, unresolved correctness defects, and any generated artifacts that must be uploaded.
+
+Distinguish missing business approvals from software failures. Do not invent approvals or treat legitimate pending claims as defects.
+
+Do not modify code, commit, or push during this audit.
+
+Finish with a clear DONE or NOT DONE decision and an ordered list of mandatory remaining actions. Do not propose optional enhancements.
+
+---
+
+Project D — Stage 7 mandatory correction: partial-response journal and replay integrity.
+
+Use the completed requirements audit:
+artifacts/verification/project-d-stage7-coverage-c2bee74-20261016/coverage-matrix.md
+
+Current HEAD: c2bee74ee639b1d981ca2c9f2af2235f52fb941f.
+
+Fix the confirmed partial-response defects:
+
+When one response addresses multiple repair items with different notes, preserve the correct note and evidence references for each matched item.
+
+Ensure exact replay of an accepted partial response is idempotent and does not corrupt the journal.
+
+Do not resolve a repair using unverified, unmatched, or insufficient source references.
+
+Preserve unmatched repair items, historical responses, provenance, and previously valid resolutions.
+
+Add focused regression tests reproducing each defect before correction and verifying valid multi-item partial responses afterward.
+
+Run the full test suite and verify retained evidence preservation.
+
+Confirm the fix does not alter unrelated Finance, cancellation, claim, or approval behavior.
+
+Do not change original source evidence or unrelated generated artifacts.
+
+If all required checks pass, commit and push only the reviewed implementation and test files using the existing Entire.io hooks. Verify GitHub main and checkpoint references.
+
+Report test counts, changed files, commit SHA, remote verification, and remaining mandatory Stage 7 actions.
