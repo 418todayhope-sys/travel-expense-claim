@@ -1,0 +1,7 @@
+# Preserve retained native document/HTTP bytes; even ASCII-encoded PDFs are binary.
+artifacts/runs/**/sources/*.pdf binary
+artifacts/runs/**/responses/*.body binary
+# csv.writer's original CRLF record terminators are intentional retained bytes.
+artifacts/runs/**/claims.csv -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# Retain this historical generated demo's original final blank line.
+artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/ordinary-workflow-demo.md whitespace=blank-at-eol,space-before-tab,-blank-at-eof

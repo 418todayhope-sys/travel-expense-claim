@@ -1,0 +1,83 @@
+{
+  "schema_version": "travel-claim-live-run/1",
+  "run_id": "project-d-final-live-20261016T105352Z-276e92",
+  "mode": "live-source-attempt",
+  "status": "BLOCKED",
+  "fresh_reads_attempted": 5,
+  "cache_fallback_used": false,
+  "acquisition_status": "BLOCKED",
+  "final_live_source_compliance": false,
+  "batches_consumed": [],
+  "source_manifest": {
+    "path": "sources.json",
+    "sha256": "683069172cff6be6d5907dc7b70cb2cdf63ccf37b42969a0e7bdba40690c809d"
+  },
+  "parsed_records": {
+    "path": "parsed-records.json",
+    "sha256": "b24359e103fc118adb26225e8e3c4256ee4debb468366364b879ecdd4d98acaf"
+  },
+  "arrival_batches_observed": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "checks": [
+    {
+      "check": "manifest-integrity",
+      "status": "PASS",
+      "evidence": "sources.json",
+      "detail": "Fresh observations and retained bytes verified",
+      "next_action": "No integrity repair needed"
+    },
+    {
+      "check": "source:policy-pol-2026-2",
+      "status": "BLOCKED",
+      "evidence": "responses/policy-pol-2026-2.body",
+      "detail": "HTTP response contained a generic Notion shell; policy page content was not accessible",
+      "next_action": "Obtain authorized native content and retry in a new run"
+    },
+    {
+      "check": "source:initial-claim-binder",
+      "status": "PASS",
+      "evidence": "sources/initial-claim-binder.pdf",
+      "detail": "Complete supported export read; retained bytes bound by SHA-256",
+      "next_action": "Retain observed source version and wording"
+    },
+    {
+      "check": "source:claim-updates-binder",
+      "status": "PASS",
+      "evidence": "sources/claim-updates-binder.pdf",
+      "detail": "Complete supported export read; retained bytes bound by SHA-256",
+      "next_action": "Retain observed source version and wording"
+    },
+    {
+      "check": "source:receipt-binder",
+      "status": "PASS",
+      "evidence": "sources/receipt-binder.pdf",
+      "detail": "Complete supported export read; retained bytes bound by SHA-256",
+      "next_action": "Retain observed source version and wording"
+    },
+    {
+      "check": "source:travel-registers-workbook",
+      "status": "PASS",
+      "evidence": "sources/travel-registers-workbook.xlsx",
+      "detail": "Complete supported export read; retained bytes bound by SHA-256",
+      "next_action": "Retain observed source version and wording"
+    },
+    {
+      "check": "authoritative-case-clock",
+      "status": "BLOCKED",
+      "evidence": "sources.json",
+      "detail": "No authoritative case clock supplied; retrieval timestamps are not scenario time",
+      "next_action": "Obtain explicit date, time and timezone from the exercise facilitator"
+    },
+    {
+      "check": "native-policy-processing",
+      "status": "BLOCKED",
+      "evidence": "sources.json",
+      "detail": "Complete native policy rule interpretation and final business compliance are not established by acquisition",
+      "next_action": "Obtain the full authoritative policy and validate rule coverage before policy-dependent processing"
+    }
+  ]
+}

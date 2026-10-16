@@ -1,0 +1,540 @@
+{
+  "schema_version": "project-d-evidence-delivery/1",
+  "implementation_commit": "f2d3bdbf27ae5a43128359264c51b8e225432876",
+  "primary_run": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36",
+  "fresh_capture": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92",
+  "scope": "53 files selected by the Stage 7 coverage inventory; original bytes and relative paths preserved. Historical verification reports retain their original commit/test counts and are not current attestations.",
+  "source_inventory_sha256": "1951a3f52d04a010154e19285109bf3ebbae15da45a6a31302ecf6ce1cf31573",
+  "files": [
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/batches/arrival-001.json",
+      "role": "primary replay and linked evidence",
+      "bytes": 29116592,
+      "sha256": "1d7be5a862ed7e1bb335ce2664ed7f0920fb04c863231fd7fc7ca160b92679ae",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/batches/arrival-001.json",
+      "stored_sha256": "1d7be5a862ed7e1bb335ce2664ed7f0920fb04c863231fd7fc7ca160b92679ae",
+      "stored_bytes": 29116592,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/batches/arrival-002.json",
+      "role": "primary replay and linked evidence",
+      "bytes": 44892663,
+      "sha256": "d9996984d7f78d401b44c51dfe989fc8608ad5e03ec9b23390ef012c0025e444",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/batches/arrival-002.json",
+      "stored_sha256": "d9996984d7f78d401b44c51dfe989fc8608ad5e03ec9b23390ef012c0025e444",
+      "stored_bytes": 44892663,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/batches/arrival-003.json",
+      "role": "primary replay and linked evidence",
+      "bytes": 47471263,
+      "sha256": "ee293b120766f0f3041a5bb6619c1debc5aa759e8479a5d1651d96bfbd68478d",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/batches/arrival-003.json",
+      "stored_sha256": "ee293b120766f0f3041a5bb6619c1debc5aa759e8479a5d1651d96bfbd68478d",
+      "stored_bytes": 47471263,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/batches/arrival-004.json",
+      "role": "primary replay and linked evidence",
+      "bytes": 49029809,
+      "sha256": "805de1915889da95af7b48b8f5580245e7d20ece626050fa779fe19ae3ecccbd",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/batches/arrival-004.json",
+      "stored_sha256": "805de1915889da95af7b48b8f5580245e7d20ece626050fa779fe19ae3ecccbd",
+      "stored_bytes": 49029809,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/claims.csv",
+      "role": "primary replay and linked evidence",
+      "bytes": 18467,
+      "sha256": "216af7fa37b419a510932ae2e4fc3e83a0327b0db4034178d141775bba0db027",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/claims.csv",
+      "stored_sha256": "216af7fa37b419a510932ae2e4fc3e83a0327b0db4034178d141775bba0db027",
+      "stored_bytes": 18467,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/correction-cancellation-verification.json",
+      "role": "primary replay and linked evidence",
+      "bytes": 3729934,
+      "sha256": "38933967cfa3b4dd699eb3a4a5ef94c8efda16a42c043d9fbcb6ed38b4fc4321",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/correction-cancellation-verification.json",
+      "stored_sha256": "38933967cfa3b4dd699eb3a4a5ef94c8efda16a42c043d9fbcb6ed38b4fc4321",
+      "stored_bytes": 3729934,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/correction-cancellation-verification.md",
+      "role": "primary replay and linked evidence",
+      "bytes": 654806,
+      "sha256": "4ebafd669652e8a72f71d724c2e7292367b332028dea67dfaa7c5f3d1c9c35f6",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/correction-cancellation-verification.md",
+      "stored_sha256": "4ebafd669652e8a72f71d724c2e7292367b332028dea67dfaa7c5f3d1c9c35f6",
+      "stored_bytes": 654806,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/follow-up-drafts.md",
+      "role": "primary replay and linked evidence",
+      "bytes": 5182978,
+      "sha256": "d0af0b1509e611a8bf3e3518b8b376d19d3d1aa36b9e1e0c129507f6a940ceee",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/follow-up-drafts.md",
+      "stored_sha256": "d0af0b1509e611a8bf3e3518b8b376d19d3d1aa36b9e1e0c129507f6a940ceee",
+      "stored_bytes": 5182978,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/offline-replay-state.json",
+      "role": "primary replay and linked evidence",
+      "bytes": 238855146,
+      "sha256": "4c6a1091d071e640d2dd3143990dbb8199d228c84aeabbfce43cb71382715d83",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/offline-replay-state.json.gz",
+      "stored_sha256": "1246762028bc0dbf8317e573e1aeff8f5a43f1ab65c5f4612713ee71d355bb4c",
+      "stored_bytes": 9822172,
+      "encoding": "gzip"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/ordinary-workflow-demo.md",
+      "role": "primary replay and linked evidence",
+      "bytes": 103270,
+      "sha256": "6411f7799998cb3f358ad09eb28c07153a45740aa2531027580609a2eb9f9857",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/ordinary-workflow-demo.md",
+      "stored_sha256": "6411f7799998cb3f358ad09eb28c07153a45740aa2531027580609a2eb9f9857",
+      "stored_bytes": 103270,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/ordinary-workflow.json",
+      "role": "primary replay and linked evidence",
+      "bytes": 145808496,
+      "sha256": "d18eee9469004c7b0811331d80c4e5dde109de41d28cb2f15c731c377ed2c7b8",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/ordinary-workflow.json.gz",
+      "stored_sha256": "6a43f1e47a49f19f1327c4a72a60c283225b72f76c4d90322073f4034a816d58",
+      "stored_bytes": 7044913,
+      "encoding": "gzip"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/parsed-records.json",
+      "role": "primary replay and linked evidence",
+      "bytes": 6923918,
+      "sha256": "d0a326e3fbe662ce5f84439e8b86419ff70a4e5ed0487ef0902d7401bc0b2bb4",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/parsed-records.json",
+      "stored_sha256": "d0a326e3fbe662ce5f84439e8b86419ff70a4e5ed0487ef0902d7401bc0b2bb4",
+      "stored_bytes": 6923918,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/repair-queue.json",
+      "role": "primary replay and linked evidence",
+      "bytes": 40611138,
+      "sha256": "cbdfc6c066bda0d25dc1f8e136c2f56e7ae70beb04e34aed18632c1281019dba",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/repair-queue.json",
+      "stored_sha256": "cbdfc6c066bda0d25dc1f8e136c2f56e7ae70beb04e34aed18632c1281019dba",
+      "stored_bytes": 40611138,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/report.md",
+      "role": "primary replay and linked evidence",
+      "bytes": 5339607,
+      "sha256": "0a7c4f51136a5b60e363a834551ea932f961619f59c6f3b635143bc13110fba8",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/report.md",
+      "stored_sha256": "0a7c4f51136a5b60e363a834551ea932f961619f59c6f3b635143bc13110fba8",
+      "stored_bytes": 5339607,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/responses/claim-updates-binder.body",
+      "role": "primary replay and linked evidence",
+      "bytes": 12336,
+      "sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/responses/claim-updates-binder.body",
+      "stored_sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+      "stored_bytes": 12336,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/responses/initial-claim-binder.body",
+      "role": "primary replay and linked evidence",
+      "bytes": 182878,
+      "sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/responses/initial-claim-binder.body",
+      "stored_sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+      "stored_bytes": 182878,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/responses/policy-pol-2026-2.body",
+      "role": "primary replay and linked evidence",
+      "bytes": 20021,
+      "sha256": "af28a8df09d089fcbfcaaa353532e43115eb7f757a7605fbd3bf15a491dfe088",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/responses/policy-pol-2026-2.body",
+      "stored_sha256": "af28a8df09d089fcbfcaaa353532e43115eb7f757a7605fbd3bf15a491dfe088",
+      "stored_bytes": 20021,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/responses/receipt-binder.body",
+      "role": "primary replay and linked evidence",
+      "bytes": 166630,
+      "sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/responses/receipt-binder.body",
+      "stored_sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+      "stored_bytes": 166630,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/responses/travel-registers-workbook.body",
+      "role": "primary replay and linked evidence",
+      "bytes": 136397,
+      "sha256": "48daf382e86630d814704b3b7d983ac76e9b1de8d15fe80a6883a3143e37e838",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/responses/travel-registers-workbook.body",
+      "stored_sha256": "48daf382e86630d814704b3b7d983ac76e9b1de8d15fe80a6883a3143e37e838",
+      "stored_bytes": 136397,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/retained-input-lineage.json",
+      "role": "primary replay and linked evidence",
+      "bytes": 510,
+      "sha256": "21f92c644b72faeb5ff5fcc05fbc177f2ad8eb1b8a92e2f6abe99bc83ed9dbd7",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/retained-input-lineage.json",
+      "stored_sha256": "21f92c644b72faeb5ff5fcc05fbc177f2ad8eb1b8a92e2f6abe99bc83ed9dbd7",
+      "stored_bytes": 510,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources/claim-updates-binder.pdf",
+      "role": "primary replay and linked evidence",
+      "bytes": 12336,
+      "sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources/claim-updates-binder.pdf",
+      "stored_sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+      "stored_bytes": 12336,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources/initial-claim-binder.pdf",
+      "role": "primary replay and linked evidence",
+      "bytes": 182878,
+      "sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources/initial-claim-binder.pdf",
+      "stored_sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+      "stored_bytes": 182878,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources/receipt-binder.pdf",
+      "role": "primary replay and linked evidence",
+      "bytes": 166630,
+      "sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources/receipt-binder.pdf",
+      "stored_sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+      "stored_bytes": 166630,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources/travel-registers-workbook.xlsx",
+      "role": "primary replay and linked evidence",
+      "bytes": 136397,
+      "sha256": "48daf382e86630d814704b3b7d983ac76e9b1de8d15fe80a6883a3143e37e838",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources/travel-registers-workbook.xlsx",
+      "stored_sha256": "48daf382e86630d814704b3b7d983ac76e9b1de8d15fe80a6883a3143e37e838",
+      "stored_bytes": 136397,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources.json",
+      "role": "primary replay and linked evidence",
+      "bytes": 7776,
+      "sha256": "5db1bf5c95b06125cc13ed7a9d102375141823fe771b4edd25a3431127d66d7f",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources.json",
+      "stored_sha256": "5db1bf5c95b06125cc13ed7a9d102375141823fe771b4edd25a3431127d66d7f",
+      "stored_bytes": 7776,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/supplemental/POL-2026.2-browser-copy.txt",
+      "role": "primary replay and linked evidence",
+      "bytes": 13381,
+      "sha256": "f547ee77729be8ad431a5ddf2e2907f94f29ad50092231191abd2f72c04f54d2",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/supplemental/POL-2026.2-browser-copy.txt",
+      "stored_sha256": "f547ee77729be8ad431a5ddf2e2907f94f29ad50092231191abd2f72c04f54d2",
+      "stored_bytes": 13381,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/supplemental/original-parsed-records.json",
+      "role": "primary replay and linked evidence",
+      "bytes": 6906191,
+      "sha256": "b24359e103fc118adb26225e8e3c4256ee4debb468366364b879ecdd4d98acaf",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/supplemental/original-parsed-records.json",
+      "stored_sha256": "b24359e103fc118adb26225e8e3c4256ee4debb468366364b879ecdd4d98acaf",
+      "stored_bytes": 6906191,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/supplemental/original-sources.json",
+      "role": "primary replay and linked evidence",
+      "bytes": 7771,
+      "sha256": "683069172cff6be6d5907dc7b70cb2cdf63ccf37b42969a0e7bdba40690c809d",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/supplemental/original-sources.json",
+      "stored_sha256": "683069172cff6be6d5907dc7b70cb2cdf63ccf37b42969a0e7bdba40690c809d",
+      "stored_bytes": 7771,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/supplemental-policy.json",
+      "role": "primary replay and linked evidence",
+      "bytes": 4795,
+      "sha256": "f49932365942839f7e1d6c12410b2e38f138272cb7ecf922c38e10a7d1771c0a",
+      "stored_path": "artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/supplemental-policy.json",
+      "stored_sha256": "f49932365942839f7e1d6c12410b2e38f138272cb7ecf922c38e10a7d1771c0a",
+      "stored_bytes": 4795,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/live-run.json",
+      "role": "fresh acquisition evidence",
+      "bytes": 3057,
+      "sha256": "e111f69f61fd617abfa1c29e863009aa9d6dcbb10b4a9ad56e1e80dcab040596",
+      "stored_path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/live-run.json",
+      "stored_sha256": "e111f69f61fd617abfa1c29e863009aa9d6dcbb10b4a9ad56e1e80dcab040596",
+      "stored_bytes": 3057,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/live-run.md",
+      "role": "fresh acquisition evidence",
+      "bytes": 2344,
+      "sha256": "e923e9e9396bd50e9683467b6f84d4cf47c5064b3bd8381126df370268cf0745",
+      "stored_path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/live-run.md",
+      "stored_sha256": "e923e9e9396bd50e9683467b6f84d4cf47c5064b3bd8381126df370268cf0745",
+      "stored_bytes": 2344,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/parsed-records.json",
+      "role": "fresh acquisition evidence",
+      "bytes": 6906191,
+      "sha256": "b24359e103fc118adb26225e8e3c4256ee4debb468366364b879ecdd4d98acaf",
+      "stored_path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/parsed-records.json",
+      "stored_sha256": "b24359e103fc118adb26225e8e3c4256ee4debb468366364b879ecdd4d98acaf",
+      "stored_bytes": 6906191,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/responses/claim-updates-binder.body",
+      "role": "fresh acquisition evidence",
+      "bytes": 12336,
+      "sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+      "stored_path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/responses/claim-updates-binder.body",
+      "stored_sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+      "stored_bytes": 12336,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/responses/initial-claim-binder.body",
+      "role": "fresh acquisition evidence",
+      "bytes": 182878,
+      "sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+      "stored_path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/responses/initial-claim-binder.body",
+      "stored_sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+      "stored_bytes": 182878,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/responses/policy-pol-2026-2.body",
+      "role": "fresh acquisition evidence",
+      "bytes": 20021,
+      "sha256": "af28a8df09d089fcbfcaaa353532e43115eb7f757a7605fbd3bf15a491dfe088",
+      "stored_path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/responses/policy-pol-2026-2.body",
+      "stored_sha256": "af28a8df09d089fcbfcaaa353532e43115eb7f757a7605fbd3bf15a491dfe088",
+      "stored_bytes": 20021,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/responses/receipt-binder.body",
+      "role": "fresh acquisition evidence",
+      "bytes": 166630,
+      "sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+      "stored_path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/responses/receipt-binder.body",
+      "stored_sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+      "stored_bytes": 166630,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/responses/travel-registers-workbook.body",
+      "role": "fresh acquisition evidence",
+      "bytes": 136397,
+      "sha256": "48daf382e86630d814704b3b7d983ac76e9b1de8d15fe80a6883a3143e37e838",
+      "stored_path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/responses/travel-registers-workbook.body",
+      "stored_sha256": "48daf382e86630d814704b3b7d983ac76e9b1de8d15fe80a6883a3143e37e838",
+      "stored_bytes": 136397,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/sources/claim-updates-binder.pdf",
+      "role": "fresh acquisition evidence",
+      "bytes": 12336,
+      "sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+      "stored_path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/sources/claim-updates-binder.pdf",
+      "stored_sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+      "stored_bytes": 12336,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/sources/initial-claim-binder.pdf",
+      "role": "fresh acquisition evidence",
+      "bytes": 182878,
+      "sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+      "stored_path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/sources/initial-claim-binder.pdf",
+      "stored_sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+      "stored_bytes": 182878,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/sources/receipt-binder.pdf",
+      "role": "fresh acquisition evidence",
+      "bytes": 166630,
+      "sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+      "stored_path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/sources/receipt-binder.pdf",
+      "stored_sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+      "stored_bytes": 166630,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/sources/travel-registers-workbook.xlsx",
+      "role": "fresh acquisition evidence",
+      "bytes": 136397,
+      "sha256": "48daf382e86630d814704b3b7d983ac76e9b1de8d15fe80a6883a3143e37e838",
+      "stored_path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/sources/travel-registers-workbook.xlsx",
+      "stored_sha256": "48daf382e86630d814704b3b7d983ac76e9b1de8d15fe80a6883a3143e37e838",
+      "stored_bytes": 136397,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/sources.json",
+      "role": "fresh acquisition evidence",
+      "bytes": 7771,
+      "sha256": "683069172cff6be6d5907dc7b70cb2cdf63ccf37b42969a0e7bdba40690c809d",
+      "stored_path": "artifacts/runs/project-d-final-live-20261016T105352Z-276e92/sources.json",
+      "stored_sha256": "683069172cff6be6d5907dc7b70cb2cdf63ccf37b42969a0e7bdba40690c809d",
+      "stored_bytes": 7771,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/source-capture-20261014T100034Z/sources.json",
+      "role": "existing retained test dependency",
+      "bytes": 2901,
+      "sha256": "82beea38d076c4f69c06847afa387252e8a4033ed4103bb4086bec890546c5c4",
+      "stored_path": "artifacts/runs/source-capture-20261014T100034Z/sources.json",
+      "stored_sha256": "82beea38d076c4f69c06847afa387252e8a4033ed4103bb4086bec890546c5c4",
+      "stored_bytes": 2901,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/source-capture-20261014T100034Z/sources/initial-claim-binder.pdf",
+      "role": "existing retained test dependency",
+      "bytes": 182878,
+      "sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+      "stored_path": "artifacts/runs/source-capture-20261014T100034Z/sources/initial-claim-binder.pdf",
+      "stored_sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+      "stored_bytes": 182878,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/source-capture-20261014T100034Z/sources/claim-updates-binder.pdf",
+      "role": "existing retained test dependency",
+      "bytes": 12336,
+      "sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+      "stored_path": "artifacts/runs/source-capture-20261014T100034Z/sources/claim-updates-binder.pdf",
+      "stored_sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+      "stored_bytes": 12336,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/source-capture-20261014T100034Z/sources/receipt-binder.pdf",
+      "role": "existing retained test dependency",
+      "bytes": 166630,
+      "sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+      "stored_path": "artifacts/runs/source-capture-20261014T100034Z/sources/receipt-binder.pdf",
+      "stored_sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+      "stored_bytes": 166630,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/runs/source-capture-20261014T100034Z/sources/travel-registers-workbook.xlsx",
+      "role": "existing retained test dependency",
+      "bytes": 136122,
+      "sha256": "579691b671acc735d1fdbb4944a2daf397b13307075ba74f15fa8bc24daa75b8",
+      "stored_path": "artifacts/runs/source-capture-20261014T100034Z/sources/travel-registers-workbook.xlsx",
+      "stored_sha256": "579691b671acc735d1fdbb4944a2daf397b13307075ba74f15fa8bc24daa75b8",
+      "stored_bytes": 136122,
+      "encoding": "identity"
+    },
+    {
+      "path": "user-provided-sources/step-167/POL-2026.2-browser-copy.provenance.json",
+      "role": "operational browser policy and provenance for documented invocation",
+      "bytes": 1650,
+      "sha256": "731c3e0b0ccd4e59257187131798bd95381769f41ca7ef99d2c984be9fe936ec",
+      "stored_path": "user-provided-sources/step-167/POL-2026.2-browser-copy.provenance.json",
+      "stored_sha256": "731c3e0b0ccd4e59257187131798bd95381769f41ca7ef99d2c984be9fe936ec",
+      "stored_bytes": 1650,
+      "encoding": "identity"
+    },
+    {
+      "path": "user-provided-sources/step-167/POL-2026.2-browser-copy.txt",
+      "role": "operational browser policy and provenance for documented invocation",
+      "bytes": 13381,
+      "sha256": "f547ee77729be8ad431a5ddf2e2907f94f29ad50092231191abd2f72c04f54d2",
+      "stored_path": "user-provided-sources/step-167/POL-2026.2-browser-copy.txt",
+      "stored_sha256": "f547ee77729be8ad431a5ddf2e2907f94f29ad50092231191abd2f72c04f54d2",
+      "stored_bytes": 13381,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/verification/project-d-stage7-terminal-20261016T110919Z-5afc36-readiness/readiness.json",
+      "role": "primary verification evidence",
+      "bytes": 54827,
+      "sha256": "8036e9e47f7ff4f8a4a64365fd6819a4f0e76be71aefeb3cea9a8b4773749687",
+      "stored_path": "artifacts/verification/project-d-stage7-terminal-20261016T110919Z-5afc36-readiness/readiness.json",
+      "stored_sha256": "8036e9e47f7ff4f8a4a64365fd6819a4f0e76be71aefeb3cea9a8b4773749687",
+      "stored_bytes": 54827,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/verification/project-d-stage7-terminal-20261016T110919Z-5afc36-readiness/readiness.md",
+      "role": "primary verification evidence",
+      "bytes": 11373,
+      "sha256": "aceac3fd9719094aba94cb667535fed8eadf306f0737238106ff5e364fbe2013",
+      "stored_path": "artifacts/verification/project-d-stage7-terminal-20261016T110919Z-5afc36-readiness/readiness.md",
+      "stored_sha256": "aceac3fd9719094aba94cb667535fed8eadf306f0737238106ff5e364fbe2013",
+      "stored_bytes": 11373,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/verification/project-d-stage7-terminal-20261016T110919Z-5afc36-readiness/stage7-verification.json",
+      "role": "primary verification evidence",
+      "bytes": 44117,
+      "sha256": "cb3d5238d6be6829869fb0db46d9fc84fd341780c8e2cbbd1182dd9927297b51",
+      "stored_path": "artifacts/verification/project-d-stage7-terminal-20261016T110919Z-5afc36-readiness/stage7-verification.json",
+      "stored_sha256": "cb3d5238d6be6829869fb0db46d9fc84fd341780c8e2cbbd1182dd9927297b51",
+      "stored_bytes": 44117,
+      "encoding": "identity"
+    },
+    {
+      "path": "artifacts/verification/project-d-stage7-terminal-20261016T110919Z-5afc36-readiness/git-submission-verification.json",
+      "role": "primary verification evidence",
+      "bytes": 773,
+      "sha256": "8d2e848ce03deeff4dbb6b6ea54e27c27f11f1421240754d1146e1998900e2b2",
+      "stored_path": "artifacts/verification/project-d-stage7-terminal-20261016T110919Z-5afc36-readiness/git-submission-verification.json",
+      "stored_sha256": "8d2e848ce03deeff4dbb6b6ea54e27c27f11f1421240754d1146e1998900e2b2",
+      "stored_bytes": 773,
+      "encoding": "identity"
+    }
+  ]
+}

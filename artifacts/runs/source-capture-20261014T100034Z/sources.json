@@ -1,0 +1,74 @@
+{
+  "run_id": "source-capture-20261014T100034Z",
+  "source_version": "native-source-manifest/1",
+  "case_clock": null,
+  "files": [
+    {
+      "source_id": "policy-pol-2026-2",
+      "path": null,
+      "sha256": null,
+      "status": "unavailable",
+      "error": "HTTP response contained a generic Notion shell; policy page content was not accessible",
+      "url": "https://private-pecorino-70e.notion.site/Project-D-Alderbridge-travel-reimbursement-policy-POL-2026-1-3d80b700541e81ed93ebd386abc1dcb0",
+      "locator": "Notion policy page body",
+      "observed_at": "2026-10-14T10:01:29Z",
+      "version": null,
+      "scope": "Travel reimbursement policy POL-2026.2",
+      "missing_scope": [
+        "Travel reimbursement policy POL-2026.2"
+      ]
+    },
+    {
+      "source_id": "initial-claim-binder",
+      "path": "sources/initial-claim-binder.pdf",
+      "sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+      "status": "read",
+      "error": null,
+      "url": "https://drive.google.com/file/d/13sRj6s_kMeP1hsYGstWWmfkb6SCN1YOS/view",
+      "locator": "Complete PDF document",
+      "observed_at": "2026-10-14T10:01:30Z",
+      "version": "Sat, 12 Sep 2026 02:56:31 GMT",
+      "scope": "Initial claim binder",
+      "missing_scope": []
+    },
+    {
+      "source_id": "claim-updates-binder",
+      "path": "sources/claim-updates-binder.pdf",
+      "sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+      "status": "read",
+      "error": null,
+      "url": "https://drive.google.com/file/d/16829RwrGrMCK9oq5TnWuytFewGk_8xQP/view",
+      "locator": "Complete PDF document",
+      "observed_at": "2026-10-14T10:01:31Z",
+      "version": "Sat, 12 Sep 2026 02:56:29 GMT",
+      "scope": "Claim updates binder",
+      "missing_scope": []
+    },
+    {
+      "source_id": "receipt-binder",
+      "path": "sources/receipt-binder.pdf",
+      "sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+      "status": "read",
+      "error": null,
+      "url": "https://drive.google.com/file/d/1Ynn1VLH-faRIy91xy95rOWwCBhy5mjjM/view",
+      "locator": "Complete PDF document",
+      "observed_at": "2026-10-14T10:01:32Z",
+      "version": "Sat, 12 Sep 2026 02:56:31 GMT",
+      "scope": "Receipt binder",
+      "missing_scope": []
+    },
+    {
+      "source_id": "travel-registers-workbook",
+      "path": "sources/travel-registers-workbook.xlsx",
+      "sha256": "579691b671acc735d1fdbb4944a2daf397b13307075ba74f15fa8bc24daa75b8",
+      "status": "read",
+      "error": null,
+      "url": "https://docs.google.com/spreadsheets/d/1338nvKD6rgAdLgGRhYCMMlQyDNLK0sE8pvFWrZAaaxg/edit",
+      "locator": "All workbook tabs via native XLSX export",
+      "observed_at": "2026-10-14T10:01:34Z",
+      "version": "Wed, 14 Oct 2026 10:01:32 GMT",
+      "scope": "Travel registers workbook",
+      "missing_scope": []
+    }
+  ]
+}

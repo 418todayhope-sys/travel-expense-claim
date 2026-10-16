@@ -8,6 +8,10 @@ You conduct the stakeholder interview yourself, and the questions are yours. Do 
 
 Keep one final complete original Work Sim Markdown export per interview session under `interviews/`. Do not rewrite it. If an export is unavailable, contact the facilitator.
 
+## Submitted evidence and clean-checkout reproduction
+
+See [Stage 7 evidence delivery](artifacts/submission/README.md) for the exact 53-file manifest, lossless restoration of the two oversized JSON files, clean-checkout setup/tests, source provenance, snapshot verification, and disclosed external blockers. Run `python3 scripts/restore_submission_evidence.py` before retained-data tests. Historical reports retain their original commit/test counts.
+
 ## Setup
 
 Requires Python 3.11 or later and pip.

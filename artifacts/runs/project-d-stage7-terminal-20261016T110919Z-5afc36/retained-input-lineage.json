@@ -1,0 +1,15 @@
+{
+  "mode": "offline-replay",
+  "fresh_native_reads_performed": false,
+  "original_run_id": "project-d-final-live-20261016T105352Z-276e92",
+  "original_inputs": {
+    "sources.json": {
+      "path": "supplemental/original-sources.json",
+      "sha256": "683069172cff6be6d5907dc7b70cb2cdf63ccf37b42969a0e7bdba40690c809d"
+    },
+    "parsed-records.json": {
+      "path": "supplemental/original-parsed-records.json",
+      "sha256": "b24359e103fc118adb26225e8e3c4256ee4debb468366364b879ecdd4d98acaf"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "commit": "c2bee74ee639b1d981ca2c9f2af2235f52fb941f",
+  "remote_main": "c2bee74ee639b1d981ca2c9f2af2235f52fb941f",
+  "push": "normal push succeeded",
+  "checkpoint_id": "01M526XCBE8SHHFVCTDDJFKMK5",
+  "checkpoint_refs_matching_remotely": 23,
+  "prior_checkpoint_refs_preserved": 22,
+  "prior_evidence_hashes_preserved": 171,
+  "tests_passed": 531,
+  "tests_failed": 0,
+  "committed_files": [
+    "src/travel_claim/integration.py",
+    "src/travel_claim/offline_replay.py",
+    "src/travel_claim/outputs.py",
+    "src/travel_claim/readiness.py",
+    "tests/test_terminal_outputs.py"
+  ],
+  "readiness_note": "Readiness artifacts predate this commit and retain the then-missing HEAD checkpoint warning. Current checkpoint and all remote refs verified separately here."
+}

@@ -1,0 +1,115 @@
+# Project D submission readiness
+
+**BLOCKED** — mode: `offline-replay`.
+
+Structural evidence only. Final live-source compliance: **not established**.
+
+Retained README, skill, schema and interview only; full native assignment page not verified
+
+Local HEAD checkpoint only; uncommitted changes are not certified as submitted
+
+- **PASS** `required:sources.json`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources.json`
+  - Next action: No structural repair required.
+- **PASS** `required:parsed-records.json`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/parsed-records.json`
+  - Next action: No structural repair required.
+- **PASS** `required:offline-replay-state.json`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/offline-replay-state.json`
+  - Next action: No structural repair required.
+- **PASS** `required:claims.csv`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/claims.csv`
+  - Next action: No structural repair required.
+- **PASS** `required:report.md`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/report.md`
+  - Next action: No structural repair required.
+- **PASS** `required:repair-queue.json`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/repair-queue.json`
+  - Next action: No structural repair required.
+- **PASS** `required:follow-up-drafts.md`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/follow-up-drafts.md`
+  - Next action: No structural repair required.
+- **PASS** `required:ordinary-workflow.json`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/ordinary-workflow.json`
+  - Next action: No structural repair required.
+- **PASS** `required:ordinary-workflow-demo.md`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/ordinary-workflow-demo.md`
+  - Next action: No structural repair required.
+- **PASS** `required:correction-cancellation-verification.json`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/correction-cancellation-verification.json`
+  - Next action: No structural repair required.
+- **PASS** `required:correction-cancellation-verification.md`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/correction-cancellation-verification.md`
+  - Next action: No structural repair required.
+- **PASS** `manifest-integrity`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources.json`
+  - Next action: No structural repair required.
+- **BLOCKED** `source-completeness:policy-pol-2026-2`: HTTP response contained a generic Notion shell; policy page content was not accessible
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources.json`
+  - Next action: Obtain authorized access to https://private-pecorino-70e.notion.site/Project-D-Alderbridge-travel-reimbursement-policy-POL-2026-1-3d80b700541e81ed93ebd386abc1dcb0, perform a fresh native read, and retain complete scope in a new run.
+- **PASS** `source-completeness:initial-claim-binder`: Complete retained scope recorded
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources.json`
+  - Next action: No source-access repair required.
+- **PASS** `source-completeness:claim-updates-binder`: Complete retained scope recorded
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources.json`
+  - Next action: No source-access repair required.
+- **PASS** `source-completeness:receipt-binder`: Complete retained scope recorded
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources.json`
+  - Next action: No source-access repair required.
+- **PASS** `source-completeness:travel-registers-workbook`: Complete retained scope recorded
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources.json`
+  - Next action: No source-access repair required.
+- **PASS** `supplemental-policy-evidence`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/supplemental-policy.json`; `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/supplemental`; `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/retained-input-lineage.json`
+  - Next action: No structural repair required.
+- **PASS** `authoritative-case-clock`: Verified browser policy supplies 2026-11-15 Europe/Amsterdam, calendar-date precision; same-day cutoff unknown
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources.json`; `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/parsed-records.json`
+  - Next action: Retain the supplied authority evidence.
+- **BLOCKED** `execution-scope`: Retained-input offline replay; no fresh native-source execution
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/offline-replay-state.json`
+  - Next action: Perform a separately authorized fresh native-source execution; this validator certifies only structural evidence, never final policy or financial compliance.
+- **PASS** `input-bindings`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/sources.json`; `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/parsed-records.json`; `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/offline-replay-state.json`
+  - Next action: No structural repair required.
+- **PASS** `snapshot-chain`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/batches`; `snapshot.schema.json`
+  - Next action: No structural repair required.
+- **PASS** `snapshot-content-evidence`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/batches`; `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/parsed-records.json`
+  - Next action: No structural repair required.
+- **PASS** `correction-cancellation-traceability`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/correction-cancellation-verification.json`; `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/correction-cancellation-verification.md`
+  - Next action: No structural repair required.
+- **PASS** `repair-queue-traceability`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/repair-queue.json`; `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/offline-replay-state.json`
+  - Next action: No structural repair required.
+- **PASS** `partial-response-integrity`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/repair-queue.json`; `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/response-evidence`
+  - Next action: No structural repair required.
+- **BLOCKED** `repair-evidence-availability`: 15 open repairs have no retained supporting evidence references; no evidence is invented
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/repair-queue.json`
+  - Next action: Obtain the evidence requested in each referenced queue item's next_action; preserve unanswered items.
+- **BLOCKED** `unresolved-repairs`: 813 repair items remain open
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/repair-queue.json`; `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/follow-up-drafts.md`
+  - Next action: Human owners must review the unsent drafts and supply item-specific supported responses; continue independent valid work.
+- **PASS** `claims-csv-contract`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/claims.csv`
+  - Next action: No structural repair required.
+- **PASS** `ordinary-workflow-traceability`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/ordinary-workflow.json`; `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/ordinary-workflow-demo.md`
+  - Next action: No structural repair required.
+- **PASS** `report-traceability`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/report.md`
+  - Next action: No structural repair required.
+- **PASS** `follow-up-draft-status`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/follow-up-drafts.md`
+  - Next action: No structural repair required.
+- **PASS** `external-blocker-traceability`: Local structural evidence verified
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/parsed-records.json`
+  - Next action: No structural repair required.
+- **BLOCKED** `external-blocker:reimbursement-policy-pol-2026-2`: Native Notion content remains inaccessible or incomplete; verified supplemental browser policy is separately bound.
+  - Evidence: `/home/maxg/travel-expense-claim/artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36/parsed-records.json`
+  - Next action: Provide an authorized native export or enable read access to the original Notion page, then perform a fresh native read.
+- **PASS** `entire-local-evidence`: HEAD f2d3bdbf27ae5a43128359264c51b8e225432876; local checkpoint refs: refs/entire/checkpoints/8N/01M529172KJJKC9Z3Z5175BM8N f9b7441b7eeeda377b4c2a48aa8b37662d03d147. Remote synchronization is not checked.
+  - Evidence: `/home/maxg/travel-expense-claim/.entire/settings.json`; `/home/maxg/travel-expense-claim/.git`
+  - Next action: Verify remote refs separately before submission; local evidence does not prove remote synchronization.
