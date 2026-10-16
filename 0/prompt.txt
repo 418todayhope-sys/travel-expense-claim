@@ -1,0 +1,1981 @@
+Continue implementing Project D in the existing ~/travel-expense-claim repository.
+
+The previous milestone is committed and pushed as 65ee4f0. The offline replay already generates four linked batch snapshots, claims.csv, report.md, repair-queue.json, and offline-replay-state.json.
+
+Implement the next milestone now, not just a plan:
+
+Inspect the current offline replay report generation, repair queue, and related tests.
+
+Improve report.md to clearly separate:
+
+Claim-specific actionable repair items, grouped by responsible owner, with traceable claim/subject/revision/source references and next actions.
+
+Run-level external blockers, including the inaccessible native Notion reimbursement policy and the unconfirmed authoritative case clock.
+
+Clearly label this output as an offline replay of retained evidence, not a fresh live-source run.
+
+Preserve partial progress: unresolved claims must not prevent independent valid records from being processed.
+
+Do not invent policy rules, eligibility amounts, approvals, payment confirmations, or case-clock  dates.
+
+Add or update automated tests for the report sections, grouping, traceability, and unresolved blockers.
+
+Run the complete test suite and git diff --check.
+
+Regenerate the offline replay outputs and summarize the actual results.
+
+Do not commit or push yet. Show me the files changed, tests passed, and any remaining blockers. Preserve all existing Git and Entire.io history.
+
+---
+
+Preserve the completed Project D report-separation milestone in Git and Entire.io.
+
+1. Inspect `git status` and the exact diff.
+2. Stage ONLY these three source files:
+   - `README.md`
+   - `src/travel_claim/offline_replay.py`
+   - `tests/test_offline_replay.py`
+3. Do NOT stage `artifacts/runs/` or unrelated files.
+4. Run `git diff --cached --check` and the complete pytest suite.
+5. If validation passes, commit with the message:
+   `feat: separate Project D repairs and run blockers`
+6. Push the commit to `origin main`, allowing the existing Entire.io hooks to run.
+7. Verify the remote main commit and report whether the Entire.io checkpoint references were pushed.
+
+Do not rewrite history, force-push, or modify retained source artifacts.
+
+Report the commit hash, test results, push status, and any warnings.
+
+---
+
+Continue implementing Project D in ~/travel-expense-claim.
+
+The latest verified GitHub commit is 0f0acf3. Implement the next coding milestone: owner-specific follow-up drafts based on the existing repair queue.
+
+Inspect the current repair-queue schema, report generation, and tests.
+
+Generate a new artifact, follow-up-drafts.md, from unresolved repair items only.
+
+Group draft messages by responsible owner, preserving claim IDs, revisions, evidence references, unresolved questions, and specific requested next actions.
+
+Clearly distinguish claim-specific repairs, trip/permit repairs, and external run-level blockers.
+
+Do not generate messages for resolved items.
+
+Treat all messages as drafts requiring human review. Do not send emails or contact anyone.
+
+Do not invent email addresses, deadlines, reimbursement rules, approval decisions, payment events, or missing evidence.
+
+Preserve independent claim processing and existing immutable snapshot history.
+
+Add automated tests for grouping, traceability, resolved-item exclusion, and human-review labeling.
+
+Run the complete test suite and git diff --check.
+
+Regenerate the offline replay outputs in a new retained-input run without overwriting prior artifacts.
+
+Implement the code now, not just a plan.
+
+Do not commit or push yet. Report the files changed, test results, generated draft count, and remaining blockers.
+
+---
+
+Preserve the completed Project D owner-specific follow-up draft milestone in Git and Entire.io.
+
+    Inspect git status and the exact source diff.
+
+    Stage ONLY:
+
+        README.md
+
+        src/travel_claim/follow_up.py
+
+        src/travel_claim/offline_replay.py
+
+        tests/test_follow_up.py
+
+        tests/test_offline_replay.py
+
+    Do NOT stage artifacts/runs/ or unrelated files.
+
+Run git diff --cached --check and the complete pytest suite.
+
+If validation passes, commit with the message:
+feat: generate owner-specific Project D follow-up drafts
+
+Push the commit to origin main, allowing the existing Entire.io hooks to run.
+
+Verify the remote main commit and the Entire.io checkpoint references.
+
+Do not rewrite history, force-push, or alter retained source artifacts.
+
+Report the commit hash, test results, push status, and any warnings.
+
+---
+
+Continue implementing Project D in ~/travel-expense-claim from verified commit efc7e91.
+
+Implement a submission-readiness validator, not just a plan.
+
+Inspect the assignment requirements, existing skill, source manifest, snapshot chain, CLI, and generated outputs.
+
+Add a reusable validation command that checks source completeness, manifest integrity, snapshot chain integrity, required output files, exact claims.csv header, report and repair-queue traceability, follow-up draft status, and Entire.io evidence where locally verifiable.
+
+Distinguish PASS, BLOCKED, and FAIL. A missing external policy or unconfirmed authoritative case clock must be BLOCKED, never silently passed.
+
+Explicitly distinguish retained-input offline replay from a fresh native-source execution. Never report the offline replay as final live-source compliance.
+
+Produce a machine-readable readiness report and a human-readable summary, with evidence paths and specific next actions.
+
+Add automated tests for complete, incomplete, blocked, and tampered cases.
+
+Run the full test suite and git diff --check.
+
+Validate the latest retained-input replay without overwriting existing artifacts.
+
+Do not invent policy rules, source observations, approvals, financial conclusions, or case-clock values. Do not commit or push yet.
+
+Report changed files, test results, readiness findings, and remaining blockers.
+
+---
+
+Preserve the completed Project D submission-readiness validator milestone.
+
+1. Inspect `git status`, the exact source diff, and any staged changes.
+2. Stage ONLY:
+   - `README.md`
+   - `src/travel_claim/cli.py`
+   - `src/travel_claim/offline_replay.py`
+   - `src/travel_claim/readiness.py`
+   - `tests/test_readiness.py`
+3. Do not stage `artifacts/runs/`, `artifacts/verification/`, or unrelated files.
+4. Run `git diff --cached --check` and the complete pytest suite.
+5. If validation passes, commit with:
+   `feat: validate Project D submission readiness`
+6. Push to `origin main`, allowing the existing Entire.io hooks to run.
+7. Verify the remote main commit and Entire.io checkpoint references.
+
+Do not force-push, rewrite history, or modify retained artifacts.
+
+Report the exact commit hash, test results, push status, checkpoint verification, and any warnings.
+
+---
+
+Continue Project D from verified commit f98e044.
+
+I have now provided the original Project D assignment requirements. Before implementing more features, audit the existing interview and retained native-source evidence for the two outstanding blockers.
+
+Search the complete original interview export and all retained source content for an explicit authoritative case clock, including date, time, timezone, and arrival-batch boundaries.
+
+Examine the retained sources.json and source observations for the Notion reimbursement policy. Determine exactly what content was accessible and what was not.
+
+Distinguish an explicit scenario fact from a document timestamp, an inference, or an invented default.
+
+Compare the assignment requirements against the current implementation and identify material coverage gaps, especially the connected ordinary path, corrections, independent cancellations, financial closure, and full-record verification.
+
+Produce a concise evidence audit with exact file paths, source references, findings, and remaining questions.
+
+Do not alter existing source artifacts, change financial conclusions, or invent missing policy rules or case-clock values.
+
+Do not commit or push.
+
+This is an evidence audit, not a request to automate the stakeholder interview. Use only the interview export already created by me and the existing retained evidence.
+
+---
+
+Continue implementing Project D in ~/travel-expense-claim from commit f98e044.
+
+The evidence audit identified a material integration gap: the retained workbook contains accepted-obligation records, but the offline replay does not consistently connect those records to claim revisions and financial reconciliation.
+
+Implement the next coding milestone now.
+
+    Inspect the existing Finance parser, native retained workbook records, finance.py, integration.py, and related tests.
+
+    Identify the exact meaning of each accepted-obligation field from source headers and retained evidence. Do not assume an accepted Finance event is equivalent to a human-approved reimbursement entitlement unless the source supports that interpretation.
+
+    Connect supported obligation records to the correct claim ID and revision, preserving event identity, source references, arrival batches, and history.
+
+Reconcile supported obligations against confirmed payments, refunds, reversals, and corrections without double-counting duplicate events.
+
+Distinguish known financial facts from missing approvals, unresolved policy eligibility, and unconfirmed closure authority.
+
+Revalidate affected financial dependencies after material claim corrections, preserving unaffected records.
+
+Update claim projections, repair queue items, and report outputs only where supported by evidence.
+
+Add regression tests using representative retained records, including duplicate events, corrections, and independent cancellations.
+
+Run the full test suite and git diff --check.
+
+Generate a new labeled offline replay without overwriting prior artifacts.
+
+Do not invent approvals, payment confirmations, policy limits, or case-clock dates. Do not commit or push yet.
+
+Report changed files, tests passed, which financial facts were successfully linked, and what remains blocked.
+
+---
+
+Preserve the completed Project D financial source reconciliation milestone.
+
+    Inspect git status, the exact source diff, and all staged changes.
+
+    Stage ONLY these files:
+
+        README.md
+
+        snapshot.schema.json
+
+        src/travel_claim/finance.py
+
+        src/travel_claim/integration.py
+
+        src/travel_claim/offline_replay.py
+
+        tests/test_retained_finance.py
+
+        tests/fixtures/retained_finance_records.json
+
+    Do not stage artifacts/runs/, artifacts/verification/, or unrelated files.
+
+    Run git diff --cached --check and the complete pytest suite.
+
+    If validation passes, commit with:
+    feat: reconcile retained Finance obligations and refunds
+
+    Push to origin main, allowing existing Entire.io hooks to run.
+
+    Verify the exact remote main commit and Entire.io checkpoint references.
+
+Do not force-push, rewrite history, or modify retained artifacts.
+
+Report the commit hash, tests passed, push verification, and any warnings.
+
+---
+
+Continue Project D from verified GitHub commit 74fad6313b1f65ce7fbf015c3cbfa35122d09896.
+
+Implement Step 152: the connected ordinary travel-expense claim workflow.
+
+Use the existing code, original interview export, retained source records, and financial reconciliation implementation.
+
+Build and connect these stages:
+
+Travel permission and trip-to-claim linkage.
+
+Claim revision, receipts, and supporting-evidence validation.
+
+Policy eligibility checks, but only where actual source evidence supports them.
+
+Required human review and approval evidence.
+
+Reimbursement request and recorded Finance obligation linkage.
+
+Confirmed payments, refunds, adjustments, and outstanding balance reconciliation.
+
+Financial closure when every required condition is supported; otherwise preserve a pending state and an owner-specific repair action.
+
+Demonstrate the workflow with an actual retained claim, showing its source references and which stages pass or remain blocked.
+
+If no real claim can legitimately close, use a clearly labeled synthetic test fixture to verify the successful closure path. Do not fabricate approval or closure for real claims.
+
+Preserve all four arrival batches, corrections, cancellations, event histories, and previous run artifacts.
+
+Add regression tests checking claim identities, revisions, source references, monetary amounts, and state transitions.
+
+Generate a new labeled offline replay without overwriting previous artifacts.
+
+Run the complete pytest suite and git diff --check.
+
+Do not commit or push yet.
+
+Report changed files, the real claim demonstrated, successful and blocked transitions, test results, and remaining gaps.
+
+---
+
+Preserve the completed Project D Step 152 connected ordinary workflow milestone.
+
+    Inspect git status, all source diffs, and the staging area.
+
+    Stage ONLY these ten files:
+
+        README.md
+
+        snapshot.schema.json
+
+        src/travel_claim/ordinary.py
+
+        src/travel_claim/integration.py
+
+        src/travel_claim/offline_replay.py
+
+        src/travel_claim/outputs.py
+
+        src/travel_claim/readiness.py
+
+        tests/test_ordinary.py
+
+        tests/test_offline_replay.py
+
+        tests/fixtures/ordinary_claim_c01.json
+
+    Do not stage artifacts/runs/, artifacts/verification/, or unrelated files.
+
+Run git diff --cached --check and the full pytest suite.
+
+If validation passes, commit with:
+feat: connect evidence-driven travel claim workflow
+
+Push to origin main using the existing Entire.io hooks.
+
+Verify the exact remote main commit and Entire.io checkpoint references.
+
+Verify the original interview and all 64 previously retained artifact files remain unchanged.
+
+Do not force-push or rewrite history.
+
+Report the commit hash, test count, push verification, checkpoint results, and any warnings.
+
+---
+
+Continue Project D from verified commit 475e8e2dd2b8dd249f360095f7fae584900a9dc0.
+
+Implement Step 157: complete correction revalidation and independent trip/permit cancellation processing.
+
+Inspect the original retained interview, source records, existing integration, ordinary workflow, Finance reconciliation, snapshots, and tests.
+
+Trace all material claim corrections across arrival batches and determine exactly which dependent evidence, approvals, requests, and financial states require revalidation.
+
+Execute the required rechecks rather than merely recording revalidation tasks. Preserve valid unaffected evidence and full revision history.
+
+Process trip and permit cancellations independently of claim existence. Preserve initiation, confirmation, source references, and any unresolved financial disposition.
+
+Propagate cancellation effects to linked claims and requests without incorrectly blocking unrelated claims.
+
+Distinguish a cancelled transfer from a cash refund, and preserve actual Finance event identity and history.
+
+Demonstrate representative retained correction and cancellation cases with exact source references and before/after states.
+
+Add regression tests for stale approvals, changed receipts, revised amounts, duplicate events, partial cancellation information, and independent no-claim cancellations.
+
+Generate a new labeled offline replay and verification report without overwriting prior artifacts.
+
+Run the complete pytest suite, snapshot integrity checks, and git diff --check.
+
+Do not invent approvals, policy rules, cancellation confirmations, refunds, or the missing case clock. Preserve all earlier artifacts and the original interview.
+
+Do not commit or push yet.
+
+Report changed files, demonstrated cases, executed transitions, remaining blockers, and tests passed.
+
+---
+
+Preserve the completed Project D Step 157 correction revalidation and independent cancellation milestone.
+
+    Inspect git status, the complete source diff, and the staging area.
+
+    Stage ONLY these nine files:
+
+        README.md
+
+        src/travel_claim/integration.py
+
+        src/travel_claim/ordinary.py
+
+        src/travel_claim/workflow.py
+
+        src/travel_claim/offline_replay.py
+
+        src/travel_claim/readiness.py
+
+        src/travel_claim/revalidation.py
+
+        tests/test_readiness.py
+
+        tests/test_revalidation.py
+
+    Do not stage artifacts/runs/, artifacts/verification/, the original interview, or unrelated files.
+
+Run git diff --cached --check and the complete pytest suite.
+
+If validation passes, commit with:
+feat: revalidate corrections and independent cancellations
+
+Push to origin main, allowing existing Entire.io hooks to run.
+
+Verify the exact remote main commit and Entire.io checkpoint references.
+
+Verify the original interview and all 82 previously retained files remain unchanged.
+
+Do not force-push, rewrite history, or modify retained artifacts.
+
+Report the commit hash, tests passed, push verification, checkpoint results, and any warnings.
+
+---
+
+Continue Project D from verified commit 87dbd1c504034f6393326ed2aa9a5e09fbe7a14f.
+
+Audit and, where necessary, implement the fresh native-source execution workflow required by the original Project D assignment.
+
+The assignment requires every new live run to attempt fresh reads of all five native source locations, preserve complete relevant content actually used, bind it in sources.json, and explicitly report inaccessible or incomplete sources.
+
+Inspect the current CLI, source capture, parsing, snapshots, Skill, and README.
+
+Determine whether the current implementation can perform a fresh live run from the five original URLs without silently reusing prior retained inputs.
+
+Implement missing live-run functionality where technically possible, including distinct run IDs, retrieval observations, completeness checks, source hashes, source versions, and failure scope.
+
+Preserve source wording, identities, numeric precision, arrival batches, and history.
+
+Ensure inaccessible policy content remains explicitly blocked rather than substituted with assumptions.
+
+Verify that a failed or partial live retrieval cannot be mislabeled as a complete successful run.
+
+Add regression tests for successful retrieval, partial access, failed retrieval, and prohibited fallback to cached inputs.
+
+Perform a new live-source attempt if the supported browser/API/export access is available. Otherwise explain exactly which access mechanism is missing.
+
+Run the full test suite, source-manifest validation, and git diff --check.
+
+Do not overwrite earlier runs or modify the original interview. Do not invent policy content or a case clock.
+
+Do not commit or push yet.
+
+Report changed files, native source access results, test count, and remaining blockers.
+
+---
+
+Preserve the completed Project D Step 162 fresh native-source execution milestone.
+
+    Inspect git status, all source diffs, and the staging area.
+
+    Stage ONLY these implementation files, if present and changed:
+
+        README.md
+
+        skills/travel-expense-claim/SKILL.md
+
+        src/travel_claim/cli.py
+
+        src/travel_claim/sources.py
+
+        src/travel_claim/parsing.py
+
+        src/travel_claim/readiness.py
+
+        src/travel_claim/live_run.py
+
+        The changed or newly created test/helper files for this milestone, after listing their exact paths and verifying their contents.
+
+    Do not stage artifacts/runs/, artifacts/verification/, the original interview, or unrelated files.
+
+    Run git diff --cached --check and the complete pytest suite.
+
+Verify the new live-source manifest and retained response evidence.
+
+If validation passes, commit with:
+feat: capture and validate fresh native source runs
+
+Push to origin main, allowing the existing Entire.io hooks to run.
+
+Verify the exact remote main commit and Entire.io checkpoint references.
+
+Confirm the original interview and all 104 previously retained files remain unchanged.
+
+Do not force-push, rewrite history, or modify retained artifacts.
+
+Report the exact committed files, commit hash, test count, source-verification results, push verification, and warnings.
+
+---
+
+Project D — Step 167: Incorporate the newly recovered authoritative policy.
+
+I personally opened the original Alderbridge Consulting Notion policy URL in my browser and copied its complete visible text. It identifies itself as POL-2026.2 and explicitly states the case clock is 2026-11-15, Europe/Amsterdam.
+
+The policy text is available from me, the user. Do not invent, paraphrase, or reconstruct any missing wording.
+
+First, help me save the exact policy text as a UTF-8 file under a clearly labeled user-provided-source directory. Ask me for the file or exact text if it is not accessible in your environment.
+
+Preserve its original wording and distinguish my authenticated/browser-visible copy from a fresh native Notion API or HTTP read. Do not retroactively mark earlier failed Notion captures successful.
+
+Then:
+
+Verify the policy identifier, case clock, and complete retained text.
+
+Inspect the current implementation against every policy section, including eligibility, approvals, filing deadlines, caps, FX, Finance reconciliation, corrections, and independent cancellations.
+
+Produce a source-grounded implementation gap report with exact code and policy references.
+
+Identify which blockers are resolved by the recovered policy and which still require independent evidence or human decisions.
+
+Do not alter earlier runs, snapshots, or financial conclusions.
+
+Do not commit or push yet.
+
+Stop after the evidence audit and report the findings before making implementation changes.
+
+---
+
+The complete original POL-2026.2 browser copy is now available at:
+
+`user-provided-sources/step-167/POL-2026.2-browser-copy.txt`
+
+This is the policy I personally copied from the original Notion page.
+
+Verify its SHA-256 against:
+
+`f547ee77729be8ad431a5ddf2e2907f94f29ad50092231191abd2f72c04f54d2`
+
+Preserve its exact text and provenance. The policy states a case date of 2026-11-15 in Europe/Amsterdam; do not invent a time of day.
+
+Now perform the Step 167 policy-to-implementation gap audit. Do not modify earlier captures, implement changes, commit, or push yet.
+
+---
+
+The recovered POL-2026.2 policy file is now present at:
+
+/home/maxg/travel-expense-claim/user-provided-sources/step-167/POL-2026.2-browser-copy.txt
+
+I verified its SHA-256:
+
+f547ee77729be8ad431a5ddf2e2907f94f29ad50092231191abd2f72c04f54d2
+
+This is the complete browser-visible policy text I personally copied from the original Notion page.
+
+Please resume Step 167:
+
+Verify the file, policy version, and case clock.
+
+Record its provenance separately from native source captures.
+
+Audit every policy section against the existing implementation and tests.
+
+Identify missing rules, defects, and remaining external blockers.
+
+Preserve all prior runs, snapshots, and financial conclusions.
+
+Do not implement changes, commit, or push yet.
+
+Stop after presenting the policy-to-implementation gap report.
+
+---
+
+Project D — Step 171: Fix high-risk policy compliance defects.
+
+Use the verified POL-2026.2 browser copy and the completed Step 167 audit as authoritative references.
+
+Focus ONLY on these two areas:
+
+Finance event integrity:
+
+An admitted confirmed transfer must never disappear because of a later conflicting event redelivery.
+
+Exact immutable-event replay must have no additional effect.
+
+Conflicting replay must retain the admitted event and hold the affected case for Finance resolution.
+
+Validate Finance event identity, request, payee, currency, positive integer cents, time and actor.
+
+Preserve unmatched and invalid events for review.
+
+Independent cancellation validation:
+
+Only the authorized directory supervisor can confirm a cancellation.
+
+Confirmation must reference the matching initiation and target.
+
+Confirmation must occur strictly after initiation.
+
+Reject scheduled, backdated, stale-target, wrong-actor and future-observation confirmations as authority.
+
+Preserve invalid deliveries as visible evidence without changing admitted cancellation history.
+
+Keep business cancellation separate from Finance cancellation.
+
+Requirements:
+
+Add focused regression tests reproducing the defects identified in the Step 167 synthetic probes.
+
+Preserve all earlier snapshots, financial outputs, original interview and policy copy.
+
+Do not silently alter unrelated eligibility, approval or closure rules.
+
+Run the complete test suite and report the results.
+
+Report any remaining ambiguity rather than inventing facts.
+
+Do not commit or push yet.
+
+Stop after implementation, tests and a concise change summary.
+
+---
+
+Project D — Step 172: Commit and push the verified event-integrity fixes.
+
+Before committing:
+
+    Verify the current branch, Git status and diff.
+
+    Confirm the changes are limited to Step 171 Finance event integrity, cancellation validation, supporting fixtures and regression tests.
+
+    Run the complete test suite again and git diff --check.
+
+    Verify the original policy, interview, prior snapshots and retained outputs remain unchanged.
+
+    Stage only the reviewed Step 171 implementation and test files. Do not stage unrelated untracked artifacts or audit reports.
+
+    Commit with message: fix: preserve admitted finance and cancellation event integrity
+
+Push normally to the existing GitHub main branch. Do not force-push.
+
+Verify the remote commit matches the local commit and confirm the Entire.io checkpoint references were pushed.
+
+Report the full commit SHA, number of passing tests, changed files, remote verification and Entire.io checkpoint status.
+
+If any verification fails, stop without pushing and explain the issue.
+
+---
+
+Project D — Step 173: Implement policy-compliant expense calculations and filing deadlines.
+
+Use the exact recovered POL-2026.2 browser copy and the Step 167 policy gap audit.
+
+Implement only:
+
+    Expense calculation rules:
+
+    Require actual employee-paid expenses supported by matching receipt and settled merchant transaction.
+
+    Validate employee, trip, cost ID, currency and gross amount.
+
+    Treat personal purchases as zero entitlement.
+
+    Transport and conference costs have no category cap.
+
+    Lodging uses the applicable nightly cap; meals use the applicable daily cap.
+
+    Require positive integer documented units for capped expenses.
+
+    Resolve caps using destination, expense currency and employee-payment date.
+
+    Unknown categories, missing evidence, rates or caps must remain unresolved rather than becoming zero.
+
+Apply Finance's exact payment-date EUR exchange rate; EUR rate is 1.
+
+Round each converted line to EUR cents using decimal ROUND_HALF_UP, then sum rounded lines.
+
+Preserve original expense and conversion evidence.
+
+Filing deadlines:
+
+Calculate the deadline as two calendar months after the trip end, inclusive, clamping nonexistent days to month end.
+
+Allow filing before travel when employee payment is established.
+
+Use submission dates rather than arrival/import dates.
+
+Preserve the original submission date for unchanged costs after correction.
+
+Newly added costs use their own first submission date.
+
+Late filing remains held pending an explicit Finance exception; do not invent one.
+
+Requirements:
+
+Use real retained source schemas and source-bound references.
+
+Add tests for normal, missing-data and boundary cases, including August 31 to October 31, leap years, exactly-on-deadline filing, fractional units and half-cent FX rounding.
+
+Do not change Finance event admission, cancellation validation, approvals, closure gates or prior retained outputs.
+
+Preserve the original policy and interview.
+
+Run the complete test suite and report the results.
+
+Do not commit or push yet.
+
+Stop after implementation and verification, reporting any policy ambiguity or missing source data.
+
+---
+
+Project D — Step 174: Verify, commit, and push the Step 173 expense-calculation and filing-deadline milestone.
+
+Review the seven changed files and confirm the changes are limited to Step 173.
+
+Verify tests/fixtures/POL-2026.2-browser-copy.txt is an exact-byte copy of the user-provided policy. Label it clearly as a browser-obtained fixture, not an independently fetched native Notion source.
+
+Rerun the full test suite and Git diff checks.
+
+Verify the original interview, policy, prior snapshots, retained financial outputs, and Step 171 event-integrity code remain unchanged.
+
+Stage only these seven reviewed files:
+
+README.md
+
+src/travel_claim/expenses.py
+
+src/travel_claim/ordinary.py
+
+src/travel_claim/integration.py
+
+tests/test_expenses.py
+
+tests/test_ordinary.py
+
+tests/fixtures/POL-2026.2-browser-copy.txt
+
+Commit with message: feat: validate policy expense calculations and filing deadlines
+
+Push normally to origin main without force-pushing.
+
+Verify remote main matches the local commit and all Entire.io checkpoint references are present.
+
+Do not stage unrelated untracked policy provenance or audit artifacts.
+
+Report the full commit SHA, test count, remote verification, and Entire.io checkpoint status. Stop if any check fails.
+
+---
+
+Project D — Step 175: Implement policy-compliant Finance exceptions.
+
+Use the verified POL-2026.2 browser-copy fixture and Step 167 audit.
+
+Implement and test Finance exception handling for:
+
+Explicit Finance actor and source-bound claim/revision/cost authority.
+
+Replacement allowed amount in the original expense currency, with a documented reason.
+
+Exact covered_issues matching; an amount-only exception covers no eligibility issues.
+
+late_filing, late_permit, permit_unapproved and travel_cancellation as independently tracked findings.
+
+Travel cancellation exceptions must reference the exact travel_cancellation_id and affected expense.
+
+Exceptions never establish employee payment, retroactively approve arrangements, or erase original findings.
+
+Material replacement-amount changes invalidate dependent claim reviews and payment readiness until current authorization is supplied.
+
+Preserve previously admitted Finance events, cancellation history and immutable snapshots.
+
+Use actual retained source schemas. If a required exception field is absent, retain an unresolved finding instead of inventing authority.
+
+Add focused positive, negative, stale-version and replay tests. Preserve earlier outputs and all protected source files. Do not modify unrelated budget, approval or closure logic.
+
+Run the complete test suite and Git diff checks. Report findings and any remaining blockers.
+
+Do not stage, commit or push yet. Stop after implementation and verification.
+
+---
+
+Resume Project D Step 175 from the existing uncommitted working tree.
+
+Codex previously reached its usage limit during Finance exception implementation.
+
+Do not restart or overwrite the work.
+
+Inspect all existing Step 175 changes, including exceptions.py, test_exceptions.py, retained exception fixtures, ordinary.py and integration.py.
+
+Verify the implementation against POL-2026.2 and the Step 167 audit.
+
+Run the complete test suite after all newly added tests.
+
+Run git diff --check and review the full diff.
+
+Verify the original interview, policy, earlier snapshots, admitted Finance events, cancellation history and previous commits remain unchanged.
+
+Identify and fix any remaining Step 175 defects without expanding into unrelated budget or closure work.
+
+Report the final test count, changed files and unresolved issues.
+
+Do not stage, commit or push yet.
+
+Stop after completing Step 175 implementation verification.
+
+---
+
+Project D — Step 176: Commit and push the verified Step 175 Finance exception milestone.
+
+Verify the current Git branch, status, and complete Step 175 diff.
+
+Confirm the eight changed files are limited to Finance exception handling, supporting integration, documentation, fixtures, and tests.
+
+Rerun the complete test suite and Git diff checks.
+
+Verify the 128 preserved files remain unchanged, including the policy, interview, prior outputs, and event-integrity implementation.
+
+Stage only these eight reviewed files:
+
+README.md
+
+src/travel_claim/exceptions.py
+
+src/travel_claim/expenses.py
+
+src/travel_claim/ordinary.py
+
+src/travel_claim/integration.py
+
+tests/test_exceptions.py
+
+tests/test_ordinary.py
+
+tests/fixtures/retained_exception_records.json
+
+Commit with message: feat: validate source-bound finance exceptions
+
+Push normally to origin main without force-pushing.
+
+Verify remote main matches the local commit and all Entire.io checkpoint references match remotely.
+
+Do not stage unrelated audit reports or untracked provenance files.
+
+Report the full commit SHA, passing test count, changed files, and Entire.io verification.
+
+If any verification fails, stop and report the issue.
+
+---
+
+Project D — Step 177: Implement policy-compliant permit and reimbursement approval workflows.
+
+Use the verified POL-2026.2 policy fixture and the Step 167 gap audit.
+
+Implement and test:
+
+    Separate approval subjects for international travel permits and reimbursement claims. Domestic trips require no permit.
+
+    Permit reviews require administration, budget owner, and supervisor, with director review strictly above EUR 1,000 in reviewed estimate.
+
+    Claim reviews require administration, budget owner, and supervisor, with director review strictly above EUR 1,000 in reviewed entitlement.
+
+    Exactly EUR 1,000 does not require director approval.
+
+Budget owner and supervisor may share one response only when the directory identifies the same stable person and the response explicitly covers both roles.
+
+Validate subject type, ID, revision, role, stable actor, source versions, and reason.
+
+Reject wrong-role, stale-version, wrong-subject, and unauthorized replies as current authority, while retaining their history.
+
+Support approve, return-with-repair, reject-with-reason, and clean withdrawal transitions.
+
+Material changes invalidate dependent reviews and payment readiness; rebuild readiness from current evidence.
+
+Never treat permit approval as claim approval, or Finance exceptions as retroactive travel authorization.
+
+Requirements:
+
+Use actual retained review packets, decision batches, directory roles, and source references.
+
+Preserve historical decisions and rejected imports.
+
+Add positive, negative, threshold, correction, and replay tests.
+
+Preserve prior snapshots, admitted financial events, cancellation history, policy, and interview.
+
+Do not modify unrelated budget reconciliation or financial closure logic.
+
+Run the complete test suite and diff checks.
+
+Report unresolved evidence or discretionary human decisions instead of inventing approvals.
+
+Do not stage, commit, or push yet. Stop after implementation and verification.
+
+---
+
+Project D — Step 178: Commit and push the verified Step 177 approval workflow milestone.
+
+Verify the current branch, Git status, and complete diff.
+
+Confirm changes are limited to the 11 reviewed Step 177 implementation, documentation, fixture, and test files.
+
+Rerun the full test suite and Git diff checks.
+
+Verify all 128 protected files remain unchanged, including the policy, interview, prior snapshots, financial outputs, and event-integrity code.
+
+Stage only:
+
+README.md
+
+src/travel_claim/approvals.py
+
+src/travel_claim/integration.py
+
+src/travel_claim/offline_replay.py
+
+src/travel_claim/ordinary.py
+
+src/travel_claim/parsing.py
+
+src/travel_claim/snapshots.py
+
+tests/test_approvals.py
+
+tests/test_exceptions.py
+
+tests/test_ordinary.py
+
+tests/fixtures/retained_approval_records.json
+
+Commit with message: feat: validate permit and claim approval workflows
+
+Push normally to origin main without force-pushing.
+
+Verify remote main matches the local commit and all Entire.io checkpoint references match remotely.
+
+Do not stage unrelated audit reports or user-provided policy provenance files.
+
+Report the full commit SHA, passing test count, committed files, and Entire.io checkpoint verification.
+
+If any verification fails, stop and explain the issue.
+
+---
+
+Project D — Step 179: Implement policy-compliant budget reconciliation.
+
+Use POL-2026.2, the Step 167 gap audit, and the actual retained workbook, claims, reviews, and Finance records.
+
+First inspect the exact policy sections governing budgets, prepaid costs, reimbursement obligations, and budget-owner authorization.
+
+Implement and test:
+
+Budget availability and commitments using the policy's actual accounting rules.
+
+Cross-claim prepaid-cost attribution without double counting.
+
+Corrections and cancellations that change commitments while preserving financial history.
+
+Source-bound budget identities, amounts, currencies, revisions, and arrival batches.
+
+Revalidation of affected budget-owner approvals after material budget changes.
+
+Conflict detection, exact replay deduplication, and unresolved-evidence holds.
+
+Separate authorized obligations, confirmed payments, refunds, and outstanding balances.
+
+Owner-grouped repair findings with exact source references.
+
+Never invent missing allocations, rates, budgets, approvals, or financial events. Preserve unaffected valid claims and admitted Finance history.
+
+Add focused synthetic and retained-data tests, including budget exhaustion, cross-claim prepaid costs, corrections, cancellations, and replay.
+
+Preserve the policy, interview, previous snapshots and outputs, and all protected event-integrity modules.
+
+Do not modify unrelated approval, Finance-exception, or closure rules.
+
+Run the complete test suite and diff checks. Report changed files, test results, and unresolved blockers.
+
+Do not stage, commit, or push yet. Stop after implementation and verification.
+
+---
+
+Project D — Step 180: Commit and push the verified Step 179 budget reconciliation milestone.
+
+Verify the current branch, Git status, and complete diff against HEAD 7015dde20ccd6a2327985c0eb26899ecf97c3974.
+
+Confirm the changes are limited to the 12 reviewed Step 179 files.
+
+Rerun the full test suite and Git diff checks.
+
+Verify all 129 preserved-file hashes match, including the interview, policy, previous snapshots, outputs, and protected Finance and closure code.
+
+Stage only these files:
+
+README.md
+
+src/travel_claim/budget.py
+
+src/travel_claim/approvals.py
+
+src/travel_claim/integration.py
+
+src/travel_claim/offline_replay.py
+
+src/travel_claim/ordinary.py
+
+src/travel_claim/readiness.py
+
+src/travel_claim/snapshots.py
+
+tests/test_budget.py
+
+tests/test_approvals.py
+
+tests/test_exceptions.py
+
+tests/fixtures/retained_budget_records.json
+
+Commit with message: feat: reconcile budgets and prepaid cost commitments
+
+Push normally to origin main without force-pushing.
+
+Verify remote main matches the local commit and every Entire.io checkpoint reference matches remotely.
+
+---
+
+Project D — Step 180: Commit and push the verified Step 179 budget reconciliation milestone.
+
+Verify the current branch, Git status, and complete diff against HEAD 7015dde20ccd6a2327985c0eb26899ecf97c3974.
+
+Confirm the changes are limited to the 12 reviewed Step 179 files.
+
+Rerun the full test suite and Git diff checks.
+
+Verify all 129 preserved-file hashes match, including the interview, policy, previous snapshots, outputs, and protected Finance and closure code.
+
+Stage only these files:
+
+README.md
+
+src/travel_claim/budget.py
+
+src/travel_claim/approvals.py
+
+src/travel_claim/integration.py
+
+src/travel_claim/offline_replay.py
+
+src/travel_claim/ordinary.py
+
+src/travel_claim/readiness.py
+
+src/travel_claim/snapshots.py
+
+tests/test_budget.py
+
+tests/test_approvals.py
+
+tests/test_exceptions.py
+
+tests/fixtures/retained_budget_records.json
+
+Commit with message: feat: reconcile budgets and prepaid cost commitments
+
+Push normally to origin main without force-pushing.
+
+Verify remote main matches the local commit and every Entire.io checkpoint reference matches remotely.
+
+Do not stage unrelated audit reports or user-provided policy provenance files.
+
+Report the full commit SHA, final test count, committed file list, and Entire.io checkpoint verification.
+
+If any check fails, stop and report the issue.
+
+---
+
+Project D — Step 181: Remaining Requirements and Implementation Gap Audit
+
+We have successfully committed and pushed Step 180.
+
+Current HEAD:
+d494252163d4082dd9f086c5045496a73d53b237
+
+Your task is to perform a READ-ONLY audit of Project D's remaining requirements.
+
+Review the assignment requirements, README, Agent Skill, Step 167 policy-gap audit, and current implementation.
+
+Compare the implementation against POL-2026.2, clearly identifying the policy as a user-provided browser copy rather than a successful native Notion retrieval.
+
+Verify the current status of:
+
+Financial obligation and closure decisions.
+
+Refunds, cancellations, and overpayments.
+
+Budget reconciliation and prepaid commitments.
+
+Approval and revision revalidation.
+
+Four-batch immutable snapshots and evidence lineage.
+
+Fresh native source acquisition and source-access limitations.
+
+Final claims.csv, report.md, owner repair queue, and draft follow-ups.
+
+Agent Skill reproducibility, readiness validation, and final submission evidence.
+
+Separate remaining items into:
+
+Implementation defects or missing functionality.
+
+Missing external evidence or access.
+
+Human decisions that must not be automated or invented.
+
+Rank the remaining implementation milestones by dependency and importance.
+
+Recommend ONE specific next coding milestone, including its scope, affected files, and tests.
+
+Constraints:
+
+Do not modify any files.
+
+Do not regenerate prior outputs.
+
+Do not stage, commit, or push.
+
+Do not invent missing evidence, approvals, financial decisions, or timestamps.
+
+Do not assume passing tests means full assignment compliance.
+
+Report findings with file paths, line references, and supporting evidence.
+
+Finish with a concise gap table and your recommended Step 182 implementation scope.
+
+---
+
+Project D — Step 182: Integrate Policy Evidence and Date-Only Case Clock
+
+Current HEAD: d494252163d4082dd9f086c5045496a73d53b237
+
+Implement the Step 182 milestone recommended by the read-only Step 181 audit.
+
+Goal: Make the existing policy-aware workflow reproducible through the CLI using the verified POL-2026.2 browser copy and its calendar-date case clock, without pretending that native Notion retrieval succeeded.
+
+Requirements:
+
+Review the Step 181 audit, current CLI, parsing, offline replay, snapshots, readiness validator, README, and Agent Skill.
+
+Add explicit CLI support for supplying the verified browser policy as supplemental evidence.
+
+Verify the exact policy bytes and SHA-256:
+f547ee77729be8ad431a5ddf2e2907f94f29ad50092231191abd2f72c04f54d2
+
+Preserve its provenance as a user-provided browser copy. Never label it as a successful native Notion acquisition.
+
+Bind policy version POL-2026.2, source references, provenance, case date 2026-11-15, and timezone Europe/Amsterdam into newly generated run evidence.
+
+Support calendar-date precision without inventing a time of day. Hold decisions where same-day event ordering cannot be established.
+
+Preserve the original five-source acquisition observations and their failure or success statuses.
+
+Extend readiness validation to distinguish native source evidence from supplemental policy evidence and validate both accurately.
+
+Update README and the Agent Skill with the exact reproducible invocation.
+
+Add focused tests covering valid binding, tampering, missing evidence, date-only clocks, uncertain event ordering, provenance, immutable prior runs, and readiness.
+
+Constraints:
+
+Do not change financial closure, cancellation-resolution, approval, or budget business rules in this milestone.
+
+Do not regenerate or overwrite earlier run artifacts.
+
+Do not invent approvals, payments, timestamps, or missing evidence.
+
+Do not stage, commit, or push.
+
+Preserve all 129 protected files.
+
+Run the full test suite and Git diff checks.
+
+Report the changed files, test count, preservation results, remaining blockers, and any failed checks.
+
+Stop if a requirement cannot be implemented without inventing evidence or changing protected financial decisions.
+
+---
+
+Project D — Step 183: Commit and Push Verified Step 182 Policy Integration
+
+Current starting HEAD:
+d494252163d4082dd9f086c5045496a73d53b237
+
+    Verify the current branch, Git status, and complete diff against the starting HEAD.
+
+    Confirm changes are limited to the nine reviewed Step 182 files.
+
+    Rerun the full test suite and Git diff checks.
+
+    Verify all 129 protected-file hashes still match.
+
+    Confirm prior snapshots, reports, policy provenance, and financial outputs remain unchanged.
+
+Stage ONLY:
+
+README.md
+
+skills/travel-expense-claim/SKILL.md
+
+snapshot.schema.json
+
+src/travel_claim/cli.py
+
+src/travel_claim/policy_evidence.py
+
+src/travel_claim/offline_replay.py
+
+src/travel_claim/readiness.py
+
+src/travel_claim/snapshots.py
+
+tests/test_policy_evidence.py
+
+Commit message:
+feat: integrate provenance-bound policy replay
+
+Push normally to origin main, using existing Entire.io hooks. Do not force-push.
+
+Verify that remote main matches the exact local commit and that every Entire.io checkpoint reference matches remotely.
+
+Do not stage unrelated audit reports, temporary replay artifacts, or user-provided policy provenance files.
+
+Report the full commit SHA, passing test count, committed files, protected-file verification, and Entire.io checkpoint results.
+
+If any verification fails, stop and report the issue.
+
+---
+
+Project D — Step 183: Read-only end-to-end quality and readiness audit.
+
+Starting from commit 791c8c787bbd617a7b7d3114f13c000249169151, inspect the complete Travel Expense Claim implementation.
+
+Do not modify, stage, commit, or push any files during this step.
+
+    Verify the current branch, HEAD, Git status, and existing project instructions.
+
+    Run the full automated test suite and report the exact passing test count.
+
+    Audit the complete workflow, including:
+
+        Fresh native source acquisition and provenance.
+
+        Policy evidence and replay.
+
+        Arrival batches, case clock, and immutable snapshots.
+
+Claim and trip revision handling.
+
+Receipts, expense calculations, caps, FX, and filing deadlines.
+
+Travel permits and required claim approvals.
+
+Budget reconciliation and prepaid commitments.
+
+Finance event admission, refunds, and financial reconciliation.
+
+Corrections, cancellations, and exceptions.
+
+Repair queues, partial responses, and unsent follow-up drafts.
+
+claims.csv, report.md, readiness validation, and final closure gates.
+
+Execute the supported end-to-end offline replay using retained source evidence. Do not overwrite earlier run artifacts.
+
+Identify any discrepancies between the source evidence, calculated outputs, workflow statuses, and documented requirements.
+
+Verify that the 129 previously protected files remain unchanged using the available preservation manifest. If the manifest is unavailable, report that explicitly rather than claiming verification.
+
+Distinguish:
+
+PASS: Verified and functioning.
+
+BLOCKED: Missing authoritative evidence or external dependency.
+
+FAIL: Demonstrated implementation defect.
+
+NOT VERIFIED: Insufficient evidence to determine correctness.
+
+Pay particular attention to the authoritative case clock, native Notion policy accessibility, current approval evidence, and financial closure. Never invent missing facts, approvals, dates, or policy rules.
+
+Produce a prioritized audit summary with:
+
+Verified capabilities.
+
+Actual defects, with source and code references.
+
+External blockers.
+
+Recommended next implementation milestone.
+
+Remaining steps before submission readiness.
+
+Do not automatically fix findings. Stop after the audit and present the results for review.
+
+---
+
+Continue Project D Step 183 from the interrupted read-only audit.
+
+Do not restart the entire investigation unnecessarily. Reuse the findings already established in this session.
+
+Previously verified:
+
+    396 automated tests passed.
+
+    All 129 protected-file hashes matched.
+
+    Retained evidence counts and arrival-batch membership were inspected.
+
+    Two possible defects were identified: reviewer decisions accepted after the case-clock cutoff, and insufficient source-binding validation for expense evidence.
+
+    The audit was interrupted before the final end-to-end replay and report were completed.
+
+Next:
+
+Confirm the status of the interrupted offline replay. If incomplete, rerun it in a fresh temporary directory without overwriting existing artifacts.
+
+Finish the diagnostic probes for both suspected defects.
+
+Inspect financial closure, approvals, budget, cancellation, and report output consistency.
+
+Classify findings as PASS, BLOCKED, FAIL, or NOT VERIFIED.
+
+Provide the final prioritized Step 183 audit summary, with exact source/code references and the recommended Step 184 implementation scope.
+
+Remain strictly read-only. Do not modify, stage, commit, or push files. Stop after presenting the audit results.
+
+---
+
+Project D — Step 184: Harden expense-source admission and reviewer case-clock validation.
+
+Starting from commit 791c8c787bbd617a7b7d3114f13c000249169151, implement fixes for the two highest-priority demonstrated defects in the completed Step 183 audit.
+
+    Expense evidence admission:
+
+    Require valid, verified source bindings for receipts, merchant payments, and any other evidence needed to establish expense eligibility.
+
+    Reject or hold missing, mismatched, unobserved, or unverifiable source hashes and record references.
+
+    Preserve original evidence and source references.
+
+    Prevent unverified evidence from producing an authorized reimbursement or closed-reimbursed status.
+
+    Do not block independent claims whose evidence remains valid.
+
+    Reviewer case-clock admission:
+
+Enforce the authoritative case date and timezone when evaluating reviewer decisions.
+
+Exclude decisions unambiguously after the case date.
+
+Treat same-day decisions conservatively when an exact cutoff time is not established; do not invent a time.
+
+Preserve historical decisions and distinguish retained history from currently admissible authority.
+
+Reuse existing event-validation semantics where appropriate.
+
+Regression tests:
+
+Reproduce both Step 183 defects before fixing them.
+
+Cover future-dated reviews, ambiguous same-day reviews, valid earlier reviews, missing/mismatched hashes, unbound receipt/payment evidence, unaffected valid claims, and closure prevention.
+
+Include connected-workflow tests, not only isolated unit tests.
+
+Quality and preservation:
+
+Run the full automated test suite and Git diff checks.
+
+Verify the protected files using the original preservation manifest if available. If unavailable, report that explicitly.
+
+Do not overwrite previous snapshots, reports, retained source evidence, interview, policy, or provenance.
+
+Do not fabricate approvals, case times, policy rules, or Finance decisions.
+
+Do not stage, commit, or push during Step 184.
+
+Report the exact passing test count, files changed, confirmed fixes, remaining limitations, and preservation status. Stop for review.
+
+---
+
+Project D — Step 185: Verify, commit, and push the Step 184 evidence-admission milestone.
+
+Starting from HEAD 791c8c787bbd617a7b7d3114f13c000249169151:
+
+Verify the current branch, HEAD, Git status, and complete diff.
+
+Confirm implementation changes are limited to the seven reviewed Step 184 files.
+
+Rerun the full automated test suite and Git diff checks.
+
+Verify all 132 files in the Step 184 start baseline remain unchanged. Report explicitly that the original historical 129-file manifest is unavailable.
+
+Stage only:
+
+README.md
+
+src/travel_claim/approvals.py
+
+src/travel_claim/expenses.py
+
+tests/test_approvals.py
+
+tests/test_evidence_admission.py
+
+tests/test_exceptions.py
+
+tests/test_expenses.py
+
+Verify the staged diff contains exactly these seven files.
+
+Commit with message: fix: enforce source-bound expenses and reviewer clock admission
+
+Push normally to origin main without force-pushing, using the existing Entire.io hooks.
+
+Verify remote main matches the local commit and all Entire.io checkpoint references match remotely.
+
+Do not stage unrelated audit reports, previous run artifacts, or user-provided policy provenance files.
+
+Report the full commit SHA, final passing test count, exact committed files, preservation status, and Entire.io checkpoint verification.
+
+If any verification fails, stop and explain the issue.
+
+---
+
+Project D — Step 186: Investigate and correct financial closure and cancellation defects.
+
+Start from verified commit faf1f780728c17440f133d8c334222fe6a6cb0cb.
+
+Review the Step 183 audit findings and current implementation, including finance.py, ordinary.py, integration.py, revalidation.py, approvals.py, and related tests.
+
+    Identify the exact remaining financial closure and cancellation defects. Do not assume that a previously reported issue still exists; verify it against current code and retained source evidence.
+
+    Create focused regression tests that reproduce each confirmed defect before implementing a fix.
+
+    Correct demonstrated defects involving financial closure, reimbursement eligibility, cancellation timing, supported obligations, payment/refund reconciliation, and dependencies between these stages.
+
+Preserve all admitted Finance events, original revisions, cancellation history, and source references. Never erase legitimate payments or refunds to make a claim appear closed.
+
+Require source-supported current approvals, authorized obligations, reconciled net payments, Finance resolution, and no unresolved dependent issues before final financial closure.
+
+Keep independent valid claims progressing while holding only affected claims and dependent stages.
+
+Preserve the distinction between a business cancellation and a Finance cancellation. Do not invent cancellation approval or reimbursement authority.
+
+Add synthetic and retained-evidence tests for corrections, cancellation sequences, partial payments, refunds, zero obligations, duplicate events, and closure attempts with unresolved dependencies.
+
+Run the full automated test suite and Git diff checks.
+
+Verify protected-file preservation using the available baseline manifest. If unavailable, report the limitation explicitly.
+
+Do not overwrite prior run artifacts or change original source evidence.
+
+Do not stage, commit, or push anything during Step 186.
+
+Report confirmed defects, fixes, exact passing test count, changed files, preservation results, and remaining blockers. Stop for review.
+
+---
+
+Verify the current branch, Git status, complete working diff, and existing repository instructions.
+
+Confirm that the implementation changes are limited to the 12 Step 186 files:
+
+README.md
+src/travel_claim/approvals.py
+src/travel_claim/budget.py
+src/travel_claim/completion.py
+src/travel_claim/exceptions.py
+src/travel_claim/finance.py
+src/travel_claim/integration.py
+src/travel_claim/ordinary.py
+src/travel_claim/revalidation.py
+tests/test_completion.py
+tests/test_ordinary.py
+tests/test_retained_finance.py
+
+Run the full automated test suite and Git diff checks.
+
+Verify all 124 retained-data hashes against the available preservation manifest. Check the 132-file Step 184 baseline, distinguishing intentionally modified implementation files from protected evidence. Do not claim verification against the unavailable historical 129-file manifest.
+
+Review the financial closure and cancellation regressions for unsupported authorization, erased payment history, fabricated resolutions, or accidental changes to source admission.
+
+If all checks pass, stage exactly the 12 reviewed files and verify the staged diff.
+
+Commit with message:
+
+fix: enforce financial completion and cancellation dependencies
+
+Push normally to origin main without force-pushing, using existing Entire.io hooks.
+
+Verify that remote main matches the local commit and every Entire.io checkpoint reference matches remotely.
+
+Do not stage unrelated audit reports, retained run artifacts, or user-provided policy provenance files.
+
+Report the full commit SHA, final passing test count, exact committed file list, preservation results, and Entire.io checkpoint verification.
+
+If any verification fails, stop and report the issue without proceeding.
+
+---
+
+Project D — Step 188: Comprehensive read-only end-to-end quality and submission-readiness audit.
+
+Starting commit: cc281716d4281fa08829100ef3502486e59db091
+
+This is an audit only. Do not modify, create, stage, commit, push, or delete any project files. Do not overwrite existing artifacts. Do not automatically fix defects.
+1. Verify repository integrity
+
+    Confirm branch, HEAD, Git status, and repository instructions.
+
+    Confirm the starting commit matches the expected SHA.
+
+    Run the complete automated test suite without writing caches into the repository.
+
+    Report the exact passing test count and any failures.
+
+    Verify retained-source integrity using available preservation manifests.
+
+    Distinguish the 124-file retained-data baseline from the historical 129-file manifest. Do not claim verification against unavailable manifests.
+
+    Check Git and Entire.io checkpoint consistency using read-only commands.
+
+2. Audit the complete implementation
+
+Inspect code, tests, retained source evidence, and generated outputs for:
+
+Fresh native acquisition of all five required source locations.
+
+Original evidence preservation, hashes, locators, and provenance.
+
+Notion policy evidence, version authority, and policy replay.
+
+Authoritative case clock, timezone, arrival batches, and cutoff admission.
+
+Immutable snapshots, revisions, and snapshot chain integrity.
+
+Claims, trips, filing dates, and correction history.
+
+Receipt validation, merchant transactions, expense calculations, caps, FX, and deadlines.
+
+Travel permits and required claim approvals.
+
+Budget allocation and prepaid cost commitments.
+
+Finance event admission, obligations, payments, refunds, and reconciliation.
+
+Financial completion, cancellations, and dependent-work revalidation.
+
+Exceptions, owner-grouped repair queues, partial responses, and unsent drafts.
+
+Accuracy and traceability of claims.csv and report.md.
+
+Readiness validation and final human acceptance/closure requirements.
+
+3. Execute an end-to-end replay
+
+Run the supported offline replay against retained source evidence using a new temporary location outside the repository.
+
+Do not modify previous run artifacts.
+
+Inspect actual output records, not only whether the command exits successfully.
+
+Reconcile representative claims, including ordinary, corrected, cancelled, prepaid, refunded, and unresolved cases, against their retained source rows and workflow histories.
+
+Check that valid independent claims are not blocked by unrelated problems.
+
+Check that unsupported approvals, payments, policies, or dates cannot produce a false PASS or financial closure.
+
+
+
+4. Investigate remaining defects
+
+Pay special attention to:
+
+Incorrect or misleading claims.csv statuses.
+
+Incorrect report.md totals, groupings, and traceability.
+
+Repair queue omissions or duplicate issues.
+
+Partial responses incorrectly closing unresolved work.
+
+Closure incorrectly passing when financial obligations or cancellation dependencies remain unresolved.
+
+Differences between documented behavior and actual code.
+
+Missing tests for important business scenarios.
+
+Use targeted read-only diagnostic probes when useful.
+
+Distinguish a demonstrated defect from a suspected issue. Provide file/function references, affected evidence, and reproducible observations for every confirmed defect.
+
+5. Classify findings
+
+Use exactly these categories:
+
+PASS — Verified working.
+
+FAIL — Reproduced implementation defect.
+
+BLOCKED — Missing authoritative evidence or external dependency.
+
+NOT VERIFIED — Insufficient evidence to establish correctness.
+
+Do not invent a case clock, policy rules, approvals, financial amounts, or missing source content.
+
+Do not treat a user-provided policy copy as a successful fresh native Notion read.
+
+6. Final report
+
+Present:
+
+Exact test results.
+
+Verified working capabilities.
+
+Confirmed defects ranked by severity and impact.
+
+External blockers, including Notion access and authoritative case clock.
+
+Any unverified requirements.
+
+The single highest-priority next implementation milestone.
+
+Remaining steps to submission readiness.
+
+Repository integrity and preservation verification results.
+
+For every finding, distinguish the requirement, source evidence, code behavior, and consequence.
+
+Stop after presenting the audit. Wait for my approval before implementing any changes.
+
+---
+
+Project D — Step 189: Fix temporal and evidence-basis defects in financial completion.
+
+Starting commit:
+cc281716d4281fa08829100ef3502486e59db091
+
+Objective:
+Correct the three confirmed false-closure defects reproduced during the Step 188 read-only audit.
+
+Do not stage, commit, push, delete, or overwrite existing run artifacts during this step.
+1. Establish the baseline
+
+Verify branch, HEAD, Git status, and repository instructions.
+
+Confirm the starting commit.
+
+Run the existing full test suite and record the baseline count (480 tests previously passed).
+
+Inspect completion.py, ordinary.py, expenses.py, finance.py, integration.py, event admission, policy evidence, and relevant tests.
+
+Read the retained policy and its provenance.
+
+Preserve all original interviews, source records, snapshots, reports, and user-provided policy evidence.
+
+Record baseline hashes for protected evidence and unrelated implementation files.
+
+2. Fix stale Finance resolution after material corrections
+
+Step 188 reproduced a synthetic claim closing with an older Finance resolution after a material receipt-source change.
+
+Required behavior:
+
+Identify the latest material change affecting the financial entitlement or reimbursement evidence basis.
+
+Require the applicable Finance resolution to cover the current evidence basis.
+
+Do not treat a resolution issued before a later material change as current authority merely because it occurred after the original acceptance.
+
+Preserve historical resolutions and admitted cash.
+
+Do not automatically invalidate independent, unchanged evidence.
+
+Treat missing or ambiguous revision/resolution linkage as BLOCKED, not approved.
+
+Add regression tests reproducing the Step 188 stale-resolution scenario.
+
+3. Fix cancellation-after-payment chronology
+
+Step 188 reproduced this synthetic chronology:
+
+September 4: reimbursement transfer.
+
+September 5: cancellation.
+
+September 11: Finance acceptance.
+
+The workflow incorrectly reached closed-reimbursed without requiring cancellation resolution.
+
+Required behavior:
+
+Evaluate cancellation dependencies against relevant reimbursement and financial activity, not acceptance time alone.
+
+Require supported Finance resolution when cancellation affects an already-paid or otherwise financially committed obligation.
+
+Handle inconsistent chronology conservatively.
+
+Preserve original transfer, refund, and cancellation events.
+
+Do not fabricate refunds or resolutions.
+
+Keep unaffected independent claims eligible to progress.
+
+Add tests for cancellation before acceptance, after payment, after acceptance, and cases with supported current resolution.
+
+4. Enforce the authoritative case-date cutoff for employee evidence
+
+The retained browser policy establishes:
+
+Case date: 2026-11-15
+Timezone: Europe/Amsterdam
+
+Step 188 reproduced a synthetic employee payment and submission dated November 16 incorrectly reaching closed-reimbursed.
+
+Required behavior:
+
+Validate relevant employee payment and submission dates against the authoritative case date.
+
+Reject future-dated facts from current entitlement and financial closure calculations.
+
+Preserve excluded evidence in historical/audit records with explicit reasons.
+
+Apply date-only semantics when the authoritative policy provides no time of day.
+
+Do not invent a cutoff instant.
+
+If ordering within the same day is necessary but unsupported, mark only that dependent decision BLOCKED.
+
+Do not alter existing reviewer, Finance, or cancellation clock rules unless required by demonstrated evidence.
+
+Add regression tests for before, on, and after the case date, including timezone-sensitive examples.
+
+5. Connected workflow quality
+
+Test the fixes through the complete ordinary-claim workflow and financial-completion gate.
+
+Confirm:
+
+No stale resolution can authorize closure.
+
+No financially relevant cancellation can be ignored.
+
+No future employee evidence can authorize closure.
+
+Existing valid synthetic cases still close when all required evidence and authority are present.
+
+Independent unaffected claims continue.
+
+Previously admitted financial events remain unchanged.
+
+Corrections, refunds, and historical revisions remain traceable.
+
+No real retained claim gains unsupported approval or financial closure.
+
+Do not loosen existing validation to make tests pass.
+
+6. Verification
+
+Run:
+
+Targeted regression tests.
+
+Full automated test suite.
+
+Git diff and whitespace checks.
+
+Preservation hash checks.
+
+Read-only representative retained-data replay in a new temporary directory.
+
+Compare results against the Step 188 audit findings.
+
+Classify each original defect as FIXED, STILL FAILING, or NOT VERIFIED, with actual evidence.
+
+Explicitly report any behavior change in claims.csv, report.md, financial status, or repair queues.
+
+7. Scope and reporting
+
+Keep changes limited to the necessary implementation modules and regression tests.
+
+Do not modify source records, browser policy evidence, previous snapshots, financial event history, Git hooks, or Entire.io checkpoints.
+
+Do not attempt to repair the unrelated CSV terminal-status, superseded-repair, partial-response, Notion access, or Entire.io checkpoint issues in this step.
+
+At completion report:
+
+Files changed.
+
+Exact passing and failing test counts.
+
+Reproduction of all three original defects before fixes.
+
+Verification of each fix after implementation.
+
+Preservation results and any unavailable manifests.
+
+Remaining defects or external blockers.
+
+Any unexpected effects or unresolved uncertainty.
+
+STOP after implementation, tests, and review. Do not commit or push until I explicitly authorize the next step.
+
+---
+
+Project D — Step 189: Resume interrupted file-based verification after WSL recovery.
+
+WSL /tmp is writable again. Resume from the existing working tree. Do not reimplement the fixes.
+
+Starting HEAD:
+cc281716d4281fa08829100ef3502486e59db091
+
+The three implementation files and tests/test_temporal_completion.py contain the completed Step 189 fixes.
+
+Verify Git status and confirm only the intended Step 189 implementation and test files are changed. Leave unrelated untracked artifacts untouched.
+
+Rerun the complete automated test suite. The previous result was 509 passing tests.
+
+Execute the supported four-batch offline replay using retained source evidence and provenance-bound policy input in a new unique temporary directory under /tmp.
+
+Confirm that all four immutable snapshots are actually written and their hash chain validates.
+
+Generate claims.csv, report.md, repair queue, follow-up drafts, and the readiness report.
+
+Compare generated outputs against Step 188 and the completed Step 189 in-memory replay. Explain any differences.
+
+Verify all 124 retained-data hashes against the available manifest.    Run Git diff and whitespace checks.
+
+    Confirm no real claim gained unsupported financial closure and all admitted Finance events remain unchanged.
+
+    Report exact test count, replay results, readiness results, preservation checks, and any remaining defects or external blockers.
+
+Do not stage, commit, push, or modify unrelated files.
+
+Stop after verification and present the results for review.
+
+---
+
+Resume Project D Step 189 immediately.
+
+The WSL filesystem has recovered. The implementation is complete, with 509 tests previously passing.
+
+    Run the full test suite.
+
+    Complete the interrupted four-batch file-based replay in /tmp, including snapshot-chain validation and output generation.
+
+    Verify the 124 retained-data hashes and confirm no unsupported financial closures.
+
+    Check the Git diff and identify only the four Step 189 files.
+
+    If all essential checks pass, stage only:
+
+        src/travel_claim/completion.py
+
+        src/travel_claim/ordinary.py
+
+        src/travel_claim/expenses.py
+
+        tests/test_temporal_completion.py
+
+    Commit with message: fix: enforce temporal financial closure dependencies
+
+Push main to origin.
+
+Verify the remote commit matches local HEAD.
+
+Do not stage unrelated artifacts or user-provided sources. Do not modify historical evidence or Entire.io checkpoint references.
+
+If a required verification fails, stop before committing and report the exact blocker. Do not spend time on unrelated enhancements.
+
+Finally, report the commit SHA, test count, replay status, push status, and remaining submission blockers.
+
+---
+
+Project D: Read the latest readiness report at HEAD 4fffa687. Identify the exact five BLOCKED checks, their causes, and the minimum action needed for each.
+
+Classify each blocker as:
+
+Fixable locally without additional stakeholder information
+
+Requires external source access or staff action
+
+Requires missing business evidence or authorization
+
+For each, state whether it is an actual assignment submission requirement or an additional quality check.
+
+Do not modify code, rerun tests, create artifacts, commit, or push. Give me a concise submission-focused assessment and identify the single most important next action.
+
+---
+
+Project D — Final submission execution.
+
+Current HEAD: 4fffa6879f7f55b567f1cf0c1b025a865994e01f.
+
+Perform a fresh, authorized acquisition attempt for all five disclosed native sources: the Notion reimbursement policy, three Google Drive PDFs, and the Google Sheets workbook.
+
+Use the existing project skill and supported workflow. Preserve each source's actual retrieval status, timestamps, provenance, and any error responses. Do not substitute retained fixtures for successful live retrieval or claim inaccessible sources were fetched.
+
+If a source is inaccessible, follow the documented failure/partial-run procedure, retain usable evidence, generate permitted outputs, and identify the owner and next action.
+
+Validate the resulting snapshots, claims, report, repair queue, and readiness assessment. Distinguish actual assignment requirements from optional zero-backlog quality gates.
+
+Do not fabricate missing approvals, evidence, policy content, or financial closure. Do not modify source evidence, commit, or push.
+
+Finish with a concise submission decision:
+
+READY — requirements satisfied.
+
+READY WITH DISCLOSED EXTERNAL BLOCKERS — submission is supportable with documented limitations.
+
+NOT READY — a specific locally fixable mandatory requirement remains unmet.
+
+Provide exact artifact paths and the evidence supporting the decision. Do not initiate unrelated improvements.
+
+---
+
+Project D — Stage 7 mandatory correction: terminal-claim output consistency.
+
+Use the fresh replay and submission assessment from 2026-10-16, run project-d-final-replay-20261016T105352Z-276e92.
+
+Fix the confirmed claims.csv projection defect for terminal claims C13 and C14.
+
+Requirements:
+
+Preserve the authoritative withdrawn/rejected business status and its source-backed disposition reason.
+
+Do not assign Finance as next owner or create actionable missing-authorization repairs solely because a terminal claim lacks payment authorization.
+
+Ensure claims.csv, report.md, repair queue, and readiness checks agree on terminal-claim disposition.
+
+Preserve historical Finance records, cancellation evidence, claim revisions, and valid unresolved repairs.
+
+Add regression tests covering C13, C14, and other terminal-status edge cases.
+
+Run the full test suite and regenerate the four-batch replay outputs using retained fresh-source evidence without misrepresenting the inaccessible native Notion policy.
+
+Revalidate output consistency, snapshot lineage, and retained evidence preservation.
+
+Do not change original evidence, fabricate approvals, or alter unrelated behavior.
+
+If all mandatory local checks pass, commit and push only the reviewed implementation and regression-test changes. Preserve unrelated artifacts and Entire.io references.
+
+Report exact tests, changed files, commit SHA, remote verification, and any remaining submission blockers.
+
+---
+
+Project D — Stage 7: Complete requirements coverage audit.
+
+Current verified commit: c2bee74ee639b1d981ca2c9f2af2235f52fb941f.
+
+Audit the entire project against:
+
+    The original Project D assignment and all available requirements gathered before "pink elephant."
+
+    The retained stakeholder interview transcript and every confirmed interview decision.
+
+    The five disclosed sources, arrival-batch rules, financial logic, exception handling, and required deliverables.
+
+    The implemented Agent Skill, source acquisition, snapshots, tests, generated outputs, and Entire.io evidence.
+
+    The files actually committed and uploaded to GitHub.
+
+Create a requirement-by-requirement coverage matrix with:
+
+Requirement and original source
+
+Implementation file/function
+
+Test or execution evidence
+
+GitHub/upload status
+
+PASS, FAIL, BLOCKED, or NOT VERIFIED
+
+Exact corrective action, if necessary
+
+Do not assume a requirement is satisfied merely because automated tests pass.
+
+Identify missing required deliverables, unresolved correctness defects, and any generated artifacts that must be uploaded.
+
+Distinguish missing business approvals from software failures. Do not invent approvals or treat legitimate pending claims as defects.
+
+Do not modify code, commit, or push during this audit.
+
+Finish with a clear DONE or NOT DONE decision and an ordered list of mandatory remaining actions. Do not propose optional enhancements.
