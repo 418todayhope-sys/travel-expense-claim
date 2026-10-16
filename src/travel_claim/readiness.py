@@ -218,6 +218,12 @@ def validate_readiness(run_dir: Path, *, schema_path: Path, repo_dir: Path) -> d
                 require(ref in parsed_refs, "Repair locator is not present in retained parsed evidence")
     check("repair-queue-traceability", [run_dir / "repair-queue.json", run_dir / "offline-replay-state.json"], queue_trace)
 
+    def response_journal():
+        from .outputs import validate_partial_response_journal
+        require(queue == state.get("repair_queue"), "Repair queue differs from replay state")
+        validate_partial_response_journal(queue, run_dir / "response-evidence")
+    check("partial-response-integrity", [run_dir / "repair-queue.json", run_dir / "response-evidence"], response_journal)
+
     missing_refs = [item["item_id"] for item in queue.get("items", {}).values()
                     if item.get("status") == "open" and not item.get("source_refs")]
     add("repair-evidence-availability", "BLOCKED" if missing_refs else "PASS",

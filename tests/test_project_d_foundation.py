@@ -7,6 +7,8 @@ from pathlib import Path
 
 import pytest
 
+from partial_response_fixtures import retained_response
+
 from travel_claim.outputs import (
     CLAIMS_COLUMNS,
     add_repair_item,
@@ -269,10 +271,13 @@ def test_owner_grouped_queue_preserves_item_identity_and_partial_resolution(tmp_
     )
     assert set(owner_grouped_view(queue)) == {"employee-17", "supervisor-4"}
 
+    outcomes = retained_response(tmp_path / "response-evidence", queue, "employee-response-actual-id",
+                                 {"receipt-a": {"outcome": "supported"}})
     apply_partial_response(
         queue,
+        evidence_directory=tmp_path / "response-evidence",
         response_id="employee-response-actual-id",
-        item_outcomes={"receipt-a": {"outcome": "supported", "source_refs": ["receipt/card-a"]}},
+        item_outcomes=outcomes,
         run_id="run-1",
         batch_id="arrival-003",
     )
@@ -337,7 +342,7 @@ def test_partial_queue_response_needs_source_evidence_to_resolve(tmp_path):
     assert queue["items"]["missing-fact"]["status"] == "open"
 
 
-def test_repair_response_replay_is_idempotent_and_conflicts_are_rejected():
+def test_repair_response_replay_is_idempotent_and_conflicts_are_rejected(tmp_path):
     queue = new_repair_queue()
     add_repair_item(
         queue,
@@ -352,10 +357,10 @@ def test_repair_response_replay_is_idempotent_and_conflicts_are_rejected():
         run_id="run-1",
         batch_id="b1",
     )
-    outcome = {"item-1": {"outcome": "supported", "source_refs": ["receipts/R1"]}}
-    apply_partial_response(queue, response_id="reply-1", item_outcomes=outcome, run_id="run-1", batch_id="b2")
+    outcome = retained_response(tmp_path, queue, "reply-1", {"item-1": {"outcome": "supported"}})
+    apply_partial_response(queue, evidence_directory=tmp_path, response_id="reply-1", item_outcomes=outcome, run_id="run-1", batch_id="b2")
     event_count = len(queue["events"])
-    apply_partial_response(queue, response_id="reply-1", item_outcomes=outcome, run_id="run-1", batch_id="b2")
+    apply_partial_response(queue, evidence_directory=tmp_path, response_id="reply-1", item_outcomes=outcome, run_id="run-1", batch_id="b2")
     assert len(queue["events"]) == event_count
     with pytest.raises(ValueError, match="conflicting replay"):
         apply_partial_response(

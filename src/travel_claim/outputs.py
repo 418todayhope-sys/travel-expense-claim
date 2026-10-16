@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import csv
+import hashlib
+import re
 import json
 import os
 import tempfile
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -183,6 +186,100 @@ def add_repair_item(
     })
 
 
+def verify_response_evidence(item: dict, outcome: dict, response_id: str,
+                             evidence_directory: Path | None) -> None:
+    """Verify a retained, explicit sufficiency assessment, never infer one.
+
+    Retain supplemental replies under <run>/response-evidence/ with a separate
+    sources.json manifest (files: source_id, path, sha256, status, missing_scope,
+    observed_at, version). This does not append to the five native sources.
+    Assessment references
+    address retained JSON records with JSON pointers. Supporting references can
+    also address native parsed rows/pages bound to that exact manifest. A caller
+    must retain a supplied assessment with item/subject/revision, response_id,
+    sufficient=true, reason, provenance and evidence_refs; raw receipts or an
+    importer-provided `supported` label alone do not establish sufficiency.
+    This supplemental evidence contract never changes native acquisition status.
+    """
+    if evidence_directory is None:
+        raise ValueError("retained response evidence directory is required")
+    root = Path(evidence_directory).resolve()
+    manifest_bytes = (root / "sources.json").read_bytes()
+    manifest = json.loads(manifest_bytes)
+    if not isinstance(manifest, dict) or not isinstance(manifest.get("files"), list):
+        raise ValueError("response manifest must contain a files array")
+    if not all(isinstance(row, dict) for row in manifest["files"]):
+        raise ValueError("response manifest source entries must be objects")
+
+    def resolve(ref):
+        if not isinstance(ref, str):
+            raise ValueError("response source reference must be text")
+        sid_hash, locator = ref.split("#", 1)
+        sid, digest = sid_hash.split("@", 1)
+        if not sid or re.fullmatch(r"[0-9a-f]{64}", digest) is None or not locator:
+            raise ValueError("malformed response source reference")
+        rows = [r for r in manifest["files"] if r.get("source_id") == sid]
+        if len(rows) != 1:
+            raise ValueError("response source is missing or ambiguous")
+        row = rows[0]
+        if (row.get("status") != "read" or row.get("sha256") != digest
+                or row.get("missing_scope") != [] or not row.get("observed_at")
+                or not isinstance(row.get("version"), str) or not row["version"].strip()
+                or row.get("error") is not None):
+            raise ValueError("response source is unobserved, incomplete or mismatched")
+        observed = datetime.fromisoformat(str(row["observed_at"]).replace("Z", "+00:00"))
+        if observed.utcoffset() is None:
+            raise ValueError("response observation must include a timezone")
+        path = (root / row["path"]).resolve()
+        if not path.is_relative_to(root):
+            raise ValueError("response source escapes retained directory")
+        data = path.read_bytes()
+        if hashlib.sha256(data).hexdigest() != digest:
+            raise ValueError("response source bytes do not match hash")
+        if path.suffix == ".json" and locator.startswith("/"):
+            value = json.loads(data)
+            for component in locator[1:].split("/"):
+                if re.search(r"~(?![01])", component):
+                    raise ValueError("invalid response JSON pointer escape")
+                key = component.replace("~1", "/").replace("~0", "~")
+                if isinstance(value, list):
+                    if not key.isdecimal() or str(int(key)) != key:
+                        raise ValueError("invalid response array pointer")
+                    value = value[int(key)]
+                else:
+                    value = value[key]
+            return value
+        parsed = json.loads((root / "parsed-records.json").read_bytes())
+        if parsed.get("source_manifest") != {
+                "path": "sources.json", "sha256": hashlib.sha256(manifest_bytes).hexdigest()}:
+            raise ValueError("response parsed evidence has a different manifest")
+
+        def find(value):
+            if isinstance(value, dict):
+                if (value.get("source_id"), value.get("source_sha256"), value.get("locator")) == (sid, digest, locator):
+                    return True
+                return any(find(v) for v in value.values())
+            return isinstance(value, list) and any(find(v) for v in value)
+        if not find(parsed):
+            raise ValueError("response locator is not retained")
+        return None
+
+    assessment = resolve(outcome.get("assessment_ref", ""))
+    if not isinstance(assessment, dict):
+        raise ValueError("response requires an explicit retained sufficiency assessment")
+    for field in ("item_id", "subject_type", "subject_id", "revision"):
+        if type(assessment.get(field)) is not type(item[field]) or assessment[field] != item[field]:
+            raise ValueError(f"response assessment does not match repair {field}")
+    refs = list(dict.fromkeys(outcome.get("source_refs", [])))
+    if (assessment.get("response_id") != response_id or assessment.get("sufficient") is not True
+            or not isinstance(assessment.get("reason"), str) or not assessment["reason"].strip()
+            or not isinstance(assessment.get("provenance"), str) or not assessment["provenance"].strip()
+            or not refs or assessment.get("evidence_refs") != refs):
+        raise ValueError("response assessment does not establish matched evidence sufficiency")
+    for ref in refs:
+        resolve(ref)
+
+
 def apply_partial_response(
     queue: dict,
     *,
@@ -190,18 +287,20 @@ def apply_partial_response(
     item_outcomes: dict[str, dict],
     run_id: str,
     batch_id: str,
+    evidence_directory: Path | None = None,
 ) -> None:
     """Record a supplied response against explicitly matched repair item IDs.
 
-    Only `supported` plus at least one retained source reference resolves an
-    item. Every other outcome remains open. Unmentioned items are untouched.
+    Only a verified, item-specific retained sufficiency assessment resolves an
+    item. Unsupported deliveries are held in history. Unmentioned items and
+    previously valid resolutions are untouched; material updates reopen items.
     """
     allowed = {"supported", "insufficient", "conflicting", "unanswered"}
     if not response_id:
         raise ValueError("response_id is required")
     if not isinstance(item_outcomes, dict):
         raise ValueError("item_outcomes must map repair item IDs to outcomes")
-    planned: list[tuple[str, dict, str, list[str], dict | None]] = []
+    planned = []
     for item_id, outcome in item_outcomes.items():
         if item_id not in queue["items"]:
             raise KeyError(f"response references unknown repair item {item_id}")
@@ -231,15 +330,22 @@ def apply_partial_response(
                 prior_event.get("outcome") == kind
                 and prior_event.get("source_refs") == normalized_refs
                 and prior_event.get("note") == outcome.get("note")
+                and prior_event.get("assessment_ref") == outcome.get("assessment_ref")
             )
             if same:
-                planned.append((item_id, item, kind, normalized_refs, prior_event))
+                planned.append((item_id, item, kind, normalized_refs, prior_event, None))
                 continue
             raise ValueError(f"conflicting replay for repair response {response_id}/{item_id}")
-        planned.append((item_id, item, kind, normalized_refs, None))
+        admission_error = None
+        if kind == "supported":
+            try:
+                verify_response_evidence(item, outcome, response_id, evidence_directory)
+            except (ValueError, KeyError, IndexError, TypeError, OSError) as exc:
+                admission_error = f"Response evidence held: {exc}"
+        planned.append((item_id, item, kind, normalized_refs, None, admission_error))
 
     # Mutate only after every item in this partial response passed validation.
-    for item_id, item, kind, normalized_refs, prior_event in planned:
+    for item_id, item, kind, normalized_refs, prior_event, admission_error in planned:
         if prior_event is not None:
             continue
         prior = {
@@ -250,25 +356,83 @@ def apply_partial_response(
             "run_id": run_id,
             "batch_id": batch_id,
             "previous_status": item["status"],
+            "subject_type": item["subject_type"], "subject_id": item["subject_id"],
+            "revision": item["revision"], "item_id": item_id,
+            "assessment_ref": item_outcomes[item_id].get("assessment_ref"),
+            "admission_status": "held" if admission_error else "accepted",
+            "admission_reason": admission_error,
         }
         item["history"].append(prior)
-        item["response_id"] = response_id
-        if kind == "supported":
+        if kind == "supported" and admission_error is None and item["status"] != "superseded":
+            item["response_id"] = response_id
             item["status"] = "resolved"
             item["resolution_source_refs"] = normalized_refs
-        else:
+        elif item["status"] not in {"resolved", "superseded"}:
+            item["response_id"] = response_id
             item["status"] = "open"
         queue["events"].append({
             "event": "response-recorded",
             "item_id": item_id,
             "response_id": response_id,
             "outcome": kind,
-            "note": outcome.get("note"),
+            "note": prior["note"],
+            "assessment_ref": prior["assessment_ref"],
+            "admission_status": prior["admission_status"],
+            "admission_reason": admission_error,
+            "subject_type": item["subject_type"], "subject_id": item["subject_id"],
+            "revision": item["revision"],
             "source_refs": normalized_refs,
             "run_id": run_id,
             "batch_id": batch_id,
             "status": item["status"],
         })
+
+
+def validate_partial_response_journal(queue: dict, evidence_directory: Path) -> None:
+    """Check per-item journal consistency and reverify admitted resolution proof.
+
+    Historical assessments use their original subject revision. Held deliveries
+    remain visible and do not supersede a previously admitted resolution.
+    """
+    seen = set()
+    for event in queue["events"]:
+        if event.get("event") != "response-recorded":
+            continue
+        key = (event["response_id"], event["item_id"])
+        if key in seen:
+            raise ValueError("duplicate response journal entry")
+        seen.add(key)
+        item = queue["items"][event["item_id"]]
+        histories = [h for h in item["history"] if h.get("response_id") == event["response_id"]
+                     and "outcome" in h]
+        if len(histories) != 1:
+            raise ValueError("response journal has no unique item history")
+        history = histories[0]
+        for field in ("response_id", "outcome", "note", "source_refs", "run_id", "batch_id",
+                      "assessment_ref", "admission_status", "admission_reason",
+                      "subject_type", "subject_id", "revision"):
+            if event.get(field) != history.get(field):
+                raise ValueError(f"response journal/history mismatch: {field}")
+        if event.get("admission_status") not in {"accepted", "held"}:
+            raise ValueError("response admission status is missing")
+        if event["outcome"] == "supported" and event["admission_status"] == "accepted":
+            historical_item = dict(item, revision=event["revision"],
+                subject_type=event["subject_type"], subject_id=event["subject_id"])
+            verify_response_evidence(historical_item, event, event["response_id"], evidence_directory)
+    for item in queue["items"].values():
+        for history in item["history"]:
+            if "outcome" in history and "response_id" in history:
+                if (history["response_id"], item["item_id"]) not in seen:
+                    raise ValueError("item response history is missing from the journal")
+        if item["status"] != "resolved" or not item.get("response_id"):
+            continue
+        events = [e for e in queue["events"] if e.get("event") == "response-recorded"
+                  and e.get("item_id") == item["item_id"] and e.get("response_id") == item["response_id"]]
+        if (len(events) != 1 or events[0].get("outcome") != "supported"
+                or events[0].get("admission_status") != "accepted"
+                or events[0].get("revision") != item["revision"]
+                or events[0].get("source_refs") != item["resolution_source_refs"]):
+            raise ValueError("resolved repair does not match its admitted current response")
 
 
 def update_repair_item(

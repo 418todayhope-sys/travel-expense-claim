@@ -5,6 +5,8 @@ from pathlib import Path
 
 import pytest
 
+from partial_response_fixtures import retained_response
+
 from travel_claim.outputs import (
     add_repair_item,
     apply_partial_response,
@@ -196,9 +198,11 @@ def test_repair_item_updates_reopen_new_revision_and_keep_owner_history(tmp_path
         missing_or_return_reason="SYNTHETIC FIXTURE: receipt needed", owner="EMP-SYN-01",
         next_action="provide the identified receipt", run_id="run-synthetic", batch_id="batch-synthetic-1",
     )
+    outcomes = retained_response(tmp_path / "response-evidence", queue, "response-synthetic-1",
+                                 {"repair-C-SYN-01-receipt": {"outcome": "supported"}})
     apply_partial_response(
-        queue, response_id="response-synthetic-1",
-        item_outcomes={"repair-C-SYN-01-receipt": {"outcome": "supported", "source_refs": ["synthetic/receipt#1"]}},
+        queue, response_id="response-synthetic-1", evidence_directory=tmp_path / "response-evidence",
+        item_outcomes=outcomes,
         run_id="run-synthetic", batch_id="batch-synthetic-2",
     )
     path = tmp_path / "repair-queue.json"
