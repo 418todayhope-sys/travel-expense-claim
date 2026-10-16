@@ -1979,3 +1979,34 @@ Distinguish missing business approvals from software failures. Do not invent app
 Do not modify code, commit, or push during this audit.
 
 Finish with a clear DONE or NOT DONE decision and an ordered list of mandatory remaining actions. Do not propose optional enhancements.
+
+---
+
+Project D — Stage 7 mandatory correction: partial-response journal and replay integrity.
+
+Use the completed requirements audit:
+artifacts/verification/project-d-stage7-coverage-c2bee74-20261016/coverage-matrix.md
+
+Current HEAD: c2bee74ee639b1d981ca2c9f2af2235f52fb941f.
+
+Fix the confirmed partial-response defects:
+
+When one response addresses multiple repair items with different notes, preserve the correct note and evidence references for each matched item.
+
+Ensure exact replay of an accepted partial response is idempotent and does not corrupt the journal.
+
+Do not resolve a repair using unverified, unmatched, or insufficient source references.
+
+Preserve unmatched repair items, historical responses, provenance, and previously valid resolutions.
+
+Add focused regression tests reproducing each defect before correction and verifying valid multi-item partial responses afterward.
+
+Run the full test suite and verify retained evidence preservation.
+
+Confirm the fix does not alter unrelated Finance, cancellation, claim, or approval behavior.
+
+Do not change original source evidence or unrelated generated artifacts.
+
+If all required checks pass, commit and push only the reviewed implementation and test files using the existing Entire.io hooks. Verify GitHub main and checkpoint references.
+
+Report test counts, changed files, commit SHA, remote verification, and remaining mandatory Stage 7 actions.
