@@ -16,6 +16,7 @@ from .offline_replay import OFFLINE_MARKER, _report
 from .revalidation import verification_document
 from .ordinary import ordinary_demo
 from .outputs import CLAIMS_COLUMNS, load_repair_queue
+from .outputs import clean_business_disposition, reimbursement_only_stage
 from .snapshots import verify_snapshot
 from .sources import SOURCES, verify_source_manifest
 
@@ -250,6 +251,18 @@ def validate_readiness(run_dir: Path, *, schema_path: Path, repo_dir: Path) -> d
             owner = open_claim_repairs[0]["owner"] if open_claim_repairs else claim["next_owner"]
             reason = open_claim_repairs[0]["missing_or_return_reason"] if open_claim_repairs else "Offline structural replay; policy eligibility and reimbursement entitlement remain unresolved."
             owner = None if claim['status'].startswith('closed-') else owner
+            if clean_business_disposition(claim) or claim['status'].startswith('closed-'):
+                workflow = claim['ordinary_workflow']
+                require(workflow['status'] == claim['status'] and workflow['next_owner'] is None
+                        and workflow['reason'] == claim['reason'], 'Terminal snapshot differs from workflow disposition')
+                owner, reason = None, workflow['reason']
+                if clean_business_disposition(claim):
+                    for item in open_claim_repairs:
+                        require(not item['item_id'].startswith('finance:finance-obligation-missing:'),
+                                'Clean terminal claim has an actionable missing-authorization repair')
+                        if item['item_id'].startswith(f"ordinary:{claim['claim_id']}:r{claim['revision']}:"):
+                            require(not reimbursement_only_stage(item['item_id'].split(':', 3)[3]),
+                                    'Clean terminal claim has an actionable reimbursement-pursuit repair')
             require(row["next_owner"] == (owner or "") and row["reason"] == reason, "CSV owner/reason differs from current repair evidence")
     check("claims-csv-contract", [run_dir / "claims.csv"], csv_contract)
 

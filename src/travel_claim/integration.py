@@ -16,6 +16,7 @@ from .event_validation import finance_context
 from .ordinary import connect_claim, fields, table
 from .revalidation import record_executed_rechecks
 from .outputs import add_repair_item, new_repair_queue, update_repair_item, record_evidence_validation
+from .outputs import clean_business_disposition, reimbursement_only_stage, mark_repair_inapplicable
 from .workflow import (
     build_revision_history,
     match_decisions_to_subjects,
@@ -150,6 +151,12 @@ def _sync_finance_repairs(domain: dict[str, Any], reconciliations: dict[str, Any
     for claim_id, result in reconciliations.items():
         for issue in result["repair_issues"]:
             item_id = f"finance:{issue['record_id']}"
+            workflow = domain.get('ordinary_workflows', {}).get(claim_id, {})
+            if (clean_business_disposition(workflow) and
+                    issue['record_id'] == f"finance-obligation-missing:{claim_id}:{result['claim_revision']}"):
+                mark_repair_inapplicable(queue, item_id=item_id, workflow=workflow,
+                                        run_id=run_id, batch_id=batch_id)
+                continue
             refs = list(dict.fromkeys(_ref_text(ref) for ref in issue.get("source_refs", []) if isinstance(ref, dict)))
             if item_id in queue["items"]:
                 item = queue["items"][item_id]
@@ -162,6 +169,9 @@ def _sync_finance_repairs(domain: dict[str, Any], reconciliations: dict[str, Any
                     update_repair_item(queue, item_id=item_id,
                                        update_id=f"finance-evidence:{item_id}:{batch_id}",
                                        run_id=run_id, batch_id=batch_id, **changes)
+                if item['status'] == 'superseded' and any(e['event'] == 'repair-inapplicable' for e in item['history']):
+                    record_evidence_validation(queue, item_id=item_id, supported=False, source_refs=refs,
+                                               run_id=run_id, batch_id=batch_id)
                 continue
             _open_issue_for_subject(
                 queue, item_id=item_id, subject_type="claim", subject_id=claim_id,
@@ -180,6 +190,10 @@ def _sync_ordinary_repairs(domain: dict[str, Any], *, run_id: str, batch_id: str
         stages = {s["stage"]: s for s in workflow["stages"]}
         for stage in workflow["stages"]:
             item_id = f"ordinary:{claim_id}:r{revision}:{stage['stage']}"
+            if clean_business_disposition(workflow) and reimbursement_only_stage(stage['stage']):
+                mark_repair_inapplicable(queue, item_id=item_id, workflow=workflow,
+                                        run_id=run_id, batch_id=batch_id)
+                continue
             if stage["status"] != "PASS":
                 _open_issue_for_subject(queue, item_id=item_id, subject_type="claim", subject_id=claim_id,
                     revision=revision, refs=stage["source_refs"], reason=stage["detail"], owner=stage["owner"],
@@ -199,6 +213,10 @@ def _sync_ordinary_repairs(domain: dict[str, Any], *, run_id: str, batch_id: str
                                  ("finance-authorization", "request_obligation")):
             item_id = f"correction:{claim_id}:r{revision}:{area}"
             if item_id in queue["items"]:
+                if clean_business_disposition(workflow) and area != 'trip-permit':
+                    mark_repair_inapplicable(queue, item_id=item_id, workflow=workflow,
+                                            run_id=run_id, batch_id=batch_id)
+                    continue
                 stage = stages[stage_name]
                 record_evidence_validation(queue, item_id=item_id, supported=stage["status"] == "PASS",
                     source_refs=stage["source_refs"], run_id=run_id, batch_id=batch_id)

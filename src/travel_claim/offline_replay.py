@@ -12,6 +12,7 @@ from .integration import integrate_arrival_batch
 from .ordinary import ordinary_demo
 from .revalidation import verification_document
 from .outputs import owner_grouped_view, write_claims_csv, write_repair_queue
+from .outputs import project_claim_outputs, clean_business_disposition
 from .parsing import OUTPUT_NAME
 from .snapshots import seal_batch_snapshot, verify_snapshot
 from .sources import verify_source_manifest
@@ -121,6 +122,10 @@ def _report(
         workflow = claim.get("ordinary_workflow")
         if workflow:
             lines.append(f"- `{claim['claim_id']}` r{claim['revision']} — **{workflow['status']}**; " + "; ".join(f"{stage['stage']}={stage['status']}" for stage in workflow['stages']))
+            if clean_business_disposition(workflow) or workflow['status'].startswith('closed-'):
+                lines += [f"  - Disposition: {workflow['reason']} Next owner: **none**.",
+                    "  - Reimbursement-pursuit diagnostics remain historical, not requests for further authorization. Independent repair items, if any, remain listed below.",
+                    "  - Disposition evidence: " + "; ".join(f"`{ref}`" for ref in workflow['source_refs'])]
     lines.append("")
     queue = latest["domain"]["repair_queue"]
     for title, subject_types in (
@@ -264,29 +269,7 @@ def run_offline_replay(run_dir: Path, *, schema_path: Path) -> dict[str, Any]:
 
     latest = previous
     assert latest is not None
-    current_claims = []
-    owner_by_claim: dict[str, str] = {}
-    reason_by_claim: dict[str, str] = {}
-    for item in latest["domain"]["repair_queue"]["items"].values():
-        if item["subject_type"] == "claim" and item["status"] == "open":
-            owner_by_claim.setdefault(item["subject_id"], item["owner"])
-            reason_by_claim.setdefault(item["subject_id"], item["missing_or_return_reason"])
-    for claim in latest["snapshot"]["claims"]:
-        claim_id = claim["claim_id"]
-        current_claims.append({
-            "claim_id": claim_id,
-            "revision": claim["revision"],
-            "trip_id": claim["trip_id"],
-            "status": claim["status"],
-            "allowed_cents": claim["allowed_cents"],
-            "paid_cents": claim["paid_cents"],
-            "balance_cents": claim["balance_cents"],
-            "next_owner": None if claim["status"].startswith("closed-") else owner_by_claim.get(claim_id, claim["next_owner"]),
-            "reason": reason_by_claim.get(
-                claim_id,
-                "Offline structural replay; policy eligibility and reimbursement entitlement remain unresolved.",
-            ),
-        })
+    current_claims = project_claim_outputs(latest['snapshot']['claims'], latest['domain']['repair_queue'])
     write_claims_csv(current_claims, output_paths["claims"])
     queue = latest["domain"]["repair_queue"]
     write_repair_queue(queue, output_paths["queue"])

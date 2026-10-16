@@ -26,6 +26,52 @@ CLAIM_STATUSES = {
     "pending", "held", "ready", "closed-reimbursed", "closed-no-payment", "rejected", "withdrawn"
 }
 
+
+def clean_business_disposition(claim: dict) -> bool:
+    """Use the workflow's financial-clean disposition, never a raw source label."""
+    return claim.get('status') in {'withdrawn', 'rejected'} and claim.get('next_owner') is None
+
+
+def reimbursement_only_stage(name: str) -> bool:
+    # Independent linkage, arrangements, budget facts and cancellations remain actionable.
+    return name in {'supporting_evidence', 'filing_deadline', 'policy_eligibility',
+        'budget_owner_authorization', 'review_evidence', 'required_approvals',
+        'exception_revalidation', 'request_obligation', 'financial_reconciliation',
+        'finance_resolution', 'financial_closure'} or name.startswith(
+            ('finance_exception:', 'eligibility:', 'review_return:'))
+
+
+def project_claim_outputs(claims: list[dict], queue: dict) -> list[dict]:
+    """Preserve final dispositions; select repairs only for unfinished claims."""
+    owners, reasons = {}, {}
+    for item in queue['items'].values():
+        if item['subject_type'] == 'claim' and item['status'] == 'open':
+            owners.setdefault(item['subject_id'], item['owner'])
+            reasons.setdefault(item['subject_id'], item['missing_or_return_reason'])
+    rows = []
+    for claim in claims:
+        final = clean_business_disposition(claim) or claim['status'].startswith('closed-')
+        rows.append({**{key: claim[key] for key in CLAIMS_COLUMNS[:7]},
+            'next_owner': None if final else owners.get(claim['claim_id'], claim['next_owner']),
+            'reason': claim['reason'] if final else reasons.get(claim['claim_id'],
+                'Offline structural replay; policy eligibility and reimbursement entitlement remain unresolved.')})
+    return rows
+
+
+def mark_repair_inapplicable(queue: dict, *, item_id: str, workflow: dict,
+                             run_id: str, batch_id: str) -> None:
+    """Retire pursuit tasks with evidence, without asserting approval or payment."""
+    item = queue['items'].get(item_id)
+    if item is None or item['status'] != 'open':
+        return
+    event = dict(event='repair-inapplicable', item_id=item_id, previous_status=item['status'],
+        status='superseded', source_refs=list(workflow['source_refs']),
+        reason=workflow['reason'], run_id=run_id, batch_id=batch_id,
+        origin='local disposition scope check; no approval or Finance resolution created')
+    item['history'].append(dict(event))
+    queue['events'].append(event)
+    item['status'] = 'superseded'
+
 REPAIR_ITEM_FIELDS = (
     "item_id",
     "subject_type",
