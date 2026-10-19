@@ -12,6 +12,52 @@ Restore the two oversized JSON originals using the documented helper; their
 lossless `.json.gz` objects are published. Large files may require a clone rather
 than GitHub's preview. All links below are repository files, not grader mappings.
 
+## Omega verification addendum (2026-10-19)
+
+**HISTORICAL VERIFICATION — completed offline reproduction, not fresh acquisition.**
+The independent execution used the existing local environment at HEAD
+`d109a5e21e7664d05412ae569ef3e2f84fa37b32`, before documentation-only commit
+`86e89b38e1bfed48640198490a274025a76aff24`. Its temporary reproduction and
+readiness files remain locally available and were reinspected read-only for
+this addendum. They are not published repository artifacts; no temporary path
+is offered as an evaluator-accessible evidence link. The published comparison
+baseline is the [primary-run delivery manifest](stage7-evidence-manifest.json)
+and [original readiness assessment](current-readiness/readiness.md).
+
+Commands used, with `SUBMISSION_CHECK_DIR` denoting the new parent allocated by
+`mktemp -d /tmp/project-d-submission-XXXXXXXX`:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 .venv/bin/travel-claim policy-replay \
+  artifacts/runs/project-d-final-live-20261016T105352Z-276e92 \
+  "$SUBMISSION_CHECK_DIR/reproduced-run" --run-id reproduced-run \
+  --browser-policy user-provided-sources/step-167/POL-2026.2-browser-copy.txt
+PYTHONDONTWRITEBYTECODE=1 .venv/bin/travel-claim validate-readiness \
+  "$SUBMISSION_CHECK_DIR/reproduced-run" --repo . \
+  --output-dir "$SUBMISSION_CHECK_DIR/readiness"
+```
+
+- The completed coding-session execution reported replay exit **0** and readiness
+  exit **2** (known blockers). No standalone process-exit log is published here;
+  retained readiness JSON independently supports its BLOCKED result.
+- Original and reproduced readiness both have **30 PASS, 5 BLOCKED, 0 FAIL**,
+  with identical check/status mappings. Claim CSV bytes match: **121 claims**,
+  **119 pending**, C13 withdrawn, C14 rejected; net confirmed cash is
+  **EUR 12,034.15**, not proof of authorized reimbursement.
+- All **four batches**, report, repair queue, drafts and correction/cancellation
+  verification match after normalizing run identity and bound manifest, parsed
+  input and snapshot hashes. The completed execution validated predecessor/source
+  integrity. Queue counts remain **813 open, 17 resolved, 63 superseded**.
+- Post-execution preservation checks, repeated read-only for this addendum,
+  verified **53/53 published evidence entries** and their original/restored
+  files against the delivery manifest's SHA-256 values. Restoration was unnecessary.
+
+Limitations remain: offline replay only; native Notion acquisition blocked;
+813 open repairs; no genuine accepted stakeholder-response journal or financially
+authorized claim closure demonstrated. No second full-run retry was performed.
+This addendum reruns neither the workflow nor the test suite, supplies no business
+authority, and does not certify remote publication of the temporary verification.
+
 ## Workflow evidence
 
 | Requirement | Classification | Exact evidence and scope |
@@ -26,7 +72,7 @@ than GitHub's preview. All links below are repository files, not grader mappings
 | Repair queue, owners and partial progress | PRIMARY-RUN OBSERVED | [repair-queue.json](../runs/project-d-stage7-terminal-20261016T110919Z-5afc36/repair-queue.json), [report.md](../runs/project-d-stage7-terminal-20261016T110919Z-5afc36/report.md) and [follow-up-drafts.md](../runs/project-d-stage7-terminal-20261016T110919Z-5afc36/follow-up-drafts.md): inspect exact subject/revision, owner, next action and run/batch history. Queue has 17 `evidence-revalidated` events and no `response-recorded` events. Local rechecks are not stakeholder replies; drafts remain unsent. |
 | Accepted partial-response journaling | SYNTHETIC TEST | [tests/test_partial_responses.py](../../tests/test_partial_responses.py): `test_supported_and_insufficient_items_keep_distinct_notes_and_refs`, `test_accepted_multi_item_replay_is_unchanged_after_persistence`, `test_invalid_item_does_not_prevent_valid_independent_resolution` and `test_unverified_nonempty_reference_cannot_resolve`. [tests/partial_response_fixtures.py](../../tests/partial_response_fixtures.py) explicitly labels synthetic evidence/assessments. **Accepted partial-response journaling is not observed in the primary run.** |
 | Human decisions and authority boundaries | PRIMARY-RUN OBSERVED | [claims.csv](../runs/project-d-stage7-terminal-20261016T110919Z-5afc36/claims.csv): 121 current claims, 119 pending, C13 r1 withdrawn and C14 r1 rejected. Native initial claim binder page 13 and workbook `Review ledger` row 40 support those terminal dispositions. The [original interview](../../interviews/project-d-travel-expense-claim-20261013-2210.md#L297) states financial-completion and partial-work constraints; the Skill preserves human approval/exception/payment authority. Recorded cash is not approval. |
-| Skill usability and reproducibility | BLOCKED/UNVERIFIED | [skills/travel-expense-claim/SKILL.md](../../skills/travel-expense-claim/SKILL.md), [README.md](../../README.md) and [submission procedure](README.md) document setup, restoration, fresh attempts, offline replay and readiness. The Skill's operator handoff distinguishes supported reconstruction from internal APIs: no general delta importer, CLI append/resume or CLI response importer. Current Omega instructions have not been executed for this index; documentation does not supply those missing adapters. |
+| Skill usability and reproducibility | BLOCKED/UNVERIFIED | [skills/travel-expense-claim/SKILL.md](../../skills/travel-expense-claim/SKILL.md), [README.md](../../README.md) and [submission procedure](README.md) document setup, restoration, fresh attempts, offline replay and readiness. The completed offline reproduction is recorded in the dated addendum above. The Skill's operator handoff distinguishes supported reconstruction from internal APIs: no general delta importer, CLI append/resume or CLI response importer. Documentation does not supply those missing adapters or resolve native access. |
 
 ## Source authority and historical checks
 
