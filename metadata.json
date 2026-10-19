@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.11.3",
+  "checkpoint_id": "01M5A4K9JFVMDD375VDH6PKA7P",
+  "strategy": "manual-commit",
+  "branch": "omega/project-d-improvements",
+  "checkpoints_count": 10,
+  "files_touched": [
+    "README.md",
+    "artifacts/submission/evaluator-evidence-index.md",
+    "skills/travel-expense-claim/SKILL.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 4564317,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 196571008,
+    "output_tokens": 753741,
+    "api_call_count": 1194,
+    "subagent_tokens_complete": true
+  }
+}
