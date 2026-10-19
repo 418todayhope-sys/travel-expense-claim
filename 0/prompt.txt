@@ -1,115 +1,24 @@
-Project D Omega 2.0 — authorized documentation-only commit.
+Project D Omega — authorized local documentation commit.
 
-The user explicitly authorizes committing ONLY these three files on omega/project-d-improvements:
-- README.md
-- skills/travel-expense-claim/SKILL.md
-- artifacts/submission/evaluator-evidence-index.md
+User authorizes ONE local commit of ONLY:
+artifacts/submission/evaluator-evidence-index.md
 
-Before committing:
-1. Confirm the current branch is omega/project-d-improvements and HEAD is d109a5e21e7664d05412ae569ef3e2f84fa37b32.
-2. Confirm the three files contain the verified Improvements A, B and C.
-3. Confirm git diff --check passes and no unrelated files are staged.
-4. Stage ONLY the three exact paths using git add -- with explicit filenames.
-5. Inspect git diff --cached --stat and git diff --cached --name-only.
-6. If any unexpected staged file, modification or verification failure appears, STOP without committing.
+Expected branch: omega/project-d-improvements
+Expected starting HEAD: 86e89b38e1bfed48640198490a274025a76aff24
 
-If all checks pass, create ONE commit with message:
-docs: improve Project D replay handoff and evidence navigationAfter committing, report:
-- New commit SHA and branch
-- Exact committed file list
-- git status, including remaining untracked historical files
-- Confirmation that original main remains at d109a5e21e7664d05412ae569ef3e2f84fa37b32
+1. Verify the branch, HEAD and Git status.
+2. Inspect the exact diff for the authorized file. Confirm it contains only the dated Omega verification addendum and related index correction, with no unsupported evidence claims.
+3. Run git diff --check and verify the existing relative links.
+4. Stage ONLY the authorized file using an explicit path.
+5. Verify the staged file list contains exactly that one path. If anything else is staged, STOP without committing.
+6. Create ONE local commit with message:
+   docs: record Project D Omega replay verification
+7. Verify the new commit SHA, committed file list, branch, and tracked working-tree status.8. Report any Entire checkpoint created by the existing Git hooks. Do not manually alter Entire refs or hooks.
 
-Preserve all untracked historical artifacts. Do not amend earlier commits, merge, push, deploy, submit, delete files or make further edits.
+Preserve all original submission records, historical evidence, untracked files and main branch.
 
-Stop after reporting.
+If Git permissions require approval, request approval for only the specific necessary command. Do not broaden permissions.
 
----
+Do not run full tests, install dependencies, access external services, push, merge, deploy or submit.
 
-Project D Omega — read-only reevaluation eligibility investigation.
-
-Confirm branch omega/project-d-improvements and commit 86e89b38e1bfed48640198490a274025a76aff24.
-
-Search the accessible original assignment, grading feedback, submission instructions, repository documentation and retained historical records for explicit rules about:
-1. Whether a previously submitted Project D can be revised and resubmitted.
-2. Whether a second submission replaces the original grade or creates a separate attempt.
-3. Any deadlines, attempt limits or required submission procedure.
-4. Whether the Omega branch must be pushed to a remote repository.
-5. Whether a new Git/Entire checkpoint or submission evidence package is required.
-
-Classify each answer as CONFIRMED, CONTRADICTED or UNKNOWN, citing exact source paths and passages.Do not assume that GitHub push permission implies grading eligibility. Do not infer resubmission rules from technical capabilities.
-
-Do not modify files, contact external services, commit, push, merge, deploy or submit.
-
-Stop after reporting findings and unresolved questions.
-
----
-
-Project D Omega — read-only resubmission preparation.
-
-Fellowship staff confirmed that Project D can be resubmitted for a higher grade using the original submission process.
-
-Confirm the current branch is omega/project-d-improvements at commit 86e89b38e1bfed48640198490a274025a76aff24.
-
-Inspect the original assignment's submission requirements, existing Git remotes, local branch tracking, Entire checkpoint references and published evidence manifest.
-
-Determine:
-1. Which exact Git and Entire references must be accessible to the evaluator.
-2. Whether the original main branch can remain unchanged.
-3. Whether the Omega branch and checkpoint are currently published or only local.4. Which existing run, report and capture references can legitimately be reused.
-5. What exact submission information should accompany the updated repository URL.
-6. Whether any remaining blocker would prevent a compliant resubmission.
-
-Classify findings as CONFIRMED, UNKNOWN or BLOCKED, citing actual repository evidence.
-
-Do not modify files, stage, commit, push, merge, deploy or submit. Do not contact external services.
-
-Stop and report a minimal, safe publication plan. Wait for explicit authorization before any publication.
-
----
-
-Goal: identify the highest-value remaining improvement before resubmission, without speculative grading claims or unnecessary rework.
-
-Review the original assignment and acceptance criteria, available evaluator feedback, original submission evidence, Omega evidence index, current implementation, and verified tests.
-
-For each remaining weakness:
-1. Identify the exact requirement it may affect, with file/line evidence.
-2. Classify it as VERIFIED GAP, EVIDENCE/PRESENTATION GAP, EXTERNAL BLOCKER, or UNKNOWN.
-3. Explain whether the existing implementation already supports the required behavior.
-4. Estimate a realistic repair effort: under 30 minutes, 30–60 minutes, over 60 minutes, or external dependency.
-5. Identify the smallest measurable test or evidence needed to establish improvement.
-6. State whether fixing it would require a new stakeholder interview, permission, or source access.Prioritize at most three opportunities based on requirement relevance, evidence strength, effort, and likelihood of producing demonstrable improvement. Do not predict grades or assume the 18 unspecified missing checkpoints correspond to particular weaknesses.
-
-Distinguish genuine workflow capability improvements from documentation-only changes. Preserve original submission, Git/Entire history and existing evidence.
-
-Do not modify files, run external services, install dependencies, commit, push, merge, deploy or submit.
-
-Stop with a concise ranked table and ONE recommended next decision for me. Do not implement anything.
-
----
-
-Project D Omega — authorized verification addendum (30-minute maximum).
-
-Current branch: omega/project-d-improvements
-Starting commit: 86e89b38e1bfed48640198490a274025a76aff24
-
-Scope: Edit ONLY artifacts/submission/evaluator-evidence-index.md. Add a concise, dated section documenting the previously completed independent offline reproducibility verification.
-
-First inspect the existing evidence index, original readiness records, published evidence manifest, and any retained records of the Omega reproduction. Use only results supported by actual evidence. If the temporary reproduction artifacts are unavailable, distinguish the previously reported verification from independently inspectable artifacts; do not fabricate links, logs or captures.Record, where verifiable:
-- The policy-replay and validate-readiness commands, including source run and separate user-provided browser-policy input.
-- Replay exit code 0 and readiness exit code 2 (known blockers).
-- Original versus reproduced readiness: 30 PASS, 5 BLOCKED, 0 FAIL, with matching statuses.
-- Byte-identical claim CSV, 121 claims, EUR 12,034.15 net cash, four batches and consistent repair/correction/cancellation results.
-- Published evidence manifest: 53/53 unchanged hashes.
-- Limitations: offline replay only, native Notion acquisition still blocked, 813 open repairs, no genuine stakeholder-response or financially authorized closure demonstrated, and no second full-run retry performed.
-
-Make the addendum easy for an evaluator to locate. Link only to files or checkpoints that actually exist and are accessible within the repository; do not link to temporary /tmp paths as if they were published.Perform targeted documentation checks only: verify new relative links, check factual consistency against retained evidence, and run git diff --check. Report any claims that could not be independently substantiated.
-
-Do not modify any other file, run the full test suite, install dependencies, access external services, stage, commit, push, merge, deploy or submit.
-
-Stop and report:
-1. Exact file changed and diff summary.
-2. Verification evidence used and any unavailable artifacts.
-3. Documentation checks and results.
-4. Remaining limitations.
-5. Confirmation that all changes remain uncommitted.
+Stop after reporting the local commit result. Do not proceed to publication.
