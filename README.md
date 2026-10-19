@@ -343,17 +343,31 @@ It supplies case date **2026-11-15**, **Europe/Amsterdam**; no time of day or UT
 cutoff is inferred. This supersedes the historical “policy wording/clock wholly
 unknown” description for supplemented runs, without altering earlier captures.
 
-From the repository root, create a distinct retained-input run with:
+After the [setup](#setup), restore the published evidence from the repository
+root, then create a distinct retained-input run using the published fresh-capture
+inputs. This is the primary-run reproduction procedure from the
+[submission guide](artifacts/submission/README.md), not fresh acquisition:
 
 ```bash
+python3 scripts/restore_submission_evidence.py
+SUBMISSION_CHECK_DIR=$(mktemp -d /tmp/project-d-submission-XXXXXXXX)
 travel-claim policy-replay \
-  artifacts/runs/project-d-live-20261014T204849Z \
-  artifacts/runs/project-d-step182-policy-replay \
-  --run-id project-d-step182-policy-replay \
+  artifacts/runs/project-d-final-live-20261016T105352Z-276e92 \
+  "$SUBMISSION_CHECK_DIR/reproduced-run" \
+  --run-id reproduced-run \
   --browser-policy user-provided-sources/step-167/POL-2026.2-browser-copy.txt
-travel-claim validate-readiness artifacts/runs/project-d-step182-policy-replay \
-  --output-dir artifacts/verification/project-d-step182-policy-readiness
+travel-claim validate-readiness "$SUBMISSION_CHECK_DIR/reproduced-run" \
+  --repo . --output-dir "$SUBMISSION_CHECK_DIR/readiness"
 ```
+
+Use a new temporary parent directory each time. Restoration verifies the delivery
+manifest and restores exact evidence bytes without overwriting different existing
+files. Readiness exits `2` for disclosed BLOCKED checks and `1` for an integrity
+failure. A new run identity produces different bound snapshot hashes; compare
+source identities, revisions, money, histories and dispositions instead.
+The retained native observations record four accessible source contents and an
+inaccessible native Notion policy (generic page shell). This command performs no
+fresh reads; use `live-run` for a separate fresh five-source acquisition attempt.
 
 Both destination directories must be new. `policy-replay` verifies the original
 native manifest and parsed-record binding, copies retained source/response bytes,

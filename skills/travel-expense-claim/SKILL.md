@@ -17,7 +17,27 @@ Never infer an approval, exception, source value, reply, or payment from a missi
 
 ## Invocation
 
-Install as described in the repository [README](../../README.md). Perform fresh acquisition and transcription for a new run with:
+For a clean checkout, use Python 3.11+, Git and access to PyPI. Restore the
+published evidence before inspecting the oversized JSON outputs or running
+retained-data checks. From outside an existing checkout:
+
+```bash
+git clone https://github.com/418todayhope-sys/travel-expense-claim.git
+cd travel-expense-claim
+python3 scripts/restore_submission_evidence.py
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install -e '.[test]'
+```
+
+The restoration helper verifies the delivery manifest and restores exact bytes
+without overwriting different existing evidence. Allow approximately 1 GB for
+the checkout plus space for new replay outputs. See the
+[submission guide](../../artifacts/submission/README.md) for the published
+inventory and verification commands.
+
+For **fresh native-source acquisition**, perform acquisition and transcription
+for a new run with:
 
 ```bash
 travel-claim live-run <new-run-id> artifacts/runs/<new-run-id> [--case-clock '<authoritative scenario timestamp>']
@@ -74,6 +94,124 @@ People retain business approval, exception, and payment authority. This Skill pr
 
 Unknown money is null in JSON and blank in CSV. Zero is a known amount. Never label incomplete work complete.
 
+## Operator handoff: new deliveries and unresolved work
+
+### Introduce an authorized delivery
+
+Obtain the actual supplied delivery and its authorized arrival membership,
+subject revisions, source versions and business authority from the operator or
+source owner. Later supplied batches are fixed inputs, not replies caused by
+the unsent drafts. Do not manufacture a batch, response, approval or timestamp.
+
+For a fresh attempt against the five disclosed native locations, the following
+supported commands create a new acquisition directory without touching history:
+
+```bash
+NATIVE_DELIVERY_PARENT=$(mktemp -d /tmp/project-d-delivery-XXXXXXXX)
+NATIVE_DELIVERY_RUN_ID=$(basename "$NATIVE_DELIVERY_PARENT")
+travel-claim live-run "$NATIVE_DELIVERY_RUN_ID" "$NATIVE_DELIVERY_PARENT/$NATIVE_DELIVERY_RUN_ID"
+travel-claim verify-sources "$NATIVE_DELIVERY_PARENT/$NATIVE_DELIVERY_RUN_ID"
+```
+
+Run the entire block anew for every delivery or attempt: each requires a unique
+run ID. A unique temporary directory alone does not make a fixed run ID unique;
+this example derives the ID from the newly allocated directory name.
+
+This omits a case clock intentionally: it is an acquisition/transcription
+attempt, not authority to consume clock-dependent decisions. Inspect
+`live-run.json`, `live-run.md`, `sources.json` and retained responses even when
+acquisition exits `2` (BLOCKED); exit `1` requires investigating the failure.
+Do not continue merely because a manifest verifies: completeness, supplied
+arrival boundaries and business authority are separate checks. Native Notion
+access remains blocked when only a generic shell is retrieved.
+
+If the new capture contains the complete supported native history, the
+supplemental browser policy replay procedure below can rebuild a separate run:
+use the new capture directory as `source_run`, a new destination whose basename
+equals `--run-id`, and the verified browser copy. This is explicitly offline
+processing of that capture, not another fresh acquisition. It processes the
+complete contiguous arrival sequence starting at 1; it is not a delta importer.
+Missing prior records cannot be replaced with inferred history.
+
+An independently supplied attachment, changed source schema or delta-only batch
+has no general CLI import adapter. Preserve its original bytes and provenance
+in a new evidence location through the authorized operator, then ask a developer
+to implement and verify source-manifest binding, parsing, authority checks and
+history-preserving integration before consuming it. Do not hand-edit a retained
+manifest or parsed records to make a new delivery appear verified.
+
+### Preserve run and snapshot identity
+
+Keep the previous run directory, source observations, outputs and sealed bytes
+unchanged. A rebuilt replay has its own run ID and a new chain: first predecessor
+null, later predecessors bound to the preceding snapshot's relative path and
+SHA-256. It does not append to or relabel the old chain. The policy replay records
+its retained-input lineage; any additional cross-run delivery lineage needs
+explicit retention by the operator/developer, not an invented predecessor.
+
+`offline-replay` refuses existing outputs or an existing nonempty batch chain.
+There is no CLI resume/append command. Internally,
+[`integrate_arrival_batch`](../../src/travel_claim/integration.py) accepts the
+next batch with the full `prior_result`, same run ID, source observations and
+predecessor binding; a sealed snapshot alone is not that integration state.
+Exact last-batch replay is inert; changed input under that replay identity is
+rejected. A developer must verify source/history continuity and persistence
+before exposing this as a resumable operator procedure. `seal-batch` only seals
+supplied state; it neither imports a delivery nor executes business rechecks.
+
+### Resume only the affected work
+
+Use each open queue item's `item_id`, subject type/ID/revision,
+`missing_or_return_reason`, owner, `source_refs` and `next_action` to request the
+specific missing evidence through a human. Keep drafts unsent. Claim corrections
+must retain original cost/submission and revision history; cancellations must
+retain their own initiation, confirmation, target and Finance dependencies even
+without a claim. Rebuild from complete supported history to execute current
+evidence, calculation, approval and financial rechecks. Preserve admitted cash
+and unaffected evidence; a passed repair does not establish reimbursement or
+closure. Review the new report, correction/cancellation verification and queue,
+then run the documented readiness command on the new run.
+
+Source-driven rechecks may resolve matching repairs with an
+`evidence-revalidated` event. This is not a stakeholder response. A separate
+repair-response journal is supported only through internal APIs in
+[`travel_claim.outputs`](../../src/travel_claim/outputs.py), not a CLI command
+and not automatic ingestion by `policy-replay`:
+
+- `apply_partial_response(queue, response_id=..., item_outcomes=..., run_id=...,
+  batch_id=..., evidence_directory=...)` takes outcomes keyed by exact existing
+  repair item IDs. Allowed outcomes are `supported`, `insufficient`,
+  `conflicting` and `unanswered`; retain each item's own note and references.
+- The response evidence directory has a separate `sources.json` with unique
+  source IDs, confined paths, exact SHA-256, `status: read`, empty missing scope,
+  no error, timezone-bearing observation and nonempty version. References use
+  `source_id@sha256#locator`. JSON assessments use JSON pointers; native page/row
+  references also require `parsed-records.json` bound to that response manifest.
+  This supplemental contract never changes the five native acquisition statuses.
+- A `supported` outcome requires `assessment_ref` pointing to a retained supplied
+  assessment matching `item_id`, `subject_type`, `subject_id`, `revision` and
+  `response_id`, with `sufficient: true`, reason, provenance and `evidence_refs`
+  equal to the outcome's deduplicated `source_refs`. Every reference must verify.
+  The operator must establish the responder's actual authority and factual
+  sufficiency; this API checks bindings, not independent business authorization.
+  Never manufacture an assessment from a raw receipt or an importer's label.
+- Unmentioned items are untouched. Unsupported evidence is held visibly;
+  insufficient, conflicting or unanswered deliveries do not resolve open work
+  or erase valid prior resolutions. Exact per-item response replay is inert;
+  conflicting replay is rejected. Unknown item IDs or malformed outcomes reject
+  the call. Changed subject revisions require current evidence: the internal
+  `update_repair_item` API reopens advanced revisions while retaining history.
+- A developer must retain authentic evidence/assessments, load the queue, apply
+  the API, validate with `validate_partial_response_journal`, and persist a new
+  reviewable result without rewriting historical outputs. Queue resolution alone
+  does not rerun claim/Finance dependencies or regenerate snapshots, reports and
+  drafts; connecting and validating those outputs remains developer work.
+
+These contracts are exercised in `tests/test_integration.py` (batch order and
+replay), `tests/test_revalidation.py` (corrections and independent cancellations)
+and `tests/test_partial_responses.py` (item-level notes, evidence, revisions and
+replay). The response fixtures are synthetic examples, not supplied authority.
+
 ## Errors, retries, and limitations
 
 - On source failure, retain the attempt URL, locator, UTC observation time, error, and missing scope. Hold only affected work and report its owner and resumption evidence.
@@ -87,17 +225,28 @@ Unknown money is null in JSON and blank in CSV. Zero is a known amount. Never la
 
 The operator may explicitly supply the exact verified POL-2026.2 browser copy.
 This is separate supplemental evidence, never a successful native Notion read.
-From the repository root, use new destination names:
+After the setup and restoration above, run the published retained-input
+procedure from the repository root. This reproduces the primary run's workflow
+from its published fresh-capture inputs in a new temporary directory:
 
 ```bash
+SUBMISSION_CHECK_DIR=$(mktemp -d /tmp/project-d-submission-XXXXXXXX)
 travel-claim policy-replay \
-  artifacts/runs/project-d-live-20261014T204849Z \
-  artifacts/runs/project-d-step182-policy-replay \
-  --run-id project-d-step182-policy-replay \
+  artifacts/runs/project-d-final-live-20261016T105352Z-276e92 \
+  "$SUBMISSION_CHECK_DIR/reproduced-run" \
+  --run-id reproduced-run \
   --browser-policy user-provided-sources/step-167/POL-2026.2-browser-copy.txt
-travel-claim validate-readiness artifacts/runs/project-d-step182-policy-replay \
-  --output-dir artifacts/verification/project-d-step182-policy-readiness
+travel-claim validate-readiness "$SUBMISSION_CHECK_DIR/reproduced-run" \
+  --repo . --output-dir "$SUBMISSION_CHECK_DIR/readiness"
 ```
+
+Use a new temporary parent directory each time. Readiness exits `2` for
+disclosed BLOCKED checks and `1` for an integrity failure. New run identities
+produce different bound snapshot hashes; compare source identities, revisions,
+money, histories and dispositions rather than expecting byte-identical snapshots.
+The retained native observations record four accessible source contents and an
+inaccessible native Notion policy (generic page shell); replay does not retry
+acquisition or change those statuses.
 
 Verify SHA-256
 `f547ee77729be8ad431a5ddf2e2907f94f29ad50092231191abd2f72c04f54d2`.
