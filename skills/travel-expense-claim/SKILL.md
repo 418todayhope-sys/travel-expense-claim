@@ -174,9 +174,10 @@ then run the documented readiness command on the new run.
 
 Source-driven rechecks may resolve matching repairs with an
 `evidence-revalidated` event. This is not a stakeholder response. A separate
-repair-response journal is supported only through internal APIs in
-[`travel_claim.outputs`](../../src/travel_claim/outputs.py), not a CLI command
-and not automatic ingestion by `policy-replay`:
+general repair-response journal uses internal APIs in
+[`travel_claim.outputs`](../../src/travel_claim/outputs.py). The narrowly scoped
+`continue-receipt` command below is an exception; `policy-replay` does not import
+responses automatically:
 
 - `apply_partial_response(queue, response_id=..., item_outcomes=..., run_id=...,
   batch_id=..., evidence_directory=...)` takes outcomes keyed by exact existing
@@ -211,6 +212,34 @@ These contracts are exercised in `tests/test_integration.py` (batch order and
 replay), `tests/test_revalidation.py` (corrections and independent cancellations)
 and `tests/test_partial_responses.py` (item-level notes, evidence, revisions and
 replay). The response fixtures are synthetic examples, not supplied authority.
+
+### Executable missing-receipt slice
+
+After obtaining an authentic response, the supported operator route is:
+
+```bash
+RECEIPT_CHECK_DIR=$(mktemp -d /tmp/project-d-receipt-XXXXXXXX)
+travel-claim continue-receipt \
+  artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36 \
+  response.json "$RECEIPT_CHECK_DIR/receipt-result" \
+  --evidence-dir response-evidence --run-id receipt-result
+```
+
+Follow the [response format and limits](../../README.md#missing-receipt-continuation-omega-attempt-2).
+One exact current supporting-evidence repair may supply a missing receipt PDF;
+other matched items stay individually insufficient/conflicting/unanswered. The
+source-bound assessment additionally names the same employee `actor_id` as the
+response envelope and repair owner. Preserve actual actor provenance; matching
+an identifier does not authenticate its speaker. Raw receipt text is re-parsed
+and existing expense checks require matching settled merchant evidence.
+
+The command rechecks the affected claim and writes a separate derived state,
+queue, report, CSV and unsent drafts with parent/output hashes. Original arrivals,
+cash and decisions are preserved. Exact replay is inert; stale/tampered evidence
+is rejected. No authorization or financial closure is created. This is not a new
+native-source run or sealed arrival batch, a general importer, or support for
+chaining derived continuations. Parent evidence must stay available. Verification
+is built into this command; full-run readiness expects the original replay layout.
 
 ## Errors, retries, and limitations
 

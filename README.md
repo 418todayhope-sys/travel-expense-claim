@@ -73,6 +73,66 @@ The owner-grouped repair queue API is in `travel_claim.outputs`. Queue items ret
 
 ## Verification
 
+### Missing-receipt continuation (Omega Attempt 2)
+
+`continue-receipt` accepts one supplied employee receipt response against an
+existing offline replay, without appending to or rewriting its arrival snapshots:
+
+```bash
+RECEIPT_CHECK_DIR=$(mktemp -d /tmp/project-d-receipt-XXXXXXXX)
+travel-claim continue-receipt \
+  artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36 \
+  response.json "$RECEIPT_CHECK_DIR/receipt-result" \
+  --evidence-dir response-evidence --run-id receipt-result
+```
+
+The operator must supply authentic `response.json` and `response-evidence/`;
+these are not bundled replies or generated employee authority. The envelope has
+`response_version: missing-receipt-response/1`, stable `response_id`, employee
+`actor_id`, and `item_outcomes` keyed by exact open
+`ordinary:<claim>:r<revision>:supporting_evidence` IDs. Exactly one outcome is
+`supported`; other matched items may be `insufficient`, `conflicting` or
+`unanswered`, each with its own `note` and `source_refs`.
+
+The supported outcome supplies `receipt_ref`, `source_refs: [receipt_ref]`, and
+`assessment_ref`. Use `source_id@sha256#PDF page N, receipt M` for the receipt and
+a JSON pointer for its retained assessment. The assessment must match item,
+subject, integer revision, response and `actor_id`, with `sufficient: true`,
+reason, provenance and identical evidence refs. Evidence has its own
+`sources.json`: unique IDs, confined paths, hashes, `status: read`, no error,
+empty `missing_scope`, nonempty version and an explicit UTC `observed_at` before
+the applicable cutoff. The source-bound actor must match the claim employee and
+repair owner. The code does not independently authenticate an employee's identity.
+
+Only searchable receipt PDFs in the existing retained receipt-card schema and
+JSON assessments are supported. PDFs are transcribed again; a supplied parsed
+file cannot override their text. Missing/unsettled merchant proof, wrong cost,
+employee, trip, gross, currency, revision or hash rejects continuation (exit 1).
+It does not accept new decisions, payments or policy definitions.
+
+Success (exit 0) writes a separate `continuation-state.json`, `claims.csv`,
+`repair-queue.json`, `ordinary-workflow.json`, `report.md`, unsent
+`follow-up-drafts.md`, retained `response-evidence/`, and `continuation.json`
+binding parent and output hashes. Parent evidence must remain available at the
+recorded relative path. Only the matched claim is rechecked; supplied cash,
+decisions, cancellations and unrelated repairs remain intact. A receipt cannot
+establish approval, reimbursement authorization or financial closure. A local
+revalidation ordinal follows the parent deliveries without inventing a fifth
+native arrival or a scenario timestamp.
+
+Repeating the exact command verifies the saved result and is inert. Changed
+input or corrupted existing output is rejected, never overwritten. This slice
+starts from an original offline replay; chaining derived continuations, arbitrary
+attachments and general response import remain unsupported. The full-run
+`validate-readiness` command is for original replay runs, not this distinct
+derived layout; the continuation command checks its own parent/output hashes,
+response journal and state/CSV/report/draft agreement. Success is not submission
+readiness. Native Notion access remains separately blocked.
+
+`tests/test_receipt_continuation.py` exercises the full command with explicitly
+synthetic native-format PDF/XLSX inputs. It does not claim a real employee has
+answered any published draft.
+
 ```bash
 python -m pytest
 ```

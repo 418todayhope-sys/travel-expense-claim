@@ -187,7 +187,7 @@ def add_repair_item(
 
 
 def verify_response_evidence(item: dict, outcome: dict, response_id: str,
-                             evidence_directory: Path | None) -> None:
+                             evidence_directory: Path | None) -> dict:
     """Verify a retained, explicit sufficiency assessment, never infer one.
 
     Retain supplemental replies under <run>/response-evidence/ with a separate
@@ -278,6 +278,7 @@ def verify_response_evidence(item: dict, outcome: dict, response_id: str,
         raise ValueError("response assessment does not establish matched evidence sufficiency")
     for ref in refs:
         resolve(ref)
+    return assessment
 
 
 def apply_partial_response(

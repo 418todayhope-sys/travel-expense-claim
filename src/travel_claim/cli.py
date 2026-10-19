@@ -106,6 +106,13 @@ def build_parser() -> argparse.ArgumentParser:
     policy_replay.add_argument('--run-id', required=True)
     policy_replay.add_argument('--browser-policy', type=Path, required=True)
     policy_replay.add_argument('--schema', type=Path, default=_default_schema_path())
+    receipt = commands.add_parser('continue-receipt', help='derive a new offline result from one verified missing-receipt response; never append to sealed arrivals')
+    receipt.add_argument('parent_run', type=Path)
+    receipt.add_argument('response', type=Path)
+    receipt.add_argument('output', type=Path)
+    receipt.add_argument('--evidence-dir', type=Path, required=True)
+    receipt.add_argument('--run-id', required=True)
+    receipt.add_argument('--schema', type=Path, default=_default_schema_path())
     readiness = commands.add_parser("validate-readiness", help="check local submission evidence; PASS/BLOCKED/FAIL, never live compliance")
     readiness.add_argument("run_dir", type=Path)
     readiness.add_argument("--schema", type=Path, default=_default_schema_path())
@@ -116,6 +123,16 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if args.command == 'continue-receipt':
+        from .receipt_continuation import continue_receipt
+        try:
+            result = continue_receipt(args.parent_run, args.response, args.evidence_dir, args.output,
+                run_id=args.run_id, schema_path=args.schema)
+        except (OSError, ValueError, KeyError, TypeError, IndexError) as exc:
+            print(f'Receipt continuation rejected: {exc}', file=sys.stderr)
+            return 1
+        print(f"OFFLINE RECEIPT CONTINUATION {result['run_id']}: {'unchanged replay' if result['replayed'] else 'derived result verified'}; {result['output']}; no new approvals or financial closure")
+        return 0
     if args.command == 'policy-replay':
         from .policy_evidence import create_policy_replay
         try:
