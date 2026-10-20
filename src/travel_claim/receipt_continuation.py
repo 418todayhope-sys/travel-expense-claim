@@ -143,9 +143,17 @@ def _report(state):
              f"Response: `{state['response']['response_id']}`. Native policy access: separately retained in parent sources.json.",
              'The local revalidation ordinal follows the parent arrivals; it is not an additional supplied arrival batch or a business timestamp.', '',
              '## Response and revalidation', '']
+    if state.get('mode') == 'offline-general-repair-continuation':
+        lines[0] = '# Project D repair continuation — OFFLINE DERIVED RESULT'
+        lines[6] = f"Response: `{state['response']['response_id']}`. Native acquisition observations: [original sources.json]({state['native_source_manifest_path']}); supplemental replies do not change them."
+        lines += ['Receipt and merchant evidence may resume checks; reviewer returns require current human re-review.', '']
+        for delivery in state.get('repair_deliveries', []):
+            lines.append(f"- Response history `{delivery['response_id']}`: run `{delivery['run_id']}`, batch `{delivery['batch_id']}`; admitted items: {[x['item_id'] for x in delivery['admitted']]}; held items: {delivery['holds']}; source holds: {delivery['source_errors']}")
     for item, outcome in state['response']['item_outcomes'].items():
         entry = state['repair_queue']['items'][item]
         lines.append(f"- `{item}`: {outcome['outcome']}; {entry['status']}; note: {outcome.get('note') or ''}; evidence: {outcome.get('source_refs', [])}")
+        if item in state.get('response_holds', {}):
+            lines.append('  - Held: ' + state['response_holds'][item])
     for cid in state['revalidated_claims']:
         workflow = state['ordinary_workflows'][cid]
         lines += [f"- `{cid}` r{workflow['revision']}: {workflow['status']}; " + '; '.join(
@@ -168,9 +176,13 @@ def _report(state):
     return '\n'.join(lines)
 
 
-def verify_continuation(output):
+def verify_continuation(output, _seen=None):
     """Read-only integrity/consistency check; not submission or business approval."""
     output = Path(output).resolve()
+    seen = set() if _seen is None else _seen
+    if output in seen:
+        raise ValueError('Continuation predecessor cycle')
+    seen.add(output)
     binding = read(output / 'continuation.json')
     for path, sha in binding['output_hashes'].items():
         if digest(confined(output, path)) != sha:
@@ -179,13 +191,22 @@ def verify_continuation(output):
     for path, sha in binding['parent_hashes'].items():
         if digest(confined(parent, path)) != sha:
             raise ValueError('Historical parent evidence changed: ' + path)
+    if (parent / 'continuation.json').exists():
+        verify_continuation(parent, seen)
     state = read(output / 'continuation-state.json')
+    if state.get('mode') == 'offline-general-repair-continuation':
+        current = read(output / 'continuation-input.json').get('repair_continuation', {})
+        if (current.get('mode') != state['mode'] or current.get('run_id') != state['run_id']
+                or current.get('evidence_binding') != {'path': 'response-evidence/sources.json',
+                    'sha256': digest(output / 'response-evidence/sources.json')}):
+            raise ValueError('Continuation input and supplemental evidence binding disagree')
     queue = load_repair_queue(output / 'repair-queue.json')
     if queue != state['repair_queue'] or read(output / 'ordinary-workflow.json')['claims'] != state['ordinary_workflows']:
         raise ValueError('Continuation queue/workflow/state disagree')
     if read(output / 'response.json') != state['response']:
         raise ValueError('Continuation response and state disagree')
-    historical = read(parent / 'offline-replay-state.json')
+    historical = read(parent / ('offline-replay-state.json' if (parent / 'offline-replay-state.json').exists()
+                                else 'continuation-state.json'))
     for key in ('finance_reconciliations', 'decision_history', 'revision_history', 'cancellation_state',
                 'source_record_history', 'material_corrections'):
         if state[key] != historical[key]:

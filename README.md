@@ -73,6 +73,78 @@ The owner-grouped repair queue API is in `travel_claim.outputs`. Queue items ret
 
 ## Verification
 
+### Resumable evidence and returned-work repairs (Omega Attempt 3)
+
+From a restored offline replay, use a fresh result directory:
+
+```bash
+REPAIR_CHECK_DIR=$(mktemp -d /tmp/project-d-repairs-XXXXXXXX)
+travel-claim continue-repairs \
+  artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36 \
+  response.json "$REPAIR_CHECK_DIR/repair-one" \
+  --evidence-dir response-evidence --run-id repair-one
+# A later authentic response can resume that result, retaining the full chain:
+travel-claim continue-repairs \
+  "$REPAIR_CHECK_DIR/repair-one" later-response.json \
+  "$REPAIR_CHECK_DIR/repair-two" \
+  --evidence-dir later-response-evidence --run-id repair-two
+```
+
+Supply authentic employee responses, not generated answers. The envelope uses
+`response_version: repair-response/1`, a stable `response_id`, employee `actor_id`
+and exact `item_outcomes`. Each item retains its own outcome, note and refs.
+Supported item IDs are current claim `ordinary:<id>:r<revision>:supporting_evidence`,
+`correction:<id>:r<revision>:expense-evidence`, and
+`ordinary:<id>:r<revision>:review_return:<decision-id>`. Non-claim items reject
+this bounded command; unsupported claim approval, Finance, exception, policy
+and budget repairs remain held.
+
+A supported outcome has `source_refs`, `assessment_ref`, and a nonempty `repairs`
+array. Each operation has `kind` (`receipt` or `merchant-payment`), exact
+`record_ref`, and `supersedes_refs` (empty for missing evidence; otherwise every
+current row it explicitly replaces). A supplied JSON sufficiency assessment
+binds the same item, subject, integer revision, response ID, employee `actor_id`,
+reason, provenance, `evidence_refs` and **identical repairs array**. A reviewer
+return also requires its exact `return_decision_ref` and original `repair_requested`
+text. Matching actor identifiers do not independently authenticate the speaker.
+
+Use the receipt continuation manifest/reference format below. Receipt evidence
+is a searchable PDF in the existing receipt-card schema. Merchant evidence is
+an XLSX containing one nonempty `Merchant payments` tab with the existing native
+headers. PDF and XLSX bytes are re-parsed; caller-provided parsed rows cannot
+establish authority. Proof must match the current employee/trip/cost/receipt,
+currency and full gross amount. Merchant proof additionally needs transaction
+identity, settled status and an admissible payment date. Split-payment repairs
+and shared-cost replacements require a broader adapter and remain held. New
+deliveries need distinct supplemental source IDs; native IDs cannot be replaced.
+
+Valid independent items progress while unverifiable, insufficient or conflicting
+items stay open. Bad declared hashes/observations and mismatched rows are retained
+with admission reasons. Unknown items, stale revisions or wrong employees reject
+the command without creating a result. The command rechecks affected claims,
+updates queue/CSV/report/unsent drafts and retains old evidence/replacement history.
+An evidence response does not approve a returned claim: current human re-review
+and all other prerequisites still apply. No decisions, Finance events, cash or
+reimbursement authorizations are imported or created.
+
+Results retain `continuation-input.json`, state, exact response, supplemental
+evidence, output hashes and a recursively verified predecessor link. The four
+original snapshots are unchanged; response ordinals are local evaluation order,
+not additional native arrival batches or invented scenario times. Keep ancestors
+available at their recorded relative paths. Exact command replay is inert;
+exact response redelivery to its advanced state returns that existing result
+without creating another directory. Conflicting response IDs and corrupted
+history/results reject replay. Success (exit 0) can include held work: inspect
+`response_holds`, the report and queue. Exit 1 means rejection/integrity failure.
+Full-run `validate-readiness` does not accept this derived layout; built-in
+verification checks its chain and output consistency, not submission compliance.
+The receipt-only command remains compatible but its older derived format is
+not a resumable parent for `continue-repairs`.
+
+Connected synthetic examples are in `tests/test_repair_continuation.py`.
+No actual stakeholder response or new financial closure is demonstrated by them.
+Native Notion access remains separately blocked.
+
 ### Missing-receipt continuation (Omega Attempt 2)
 
 `continue-receipt` accepts one supplied employee receipt response against an

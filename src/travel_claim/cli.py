@@ -113,6 +113,13 @@ def build_parser() -> argparse.ArgumentParser:
     receipt.add_argument('--evidence-dir', type=Path, required=True)
     receipt.add_argument('--run-id', required=True)
     receipt.add_argument('--schema', type=Path, default=_default_schema_path())
+    repairs = commands.add_parser('continue-repairs', help='resume source-bound receipt/merchant and returned evidence repairs in a new derived result')
+    repairs.add_argument('parent_run', type=Path)
+    repairs.add_argument('response', type=Path)
+    repairs.add_argument('output', type=Path)
+    repairs.add_argument('--evidence-dir', type=Path, required=True)
+    repairs.add_argument('--run-id', required=True)
+    repairs.add_argument('--schema', type=Path, default=_default_schema_path())
     readiness = commands.add_parser("validate-readiness", help="check local submission evidence; PASS/BLOCKED/FAIL, never live compliance")
     readiness.add_argument("run_dir", type=Path)
     readiness.add_argument("--schema", type=Path, default=_default_schema_path())
@@ -123,6 +130,16 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if args.command == 'continue-repairs':
+        from .repair_continuation import continue_repairs
+        try:
+            result = continue_repairs(args.parent_run, args.response, args.evidence_dir, args.output,
+                run_id=args.run_id, schema_path=args.schema)
+        except (OSError, ValueError, KeyError, TypeError, IndexError) as exc:
+            print(f'Repair continuation rejected: {exc}', file=sys.stderr)
+            return 1
+        print(f"OFFLINE REPAIR CONTINUATION {result['run_id']}: {'unchanged replay' if result['replayed'] else 'derived result verified'}; {result['output']}; human review and financial authority remain required")
+        return 0
     if args.command == 'continue-receipt':
         from .receipt_continuation import continue_receipt
         try:

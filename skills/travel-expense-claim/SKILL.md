@@ -175,8 +175,8 @@ then run the documented readiness command on the new run.
 Source-driven rechecks may resolve matching repairs with an
 `evidence-revalidated` event. This is not a stakeholder response. A separate
 general repair-response journal uses internal APIs in
-[`travel_claim.outputs`](../../src/travel_claim/outputs.py). The narrowly scoped
-`continue-receipt` command below is an exception; `policy-replay` does not import
+[`travel_claim.outputs`](../../src/travel_claim/outputs.py). The bounded
+`continue-receipt` and `continue-repairs` commands below expose supported slices; `policy-replay` does not import
 responses automatically:
 
 - `apply_partial_response(queue, response_id=..., item_outcomes=..., run_id=...,
@@ -202,7 +202,7 @@ responses automatically:
   conflicting replay is rejected. Unknown item IDs or malformed outcomes reject
   the call. Changed subject revisions require current evidence: the internal
   `update_repair_item` API reopens advanced revisions while retaining history.
-- A developer must retain authentic evidence/assessments, load the queue, apply
+- For types outside those commands, a developer must retain authentic evidence/assessments, load the queue, apply
   the API, validate with `validate_partial_response_journal`, and persist a new
   reviewable result without rewriting historical outputs. Queue resolution alone
   does not rerun claim/Finance dependencies or regenerate snapshots, reports and
@@ -240,6 +240,40 @@ is rejected. No authorization or financial closure is created. This is not a new
 native-source run or sealed arrival batch, a general importer, or support for
 chaining derived continuations. Parent evidence must stay available. Verification
 is built into this command; full-run readiness expects the original replay layout.
+
+### Resumable evidence and returned-work repairs
+
+Use `continue-repairs` for current claim supporting-evidence repairs, correction
+expense-evidence repairs and the evidence requested by a retained reviewer return.
+It accepts receipts plus settled merchant proof, multiple matched items and
+successive responses. See the [exact contract and invocation](../../README.md#resumable-evidence-and-returned-work-repairs-omega-attempt-3).
+
+```bash
+REPAIR_CHECK_DIR=$(mktemp -d /tmp/project-d-repairs-XXXXXXXX)
+travel-claim continue-repairs \
+  artifacts/runs/project-d-stage7-terminal-20261016T110919Z-5afc36 \
+  response.json "$REPAIR_CHECK_DIR/repair-one" \
+  --evidence-dir response-evidence --run-id repair-one
+travel-claim continue-repairs \
+  "$REPAIR_CHECK_DIR/repair-one" later-response.json \
+  "$REPAIR_CHECK_DIR/repair-two" \
+  --evidence-dir later-response-evidence --run-id repair-two
+```
+
+Retain supplied item-specific assessments and explicit replacement references.
+Only the verified selected rows enter the active evidence view; superseded rows,
+invalid bytes and original snapshots remain retained. Valid independent items
+progress; held items retain reasons. Inspect report, state, queue and unsent drafts
+even after exit 0. Stale/wrong-employee subjects and integrity failures reject.
+Exact replay is inert, including redelivery to an advanced result; conflicting
+response IDs cannot change history. Preserve all ancestor directories.
+
+Returned evidence triggers rechecks, never reviewer approval. Finance, policy,
+budget, exception, decision and independent cancellation imports are unsupported;
+split/shared expense changes need developer integration. No cash or authorization
+is changed. This is offline continuation with built-in chain/output checks,
+not fresh acquisition, an extra native arrival batch or full-run readiness.
+The older receipt-only result cannot be used as a continuation parent.
 
 ## Errors, retries, and limitations
 

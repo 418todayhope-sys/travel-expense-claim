@@ -289,6 +289,7 @@ def apply_partial_response(
     run_id: str,
     batch_id: str,
     evidence_directory: Path | None = None,
+    admission_errors: dict[str, str] | None = None,
 ) -> None:
     """Record a supplied response against explicitly matched repair item IDs.
 
@@ -301,6 +302,10 @@ def apply_partial_response(
         raise ValueError("response_id is required")
     if not isinstance(item_outcomes, dict):
         raise ValueError("item_outcomes must map repair item IDs to outcomes")
+    admission_errors = admission_errors or {}
+    if (not set(admission_errors) <= set(item_outcomes)
+            or any(not isinstance(v, str) or not v.strip() for v in admission_errors.values())):
+        raise ValueError("context admission errors must identify response items and reasons")
     planned = []
     for item_id, outcome in item_outcomes.items():
         if item_id not in queue["items"]:
@@ -343,6 +348,7 @@ def apply_partial_response(
                 verify_response_evidence(item, outcome, response_id, evidence_directory)
             except (ValueError, KeyError, IndexError, TypeError, OSError) as exc:
                 admission_error = f"Response evidence held: {exc}"
+            admission_error = admission_error or admission_errors.get(item_id)
         planned.append((item_id, item, kind, normalized_refs, None, admission_error))
 
     # Mutate only after every item in this partial response passed validation.
