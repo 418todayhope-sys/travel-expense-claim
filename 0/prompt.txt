@@ -1,0 +1,177 @@
+Codex prompt — Commit, merge, push, verify
+ Copy
+Project D Omega Attempt 2 — authorized publication.
+
+I explicitly authorize committing the verified Attempt 2 changes, integrating them into main, and pushing main to GitHub.
+
+Expected baseline:
+- Improvement branch: omega/project-d-attempt-2
+- Published main SHA before integration: 17bbac53138438e0be6cc112fd2fca3dea33032e
+- Last verification: 570 tests passed; 53/53 published evidence hashes preserved.
+
+Perform these steps carefully:1. Confirm current branch, working tree, main, origin/main, and remote. Fetch if necessary. Stop if the remote or branch history has unexpected changes.
+2. Review the exact six-file improvement diff, including new untracked implementation and test files. Check for secrets, unrelated changes, generated artifacts, and accidental historical modifications.
+3. Confirm the previously reported 570 passing tests and evidence-preservation checks remain valid for the current files. Rerun targeted verification if anything changed.
+4. Stage ONLY the six authorized files:
+   README.md
+   skills/travel-expense-claim/SKILL.md
+   src/travel_claim/cli.py
+   src/travel_claim/outputs.py
+   src/travel_claim/receipt_continuation.py
+   tests/test_receipt_continuation.py5. Create one descriptive commit on omega/project-d-attempt-2. Preserve Entire checkpoint/history behavior; do not delete, rewrite, or bypass Entire records.
+6. Fast-forward main to the verified improvement commit ONLY if ancestry permits. Never force, reset, rebase, squash, or rewrite historical commits.
+7. Push ONLY main to origin using a normal non-force push. Do not push other branches or tags.
+8. Verify local main and origin/main resolve to the same new SHA, the original main SHA remains an ancestor, tracked tree is clean, all historical evidence remains intact, and Entire checkpoint refs/history are preserved. Report Entire publication/synchronization status accurately; do not claim it succeeded without verification.
+9. Report the new commit SHA, test results, preserved evidence, push outcome, and any blockers.Stop on any unexpected changes, failed tests, preservation mismatches, or push errors. Do not improvise destructive fixes.
+
+Do not submit to Classroom, deploy, change payment/approval records, or perform unrelated actions.
+
+Return a concise publication report and stop.
+
+---
+
+Project D — Omega Attempt 3
+
+Three separate Classroom submissions have received 79.1/100.
+Previous documentation and missing-receipt improvements did
+not increase the grade.
+
+We must return to the ORIGINAL ASSIGNMENT REQUIREMENTS.
+
+Time budget: 60–90 minutes.
+
+1. Read the complete original Project D assignment and
+   required deliverables from preserved project files.
+
+2. Compare every explicit requirement with the existing
+   implementation, submitted artifacts, and execution evidence.
+
+3. Classify each requirement:
+   COMPLETE — implementation and evidence exist.
+   PARTIAL — implementation or evidence is incomplete.
+   MISSING — required behavior or artifact is absent.
+   UNKNOWN — cannot verify from available materials.
+
+---
+
+Project D — Omega Attempt 3: General Repair Continuation
+
+Authorization: Create a separate improvement branch, implement
+and locally test the smallest complete general repair-continuation
+workflow. Do NOT commit, push, publish, or submit.
+
+Starting point:
+- Published main: 653eec28484f601d6568dc55bf7b3db955dd2ce0
+- Previous grade: 79.1/100 after three submissions
+- Existing receipt-only continuation and 570 passing tests
+
+Time target: 60–90 minutes.
+
+1. Confirm main and working-tree state. Create branch
+   omega/project-d-attempt-3 from published main.
+
+2. Read the original assignment requirements for returning
+   incomplete work, partial responses, evidence verification,
+   revalidation, and resumption.
+
+3. Reuse existing repair queues, response admission, validation,
+   workflow state, and output generation.
+
+4. Extend the executable continuation workflow beyond receipts
+   to supported missing-evidence and returned-work types.
+
+5. Preserve item-specific partial responses: resolving one item
+   must not close other unresolved items.
+
+6. Revalidate affected claims and produce consistent updated
+   state, claims.csv, repair queue, report, and unsent drafts.
+
+7. Preserve immutable historical evidence, original snapshots,
+   unrelated claims, financial history, and human authority.
+
+8. Add end-to-end synthetic tests demonstrating:
+   - Multiple repair types
+   - Partial responses
+   - Valid and invalid evidence
+   - Stale revision rejection
+   - Idempotent replay
+   - Correctly resumed and still-blocked work
+
+9. Run targeted tests and the full regression suite.
+   Verify historical evidence hashes and Git diff.
+
+10. Report:
+    - Exact original requirements addressed
+    - Supported and unsupported repair types
+    - Demonstrated end-to-end behavior
+    - Test results and remaining limitations
+    - Changed files and elapsed time
+
+Do not fabricate approvals, stakeholder responses, payments,
+or missing evidence.
+
+Do not build a speculative general-purpose importer or refactor
+unrelated components.
+
+If complete, safe continuation cannot be implemented within the
+time budget, stop and report the limitation honestly.
+
+Do not commit, push, publish, deploy, or submit to Classroom.
+
+Stop after local implementation and verification.
+
+---
+
+Project D — Omega Attempt 3: Authorized Publication
+
+I authorize committing the seven verified Attempt 3 files,
+fast-forwarding main, and pushing main to GitHub.
+
+Current improvement branch: omega/project-d-attempt-3
+Expected original main:
+653eec28484f601d6568dc55bf7b3db955dd2ce0
+
+1. Verify the branch, working tree, and GitHub main.
+   Stop if unexpected changes exist.
+
+
+2. Review and stage ONLY these seven files:
+   README.md
+   skills/travel-expense-claim/SKILL.md
+   src/travel_claim/cli.py
+   src/travel_claim/outputs.py
+   src/travel_claim/receipt_continuation.py
+   src/travel_claim/repair_continuation.py
+   tests/test_repair_continuation.py
+
+3. Confirm the final verification remains valid:
+   - 589 tests passed
+   - 53/53 published evidence hashes preserved
+   - Historical files and original Git history unchanged
+
+4. Commit with the existing Entire hooks enabled.
+   Do not bypass or rewrite Entire history.
+
+5. Fast-forward main to the improvement commit.
+   Never force-push, reset, rebase, or squash.
+
+6. Push ONLY main to origin using a normal push.
+
+7. Verify:
+   - Local main and remote main match
+   - Original main remains an ancestor
+   - All 30 previous Entire checkpoint refs remain intact
+   - New Entire checkpoint is remotely published
+   - Any queued or finalized Entire transcript tail is
+     handled through normal Entire mechanisms only
+   - Tracked working tree is clean
+
+8. Report the new commit SHA, Entire checkpoint ID,
+   test results, remote verification, and any blockers.
+
+STOP if an Entire synchronization or preservation check
+fails. Do not invent a workaround.
+
+Do not submit to Classroom, deploy, or perform unrelated work.
+
+Return the publication report and stop.
