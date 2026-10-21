@@ -1,0 +1,35 @@
+{
+  "schema_version": "project-d-user-provided-policy/1",
+  "source_id": "user-browser-policy-pol-2026-2-20261020",
+  "path": "user-provided-sources/20261020/POL-2026.2-20261020-browser-copy.txt",
+  "source_url": "https://private-pecorino-70e.notion.site/Project-D-Alderbridge-travel-reimbursement-policy-POL-2026-1-3d80b700541e81ed93ebd386abc1dcb0",
+  "source_version": "POL-2026.2",
+  "sha256": "04d8121a91986dc0839094b5e7f574c44f6261c60c1c3ba9aeeee1c279ee5993",
+  "bytes": 13506,
+  "source_local_path": "/mnt/c/Users/PC/Downloads/POL-2026.2-20261020-browser-copy.txt",
+  "acquisition_date": "2026-10-20",
+  "acquisition_attestation": "User confirms personally copying the policy from the live Notion page in a browser on October 20, 2026.",
+  "attestation_basis": "User instruction in the Omega Attempt 4 coding conversation; not independently verified.",
+  "browser_retrieval_time": null,
+  "provenance_type": "user-provided browser-visible copy",
+  "native_automated_access": false,
+  "remote_notion_completeness_independently_verified": false,
+  "limitations": [
+    "Browser-visible copy; not native automated access.",
+    "Notion page/block completeness not independently verified.",
+    "Exact browser retrieval time is unknown; acquisition date is user-confirmed."
+  ],
+  "preserved_original_bytes": true,
+  "verification_observed_at_utc": "2026-10-20T14:35:38.752048+00:00",
+  "historical_comparison": {
+    "path": "/home/maxg/travel-expense-claim/user-provided-sources/step-167/POL-2026.2-browser-copy.txt",
+    "sha256": "f547ee77729be8ad431a5ddf2e2907f94f29ad50092231191abd2f72c04f54d2",
+    "substantive_differences_found": false,
+    "comparison_exclusions": [
+      "Browser header: Skip to content, <#main>, Get Notion free, and duplicate title.",
+      "Title indentation versus Markdown heading marker.",
+      "CRLF/LF, blank lines, and line wrapping around five inline identifiers.",
+      "Historical Markdown backtick delimiters around covered_issues, late_filing, late_permit, permit_unapproved, travel_cancellation."
+    ]
+  }
+}

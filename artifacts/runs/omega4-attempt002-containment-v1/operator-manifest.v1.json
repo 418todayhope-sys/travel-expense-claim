@@ -1,0 +1,233 @@
+{
+  "acquisition_run_id": "omega4-live-20261020-attempt002",
+  "dependency_containment": true,
+  "files": [
+    {
+      "path": "acquisition-manifest.original.json",
+      "sha256": "fe965c1394907c9179f920a27ff70cc3f02a78de655a1500f15241a6e09417cc"
+    },
+    {
+      "path": "batches/001.json",
+      "sha256": "c92456ef8383314734b95652bf32a7c56026706746605c0d14d1085ba7209054"
+    },
+    {
+      "path": "batches/002.json",
+      "sha256": "1a9ce6907c74a5057b37712ca6b33b81a53f0a8b99d99d765e9c3901b149c8c5"
+    },
+    {
+      "path": "batches/003.json",
+      "sha256": "dba7f6075af5d2911a056e62eafbde2c6b5a8a82266de3d360c167f8835ac7af"
+    },
+    {
+      "path": "batches/004.json",
+      "sha256": "51fd50f79bf9d849cdc22b7d116e9859357bf86b1906a80a33a3931763511596"
+    },
+    {
+      "path": "claims.csv",
+      "sha256": "a6a08da106b1a19dfe4e5e3dee80339dedfa20c6bd59b500aaeee9c540bf7ade"
+    },
+    {
+      "path": "dependencies/001.json",
+      "sha256": "a5102c0ed282241948d228a423899609e864eff6427c29a6677497fb4d697688"
+    },
+    {
+      "path": "dependencies/002.json",
+      "sha256": "cdda0affbe0833fe8b9862ca746d93637784450d1f22eb0009ddd16f087c8543"
+    },
+    {
+      "path": "dependencies/003.json",
+      "sha256": "f14417123e1f1981fa2b4075b608208106a60931226d551d5060959f1110df97"
+    },
+    {
+      "path": "dependencies/004.json",
+      "sha256": "3676f78f2e87511c3ef31709653cae640899737bb0a05c3aa696e3cde76c7383"
+    },
+    {
+      "path": "prior-operator-manifest.original.json",
+      "sha256": "ee89119c0445ebb42a27f1b28669beaf69070b0b87806ef22f3395be649cd68c"
+    },
+    {
+      "path": "prior-repair-queue.original.json",
+      "sha256": "80ec992f3930d029de25e0c5c76185406f00b22a48f30a948a7312614fffd27f"
+    },
+    {
+      "path": "queue/001.json",
+      "sha256": "31d3c3f47e35170c1512ae6cca9690a39a5cc76427d47ac1d8e5d12723f4c757"
+    },
+    {
+      "path": "queue/002.json",
+      "sha256": "9edd38cd886d18e2a623a4eae677d9ec8e65eb5a7be6d656a5c371299f5dfd45"
+    },
+    {
+      "path": "queue/003.json",
+      "sha256": "617b7a11d2f02188bc52fb5e488542b624cec1ce0c75011ab244d50d25ad9fb3"
+    },
+    {
+      "path": "queue/004.json",
+      "sha256": "f1b00ca385501248ad545eb5bf09d88f3c190328ec7b46ff609aa608787865ac"
+    },
+    {
+      "path": "repair-queue.csv",
+      "sha256": "2ac131c907062abb9284eee66829fbb3d276f7fbd79a581ec7f01ded845ccbd7"
+    },
+    {
+      "path": "repair-queue.json",
+      "sha256": "f1b00ca385501248ad545eb5bf09d88f3c190328ec7b46ff609aa608787865ac"
+    },
+    {
+      "path": "report.md",
+      "sha256": "fd7c0086422efa3de49e8351dfeec97a3368aab5cd6033feefbe43990cf9878a"
+    },
+    {
+      "path": "responses/policy.body",
+      "sha256": "f58d1d2b655687380d6c7d50ee2463edacb5ff4f1cad7fd9bb30eded2c56053c"
+    },
+    {
+      "path": "source-bindings.json",
+      "sha256": "4da06f1dab2cd65c5b6052a4767f5535f0360bcf69cc14abaf40c7d0516bd7c4"
+    },
+    {
+      "path": "sources/claim-updates.pdf",
+      "sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b"
+    },
+    {
+      "path": "sources/initial-claims.pdf",
+      "sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7"
+    },
+    {
+      "path": "sources/receipts.pdf",
+      "sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8"
+    },
+    {
+      "path": "sources/travel-registers.xlsx",
+      "sha256": "b90c7cf0db738ed186d9a2302752eb8ded3c326aa9894f736c21d426814fb898"
+    },
+    {
+      "path": "sources.json",
+      "sha256": "0ef66e18ce88bbb00661336d8beee88048482fbdc887f3c2a6098451b473b21d"
+    },
+    {
+      "path": "supplemental/POL-2026.2-20261020-browser-copy.provenance.json",
+      "sha256": "8e0d9fb0e30a6c5468e36ddc785842841eca8d6d922ecc1bd3baa90267c1359f"
+    },
+    {
+      "path": "supplemental/POL-2026.2-20261020-browser-copy.txt",
+      "sha256": "04d8121a91986dc0839094b5e7f574c44f6261c60c1c3ba9aeeee1c279ee5993"
+    }
+  ],
+  "final_batch": {
+    "path": "batches/004.json",
+    "sha256": "51fd50f79bf9d849cdc22b7d116e9859357bf86b1906a80a33a3931763511596"
+  },
+  "input_bindings": [
+    {
+      "path": "artifacts/runs/omega4-live-20261020-attempt002/sources.json",
+      "sha256": "fe965c1394907c9179f920a27ff70cc3f02a78de655a1500f15241a6e09417cc"
+    },
+    {
+      "path": "artifacts/normalizations/omega4-attempt002-normalization-v1/records.v1.json",
+      "sha256": "a5e96bcecdd5e4d44425f22524a32f05978b92adbc941141fba26c5fd477ba1a"
+    },
+    {
+      "path": "artifacts/normalizations/omega4-attempt002-normalization-v1/parsing-report.v1.json",
+      "sha256": "40d4761579fd67f2498ba2bfd37e3efc0f225e6577e77568177ac457b70abe32"
+    },
+    {
+      "path": "artifacts/normalizations/omega4-attempt002-normalization-v1/parsing-report.v1.md",
+      "sha256": "b368e6fc1b012c39bc622cf738d7904f524664e6da20bef3ae9d44251d2a9724"
+    },
+    {
+      "path": "user-provided-sources/20261020/POL-2026.2-20261020-browser-copy.txt",
+      "sha256": "04d8121a91986dc0839094b5e7f574c44f6261c60c1c3ba9aeeee1c279ee5993"
+    },
+    {
+      "path": "user-provided-sources/20261020/POL-2026.2-20261020-browser-copy.provenance.json",
+      "sha256": "8e0d9fb0e30a6c5468e36ddc785842841eca8d6d922ecc1bd3baa90267c1359f"
+    },
+    {
+      "path": "interviews/project-d-travel-expense-claim-20261020-1419(1).md",
+      "sha256": "c308181fc8b79ea07f57172b196513d8494b98121de02b46640dd39619539d9f"
+    },
+    {
+      "path": "decisions/decision-001-correction-finance-hold.md",
+      "sha256": "acb1e7dd37e118e07f25e1c017418f05213f1ed9461bf0020c0bf5f500fc1c8d"
+    },
+    {
+      "path": "validation/references/assignment-captured-20261016.txt",
+      "sha256": "20cca989d5b18e96f83ce08c455959b8f9b36ed951b87d294ff17abdb95db803"
+    },
+    {
+      "path": "snapshot.schema.json",
+      "sha256": "108176da5e8fca8daa73e1924d33b6c3ad0feab3bd6dce443a28983a6ac45c19"
+    },
+    {
+      "path": "validation/validate.py",
+      "sha256": "e8899b6a9dd7fc0e6fac79081ebda244c25b0da9a4c2b4e19735ad2642b7531f"
+    },
+    {
+      "path": "normalization/normalize.py",
+      "sha256": "d8a2e61c29935aa90bf4062b53b92725d25ced6f22baa79eb3a20e060192fd76"
+    },
+    {
+      "path": "acquisition/retain.py",
+      "sha256": "e058d6899bb81a4db717f6c54b3d0552652c3f92c3a43c3aeae5ab338346f3d8"
+    },
+    {
+      "path": "artifacts/validations/omega4-attempt002-policy-validation-v1/findings.v1.json",
+      "sha256": "2d9ad0190772aa295d12c7e3bca0ef586f6c7f4032ae2da471277a6a9d74c6e5"
+    },
+    {
+      "path": "reconciliation/reconcile.py",
+      "sha256": "ebc8989e890d78b6654cc312208f8dab4bf3776e88722b121a86ef70ae62a5cf"
+    },
+    {
+      "path": "artifacts/reconciliations/omega4-attempt002-finance-reconciliation-v1/reconciliation.v1.json",
+      "sha256": "3573b58dcd50783fe71a3b57237a2fc3b867fa7314de8177aae09fe3d5339101"
+    },
+    {
+      "path": "operator_delivery/build.py",
+      "sha256": "96edde21838ea889aa6fa7dc8423b0215d3b7ec9b953ae3a5321b76f5ebba204"
+    },
+    {
+      "path": "operator_delivery/requirements.txt",
+      "sha256": "3f918f0c7085c377dca59813ff85e524b046c8c283e62b21a204f39e7cee4091"
+    },
+    {
+      "path": "operator_delivery/README.md",
+      "sha256": "8c0f777b156a3d9792208e1f50c990065606f868bdf857f9be24e694dd921db2"
+    },
+    {
+      "path": "skills/travel-expense-claim/SKILL.md",
+      "sha256": "3432a4bfb7058c06d0f0f62daf77e8e9f9a840caec2166fcc41c80bf3f5569ff"
+    },
+    {
+      "path": "README.md",
+      "sha256": "279f6ce4b6ef12e53944c6f550dc34a4cec58c798cd76cc97274650adbba32d1"
+    },
+    {
+      "path": "decisions/decision-002-dependency-based-containment.md",
+      "sha256": "33e9ca83e01299e6d4ba5d9f86685b991291c2bf89773970865a038904ec22a2"
+    },
+    {
+      "path": "operator_delivery/containment.py",
+      "sha256": "98f18049dd0287ee1a6a814725ca8e00caaa1b5c2a4579e784ada9ad42f0c3e1"
+    }
+  ],
+  "mode": "offline-retained-replay",
+  "replay_of": null,
+  "run_id": "omega4-attempt002-containment-v1",
+  "schema_version": "omega4-operator-manifest/1",
+  "summary": {
+    "admitted_finance_events": 219,
+    "admitted_net_cents": 1203415,
+    "admitted_refund_cents": 3000,
+    "admitted_settled_cents": 1206415,
+    "claim_revisions": 127,
+    "current_claims": 121,
+    "expense_occurrences": 208,
+    "normalization_diagnostics": 18,
+    "open_repairs": 582,
+    "request_facts": 104
+  },
+  "through_batch": 4
+}

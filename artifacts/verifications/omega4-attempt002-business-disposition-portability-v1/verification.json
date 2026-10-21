@@ -1,0 +1,26 @@
+{
+  "actual_financial_closures": 0,
+  "checks": "passed",
+  "direct_verifier_exit_code": 0,
+  "existing_files_changed": [],
+  "existing_files_checked": 303,
+  "final_financial_holds": 121,
+  "focused_tests": {
+    "cases": [
+      "relocated repository with external Path reads blocked",
+      "missing packaged baseline without fallback",
+      "tampered packaged baseline rejected"
+    ],
+    "command": "python3 -B -m unittest discover -s tests -p test_preservation_portability.py -v",
+    "errors": 0,
+    "failures": 0,
+    "seconds": 3.857,
+    "tests": 3
+  },
+  "full_workflow_test_suite_rerun": false,
+  "open_repairs": 582,
+  "original_manifest_sha256": "d0d11e3ec5021c67b31f003212d0187f5a484f57f84e29f5e9a6e4d1b3c3d4d4",
+  "scope": "Path portability and retained preservation checks; not external operator acceptance or complete environment reproduction.",
+  "verified_snapshot_chains": 3,
+  "verified_snapshots": 12
+}

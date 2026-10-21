@@ -1,0 +1,15 @@
+# Local Python environments and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Local credentials and scratch space; retained evidence/logs stay eligible
+/.env
+/.env.*
+/.aws/
+/.ssh/
+/tmp/

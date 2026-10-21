@@ -1,0 +1,53 @@
+---
+
+# Travel expense claim — Task and submission
+
+## Scenario
+
+Alderbridge Consulting's operations lead needs a dependable, traceable way to handle travel expenses as claims, decisions and supporting information change. Interview the lead to understand the work, then build a reusable Agent Skill that supports the complete process. The company and records are fictional.
+
+## Your task
+
+Create your own repository from the public GitHub template. It supplies an entry README and the required snapshot schema; you build the Skill, implementation, checks and outputs. Use Git, an AI coding agent, the program's supported session capture, and browser or supported API/export access. Choose your implementation language and document any additional setup. No real employee identity, bank account or paid data source is needed.Implement the assigned work across all supplied records and arrival batches: travel permission and claim handling, monetary review, human decisions, reimbursement reconciliation and closure, corrections, and independent trip or permit cancellations, including processes without a claim. Build and demonstrate a connected ordinary path, then cover the material exceptions and later changes found in the sources. Individual cases may remain unresolved when the facts require it; report the affected work, reason, responsible person and evidence needed to resume. Missing company rules or inaccessible required sources must be raised with the lead or facilitator rather than guessed.
+
+Also implement a local work queue or request drafts for missing evidence and returned work. Choose its organization and partial-response handling. Keep individual work traceable to its subject, revision, source, missing fact or return reason, responsible person and next action. Show significant queue updates with their run/batch references in or through the report. Apply your chosen organization throughout the applicable records; the supplied later batches are fixed inputs, not events caused by your drafts.
+
+
+Obtain the five native source locations through the interview. Inputs include searchable PDFs, a Google Sheets workbook and a Notion page; business data is not bundled in the starter. Every new run must attempt fresh reads of all five locations through a browser or supported API/export route. Retain the complete relevant content actually used, including its original wording, identities, precision and history, and bind it in `sources.json`. Preserve the supplied case clock and arrival boundaries. Record inaccessible, partial or incompatible content and its affected scope explicitly. A URL, successful response or hash alone is not evidence of complete access. Do not alter sources or silently substitute bundled inputs, earlier downloads or an AI paraphrase. A labelled offline replay may reuse an earlier run's retained inputs without claiming fresh access.
+
+People retain business approval, exception and payment authority. The Skill prepares local work, validates and consumes authorized scenario decisions, and records their effects; it must not fabricate a reply, make professional approval recommendations, send real requests, book travel or move money..
+
+In your captured coding conversation, make and explain four source-grounded choices: how incomplete claims affect independent work; which work to revalidate after material corrections; the financial-completion conditions and delivery scope you accept after inspecting an actual result; and the organization and partial-response constraints for repair work. Adopt these constraints before they guide the work, connect them to actual source/subject and code/run references, and show their effect in the implementation and results. You may adopt an agent suggestion with your own source-grounded reason and constraint. Record an owned unresolved step where the evidence does not support completion, and reconsider affected choices when later evidence arrives. Concise statements in your normal conversation are enough; no separate decision register or fabricated mistake is required.
+
+
+Verify the ordinary path and every material branch in the supplied records, including later corrections, cancellations and replay. Check quantities, identities, source bindings and state transitions as well as status labels. Additional isolated test inputs are allowed but do not replace the primary run. Document unrun checks and implementation limitations honestly; a case-count or time limit does not remove assigned work.
+
+## Deliverables
+
+**Interview records — `interviews/*.md`.** Include the original Work Sim Markdown export for every interview session, with its session metadata and complete participant-visible messages. Keep one final complete export per session without rewriting or summarizing it. Commit and push these files in the submitted code revision and ensure the facilitator can read them. Coding-session capture remains a separate requirement. If the export is unavailable, contact the facilitator; do not manufacture a replacement.
+
+Paths are relative to your repository. Replace angle-bracketed placeholders with your own stable, nonempty IDs. JSON is UTF-8; output money is integer EUR cents or null when unknown, with blank unknown money in CSV. Zero is a known amount. Obtain business field meanings and date/time rules from the lead and sources.
+| Path | Required content |
+| --- | --- |
+| `skills/travel-expense-claim/SKILL.md` | Reusable Skill instructions with name/description metadata, inputs, invocation, human boundaries, outputs, error/retry behavior and supporting file references |
+| Supporting Skill files | Your code and focused references under the Skill or documented project paths; no case-specific hard-coded answers |
+| `README.md` | Setup, exact batch and replay commands, success/partial/failure behavior, verification commands and support/handoff instructions |
+| `artifacts/runs/<run-id>/sources.json` | `run_id`, `source_version`, `case_clock`, and `files`. Each file records `source_id`, relative retained-content `path`, observed `sha256`, `status` (`read` or `unavailable`), nullable `error`, native `url`, page/tab/section `locator`, UTC `observed_at` and observed source `version`. Cover all five URLs; use unique source IDs for multiple pieces. Bind read pieces to retained bytes. Unavailable portions retain attempted URL/locator/time and error, with null path/hash/version when unobtainable; identify missing scope separately from usable partial reads |
+| `artifacts/runs/<run-id>/batches/<batch-id>.json` | One sealed snapshot for each consumed batch, conforming to the public snapshot schema. Preserve earlier states before later information changes their basis ||
+| `artifacts/runs/<run-id>/claims.csv` | One current row per claim, with columns `claim_id,revision,trip_id,status,allowed_cents,paid_cents,balance_cents,next_owner,reason` |
+| `artifacts/runs/<run-id>/report.md` | Operations handoff: completed work, amounts and outstanding obligations, unresolved work, responsible people, next evidence/action, source/run references and significant changes. Include or link the operational repair queue and its significant partial-update views; account for cancellation processes without claims without inventing claim rows |
+| Actual coding-session evidence | The capture tool's real checkpoint/session records associated with the submitted code revision; self-authored logs or generated approval claims do not substitute for them |
+Snapshots use `schema_version: travel-claim-snapshot/2` and all fields, types, enumerations and references in the linked schema. Preserve claim and independent trip/permit revisions, line findings/source IDs, decision and request relationships, cancellation processes, financial state, and owned issues. Keep Finance `admitted_event_ids` separate from cancellation activity references; `issue_record_ids` must resolve to `issues[].record_id`. The lead and native sources supply the rules for interpreting and changing those states.
+
+The first snapshot has `predecessor: null`; later snapshots bind the preceding retained snapshot by relative path and SHA-256. `source_binding` binds the run's `sources.json` path and SHA-256. Files must not hash themselves. An unchanged replay preserves obligation/event identity and money. If rerunning would change sealed content, retain a new run with an explicit link and explanation instead of overwriting it. Report missing or corrupt prior state, or rebuild it from retained complete source/event history without inventing historical execution times. Required outputs must agree with their source and run references, including on retry or a partial result.
+
+## Interview
+
+Use Project D in Work Sim. Start your own participant session and retain its actual version and conversation. Investigate the business work and obtain the relevant rules, source links, field meanings and explanations as you need them; ask the lead to resolve missing or conflicting company context. No special question wording is required.
+**Interview rule.** You conduct the stakeholder interview yourself, and the questions are yours. Do not connect a coding agent or any other AI to the interview to run, script, or automate it. The interview transcript is assessed together with the code; a project whose interview was run by an agent is not scored.
+
+Before assessed implementation, follow Setting Up entire.io for a Project and verify actual coding-session capture. Check a recorded checkpoint after your first meaningful commit; ask the facilitator to repair missing capture before continuing. Coding-session capture does not replace the interview record. Keep your own source-grounded choices attributable in the real conversation and paired with code/results; do not reconstruct missing private conversations or manufacture transcripts. 
+
+## Submit
+
+Attach your completed GitHub repository URL to the Project D Classroom assignment. In its private comment, provide the exact commit ID, run ID, report path and real capture checkpoint references. Push the implementation and actual Entire capture branch, and confirm the facilitator can access and pair them. Keep secrets out of the repository; do not send credentials or make private conversations public. Your handoff must explain how to rerun, import a new authorized batch and resume owned unresolved work.

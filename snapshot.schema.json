@@ -109,6 +109,19 @@
               "withdrawn"
             ]
           },
+          "business_disposition": {
+            "type": "object",
+            "description": "Explicit current-revision retained business evidence, independent of financial held status, approvals and closure.",
+            "required": ["value", "evidence_status", "reason", "source_refs", "decision_ids", "scope"],
+            "properties": {
+              "value": {"enum": ["withdrawn", "rejected", null]},
+              "evidence_status": {"enum": ["supported", "unresolved"]},
+              "reason": {"type": "string", "minLength": 1},
+              "source_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+              "decision_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+              "scope": {"type": "string", "minLength": 1}
+            }
+          },
           "lines": {
             "type": "array",
             "items": {
