@@ -1,0 +1,58 @@
+{
+  "all_preexisting_bytes_and_inventory_preserved": true,
+  "exclusions": "No environments, caches, credentials, Entire-managed metadata/transcripts, source/interview copies or disposable fixture trees added.",
+  "head_unchanged": true,
+  "index_unchanged": true,
+  "limitations": [
+    "Full regression is preserved original evidence, not a fresh execution.",
+    "Disposable fixture output trees were intentionally not packaged; rebuild them in a fresh temporary directory.",
+    "Replay wrapper configuration/compilation was tested; the full relocated 192-test replay was not rerun.",
+    "Original runner requires a normal Git checkout with .git/index; linked worktrees are not demonstrated.",
+    "Hash manifests provide integrity bindings, not signatures or external execution attestation.",
+    "Native source completeness and external operator acceptance remain unknown.",
+    "Historical README/Skill/report wording remains unchanged and is explained in the addendum."
+  ],
+  "missing_required_temporary_evidence": [],
+  "new_markdown_links_checked": 9,
+  "original_before_after_equal": true,
+  "original_copies": 8,
+  "original_copy_hashes_match": true,
+  "original_test_result": {
+    "errors": [],
+    "failures": [],
+    "passes": 192,
+    "skipped": [],
+    "successful": true,
+    "total": 192
+  },
+  "original_tested_files_match_packaging_baseline": true,
+  "preserved_preexisting_files": 388,
+  "privacy": {
+    "credential_pattern_hits": [],
+    "email_pattern_hits": [],
+    "historical_machine_and_temporary_locators_retained": true,
+    "limits": "Text pattern scan and manual review; Entire checkpoint transcripts and ignored credential files are not copied or re-audited."
+  },
+  "refs_unchanged": true,
+  "replay_configuration_checks": {
+    "alternate_locator_with_spaces": true,
+    "current_checkout": true,
+    "full_suite_rerun": false,
+    "original_runner_hash_verified": true
+  },
+  "safeguards_preservation_verification": {
+    "archived_original_inputs": 2,
+    "bindings": 45,
+    "preexisting_unchanged": 343
+  },
+  "scope": "Packaging additions only; no full-suite rerun.",
+  "staging_empty": true,
+  "v2_integrity_verification": {
+    "closed": 1,
+    "current_claims": 121,
+    "files": 22,
+    "open_repairs": 698,
+    "other_held": 120,
+    "snapshots": 4
+  }
+}

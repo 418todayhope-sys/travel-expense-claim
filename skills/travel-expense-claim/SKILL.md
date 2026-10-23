@@ -8,7 +8,10 @@ description: Operate Alderbridge travel-claim evidence acquisition, deterministi
 Run from the repository root, two directories above this file. Read the root
 [README](../../README.md) for commands and input/output paths and the
 [operator reference](../../operator_delivery/README.md) for snapshot semantics,
-verification, repair ownership and failure recovery. For the latest handoff, use
+verification, repair ownership and failure recovery. For the current handoff, use
+the [v3 handoff addendum](../../operator_delivery/ordinary-closure-v3-handoff.md)
+and [authoritative v3 verification README](../../artifacts/verifications/omega4-attempt002-ordinary-closure-verification-v3/README.md).
+Earlier handoffs remain historical, including
 [Decision 003 commands and linked case/blocker views](../../operator_delivery/shared-blockers.md)
 and [Decision 004's interim acceptance boundary](../../decisions/decision-004-interim-operator-handoff.md).
 Verification requires the hash-bound documentation versions in an isolated

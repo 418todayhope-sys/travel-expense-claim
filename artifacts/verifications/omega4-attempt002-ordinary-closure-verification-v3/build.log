@@ -1,0 +1,5 @@
+COMMAND 1 validation.validate EXIT 2
+COMMAND 2 reconciliation.reconcile EXIT 2
+COMMAND 3 operator_delivery.build EXIT 2
+COMMAND 4 operator_delivery.build EXIT 0
+VERSIONED_BUILD_VERIFIED {"actual_financial_closures": 4, "current_claims": 121, "open_repairs": 683, "run_id": "omega4-attempt002-ordinary-closure-operator-v3", "verified_files": 22, "verified_snapshots": 4}

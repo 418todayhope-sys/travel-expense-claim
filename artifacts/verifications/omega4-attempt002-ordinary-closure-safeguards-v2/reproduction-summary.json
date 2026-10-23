@@ -1,0 +1,18 @@
+{
+  "controls": {
+    "baseline_closed": true,
+    "beyond_case_clock_receipt_held": true,
+    "valid_batch_conflict_held": true
+  },
+  "findings": {
+    "invalid_batch_finance_conflict": "NOT REPRODUCED",
+    "same_revision_evidence_after_approval": "NOT REPRODUCED"
+  },
+  "repository_and_git_state_unchanged": true,
+  "scope": "Synthetic normalized-model evaluation and operator projection; no CLI builds or manifest-forgery test.",
+  "source_code_sha256": {
+    "operator_delivery/build.py": "c0e9b326e36209a3f5ab1b502392a267764df17a6e97a0c6471710e7a66007fc",
+    "reconciliation/reconcile.py": "63e46cddfd56bb5fe05bed8b2f2d011dd74d46e4d17097bdbe7ca367e2d85c11",
+    "validation/validate.py": "563c7448f15731fdedf2637e0294dd4ca316d21f286a4943f8458484ee26fd7b"
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "batches": [
+    {
+      "batch": 1,
+      "closed": []
+    },
+    {
+      "batch": 2,
+      "closed": [
+        "C01",
+        "C04",
+        "C05",
+        "C06"
+      ]
+    },
+    {
+      "batch": 3,
+      "closed": [
+        "C01",
+        "C04",
+        "C05",
+        "C06"
+      ]
+    },
+    {
+      "batch": 4,
+      "closed": [
+        "C01",
+        "C04",
+        "C05",
+        "C06"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "accepted_event_id": "F-C01-accepted",
+      "amount_cents": 10000,
+      "attribution": "Derived unique revision/cost join; Finance source fields have claim/request but no revision/cost columns.",
+      "balance_cents": 0,
+      "claim_id": "C01",
+      "decision_ids": [
+        "D-C01-1-claim-administration-1",
+        "D-C01-1-claim-budget_owner-1",
+        "D-C01-1-claim-supervisor-1"
+      ],
+      "incremental_authorized_cents": 0,
+      "known_paid_cents": 10000,
+      "package_certification": "unresolved",
+      "request_id": "REQ-C01",
+      "revision": 1,
+      "settlement_event_id": "F-C01-1",
+      "status": "closed-reimbursed"
+    },
+    {
+      "accepted_event_id": "F-C04-accepted",
+      "amount_cents": 10000,
+      "attribution": "Derived unique revision/cost join; Finance source fields have claim/request but no revision/cost columns.",
+      "balance_cents": 0,
+      "claim_id": "C04",
+      "decision_ids": [
+        "D-C04-1-claim-administration-1",
+        "D-C04-1-claim-budget_owner-supervisor-1"
+      ],
+      "incremental_authorized_cents": 0,
+      "known_paid_cents": 10000,
+      "package_certification": "unresolved",
+      "request_id": "REQ-C04",
+      "revision": 1,
+      "settlement_event_id": "F-C04-1",
+      "status": "closed-reimbursed"
+    },
+    {
+      "accepted_event_id": "F-C05-accepted",
+      "amount_cents": 100000,
+      "attribution": "Derived unique revision/cost join; Finance source fields have claim/request but no revision/cost columns.",
+      "balance_cents": 0,
+      "claim_id": "C05",
+      "decision_ids": [
+        "D-C05-1-claim-administration-1",
+        "D-C05-1-claim-budget_owner-1",
+        "D-C05-1-claim-supervisor-1"
+      ],
+      "incremental_authorized_cents": 0,
+      "known_paid_cents": 100000,
+      "package_certification": "unresolved",
+      "request_id": "REQ-C05",
+      "revision": 1,
+      "settlement_event_id": "F-C05-1",
+      "status": "closed-reimbursed"
+    },
+    {
+      "accepted_event_id": "F-C06-accepted",
+      "amount_cents": 100001,
+      "attribution": "Derived unique revision/cost join; Finance source fields have claim/request but no revision/cost columns.",
+      "balance_cents": 0,
+      "claim_id": "C06",
+      "decision_ids": [
+        "D-C06-1-claim-administration-1",
+        "D-C06-1-claim-budget_owner-1",
+        "D-C06-1-claim-director-1",
+        "D-C06-1-claim-supervisor-1"
+      ],
+      "incremental_authorized_cents": 0,
+      "known_paid_cents": 100001,
+      "package_certification": "unresolved",
+      "request_id": "REQ-C06",
+      "revision": 1,
+      "settlement_event_id": "F-C06-1",
+      "status": "closed-reimbursed"
+    }
+  ],
+  "snapshot_status_counts": {
+    "closed-reimbursed": 4,
+    "held": 117
+  }
+}

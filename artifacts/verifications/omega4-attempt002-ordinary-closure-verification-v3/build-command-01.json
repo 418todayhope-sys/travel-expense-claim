@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/home/maxg/travel-expense-claim/.venv/bin/python",
+    "-B",
+    "-m",
+    "validation.validate",
+    "--run",
+    "/home/maxg/travel-expense-claim-omega4/artifacts/runs/omega4-live-20261020-attempt002",
+    "--normalized",
+    "/home/maxg/travel-expense-claim-omega4/artifacts/normalizations/omega4-attempt002-normalization-v1",
+    "--output",
+    "/home/maxg/travel-expense-claim-omega4/artifacts/validations/omega4-attempt002-ordinary-closure-validation-v3",
+    "--ordinary-v3"
+  ],
+  "exit_code": 2,
+  "expected_exit_code": 2,
+  "stderr": "",
+  "stdout": "{\"cancellation_processes\": 4, \"claim_revisions\": 127, \"claim_status_counts\": {\"blocked\": 19, \"supported\": 4, \"unresolved\": 104}, \"current_claim_status_counts\": {\"blocked\": 13, \"supported\": 4, \"unresolved\": 104}, \"current_claims\": 121, \"eligibility_status_counts\": {\"blocked\": 11, \"supported\": 109, \"unresolved\": 7}, \"expense_occurrences\": 208, \"expense_status_counts\": {\"blocked\": 12, \"supported\": 188, \"unresolved\": 8}, \"normalization_diagnostic_count\": 18, \"standalone_permit_reviews\": 1}\n"
+}

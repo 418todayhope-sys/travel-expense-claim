@@ -1,0 +1,80 @@
+[
+  {
+    "command": [
+      "/home/maxg/travel-expense-claim/.venv/bin/python",
+      "-B",
+      "-m",
+      "validation.validate",
+      "--run",
+      "/home/maxg/travel-expense-claim-omega4/artifacts/runs/omega4-live-20261020-attempt002",
+      "--normalized",
+      "/home/maxg/travel-expense-claim-omega4/artifacts/normalizations/omega4-attempt002-normalization-v1",
+      "--output",
+      "/tmp/omega4-v3-step2-8h_zcqa8/validation",
+      "--ordinary-v3"
+    ],
+    "exit_code": 2,
+    "expected": 2,
+    "stderr": "",
+    "stdout": "{\"cancellation_processes\": 4, \"claim_revisions\": 127, \"claim_status_counts\": {\"blocked\": 19, \"supported\": 4, \"unresolved\": 104}, \"current_claim_status_counts\": {\"blocked\": 13, \"supported\": 4, \"unresolved\": 104}, \"current_claims\": 121, \"eligibility_status_counts\": {\"blocked\": 11, \"supported\": 109, \"unresolved\": 7}, \"expense_occurrences\": 208, \"expense_status_counts\": {\"blocked\": 12, \"supported\": 188, \"unresolved\": 8}, \"normalization_diagnostic_count\": 18, \"standalone_permit_reviews\": 1}\n"
+  },
+  {
+    "command": [
+      "/home/maxg/travel-expense-claim/.venv/bin/python",
+      "-B",
+      "-m",
+      "reconciliation.reconcile",
+      "--run",
+      "/home/maxg/travel-expense-claim-omega4/artifacts/runs/omega4-live-20261020-attempt002",
+      "--normalized",
+      "/home/maxg/travel-expense-claim-omega4/artifacts/normalizations/omega4-attempt002-normalization-v1",
+      "--validated",
+      "/tmp/omega4-v3-step2-8h_zcqa8/validation",
+      "--output",
+      "/tmp/omega4-v3-step2-8h_zcqa8/reconciliation"
+    ],
+    "exit_code": 2,
+    "expected": 2,
+    "stderr": "",
+    "stdout": "{\"accepted_requests\": 104, \"admitted_event_type_counts\": {\"accepted\": 104, \"adjustment\": 1, \"cancellation_requested\": 1, \"cancelled\": 1, \"failed\": 1, \"refund\": 2, \"resolution\": 2, \"retry_authorized\": 1, \"settled\": 106}, \"admitted_finance_events\": 219, \"admitted_net_cents\": 1203415, \"admitted_refund_cents\": 3000, \"admitted_settled_cents\": 1206415, \"business_cancellation_processes\": 4, \"claim_revisions\": 127, \"current_accepted_cents\": 1193415, \"current_claims\": 121, \"distinct_finance_events\": 219, \"expense_occurrences\": 208, \"finance_batch_views\": 4, \"finance_deliveries\": 220, \"normalization_diagnostic_count\": 18, \"observed_request_references\": 104, \"original_accepted_cents\": 1205415, \"repeated_finance_deliveries\": 1, \"unresolved_finance_events\": 0, \"unresolved_item_count\": 602}\n"
+  },
+  {
+    "command": [
+      "/home/maxg/travel-expense-claim/.venv/bin/python",
+      "-B",
+      "-m",
+      "operator_delivery.build",
+      "build",
+      "--acquisition",
+      "/home/maxg/travel-expense-claim-omega4/artifacts/runs/omega4-live-20261020-attempt002",
+      "--normalized",
+      "/home/maxg/travel-expense-claim-omega4/artifacts/normalizations/omega4-attempt002-normalization-v1",
+      "--validated",
+      "/tmp/omega4-v3-step2-8h_zcqa8/validation",
+      "--reconciled",
+      "/tmp/omega4-v3-step2-8h_zcqa8/reconciliation",
+      "--output",
+      "/tmp/omega4-v3-step2-8h_zcqa8/operator",
+      "--run-id",
+      "omega4-v3-temporary-verification"
+    ],
+    "exit_code": 2,
+    "expected": 2,
+    "stderr": "",
+    "stdout": "{\"admitted_finance_events\": 219, \"admitted_net_cents\": 1203415, \"admitted_refund_cents\": 3000, \"admitted_settled_cents\": 1206415, \"claim_revisions\": 127, \"current_claims\": 121, \"expense_occurrences\": 208, \"normalization_diagnostics\": 18, \"open_repairs\": 683, \"request_facts\": 104}\n"
+  },
+  {
+    "command": [
+      "/home/maxg/travel-expense-claim/.venv/bin/python",
+      "-B",
+      "-m",
+      "operator_delivery.build",
+      "verify",
+      "/tmp/omega4-v3-step2-8h_zcqa8/operator"
+    ],
+    "exit_code": 0,
+    "expected": 0,
+    "stderr": "",
+    "stdout": "{\"actual_financial_closures\": 4, \"current_claims\": 121, \"open_repairs\": 683, \"run_id\": \"omega4-v3-temporary-verification\", \"verified_files\": 22, \"verified_snapshots\": 4}\n"
+  }
+]

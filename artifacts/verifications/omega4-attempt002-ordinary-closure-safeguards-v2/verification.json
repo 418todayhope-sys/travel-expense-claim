@@ -1,0 +1,46 @@
+{
+  "authorized_changed_files": [
+    "reconciliation/reconcile.py",
+    "validation/validate.py"
+  ],
+  "checkpoint": "990964afe22d94b4f6b675a29a6829f4b06a90d5",
+  "claims_csv_identical": true,
+  "existing_files_checked": 345,
+  "existing_files_preserved": 343,
+  "head": "d87b8d563efadc06f9e3d1ad5497af3b840c4859",
+  "limitations": [
+    "Targeted suite only; prior full-suite historical hash-bound fixture limitation is not repaired.",
+    "Retained native policy completeness remains unknown.",
+    "Date-only supporting evidence cannot prove intraday availability or detect undated silent changes.",
+    "Malformed deliveries with no explicit case/request/event/payment link remain package-level unresolved evidence; no case attribution is invented.",
+    "Ordinary closure remains opt-in and is not enabled for containment/shared-blocker builds.",
+    "Historical v1 manifests bind earlier code; archived prior inputs are preserved rather than rebinding historical manifests."
+  ],
+  "operator_verification": {
+    "claims": 121,
+    "closed": 1,
+    "files": 22,
+    "held": 120,
+    "open_repairs": 698,
+    "snapshots": 4
+  },
+  "prior_input_bytes_archived": true,
+  "repair_records": 970,
+  "repair_register_identical_except_run_id": true,
+  "retained_reconciliation_equal": {
+    "claims": true,
+    "finance_deliveries": true,
+    "finance_events": true,
+    "normalization_diagnostics": true,
+    "requests": true,
+    "summary": true
+  },
+  "staging_empty": true,
+  "targeted_tests": {
+    "command": "python -B -m unittest discover -s tests -p test_ordinary_closure*.py -v",
+    "failed": 0,
+    "passed": 39,
+    "run": 39,
+    "seconds": 140.172
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "c01": {
+    "allowed_cents": 10000,
+    "allowed_cents_scope": "Reviewed entitlement derived from exact current source approvals.",
+    "authorized_allowed_cents": 10000,
+    "balance_cents": 0,
+    "business_disposition": {
+      "decision_ids": [],
+      "evidence_status": "unresolved",
+      "reason": "No unambiguous explicit withdrawal or admitted current rejection; no disposition inferred from missing evidence.",
+      "scope": "This claim revision in retained evidence; not payment authorization or financial closure.",
+      "source_refs": [
+        "initial-claims:page:1:claim"
+      ],
+      "value": null
+    },
+    "claim_id": "C01",
+    "decision_ids": [
+      "D-C01-1-claim-administration-1",
+      "D-C01-1-claim-budget_owner-1",
+      "D-C01-1-claim-supervisor-1"
+    ],
+    "decision_ids_are_authorization": true,
+    "eligibility_status": "supported",
+    "financial_closure_status": "supported_retained_evidence",
+    "gross_original_by_currency": {
+      "EUR": "100.00"
+    },
+    "gross_purchase_cents": 10000,
+    "incremental_policy_candidate_cents": 10000,
+    "issue_record_ids": [],
+    "known_paid_cents": 10000,
+    "lines": [
+      {
+        "accepted_cents": 10000,
+        "allowed_cents": 10000,
+        "cost_id": "COST-01",
+        "currency": "EUR",
+        "gross_original": "100.00",
+        "known_paid_cents": 10000,
+        "policy_calculated_cents": 10000,
+        "reason": "Expense eligibility only; no payment allocation or approval inferred.",
+        "source_ids": [
+          "initial-claims:page:1:claim",
+          "initial-claims:page:1:claim:expense:1",
+          "receipts:page:1:receipt:1",
+          "travel-registers:Merchant payments:row:6",
+          "travel-registers:Trips:row:6"
+        ],
+        "status": "supported"
+      }
+    ],
+    "next_owner": null,
+    "ordinary_closure": {
+      "accepted_event_id": "F-C01-accepted",
+      "amount_cents": 10000,
+      "claim_id": "C01",
+      "decision_ids": [
+        "D-C01-1-claim-administration-1",
+        "D-C01-1-claim-budget_owner-1",
+        "D-C01-1-claim-supervisor-1"
+      ],
+      "expense_id": "COST-01",
+      "package_certification": "unresolved",
+      "request_id": "REQ-C01",
+      "revision": 1,
+      "schema_version": "omega4-ordinary-closure/1",
+      "scope": "Derived closure within retained evidence; no new payment or external completeness certification.",
+      "settlement_event_id": "F-C01-1",
+      "source_refs": [
+        "initial-claims:page:1:claim",
+        "initial-claims:page:1:claim:expense:1",
+        "interview:ordinary_entitlement",
+        "policy:finance_admission",
+        "policy:finance_reconciliation",
+        "receipts:page:1:receipt:1",
+        "travel-registers:Finance activity:row:31",
+        "travel-registers:Finance activity:row:33",
+        "travel-registers:Finance activity:row:6",
+        "travel-registers:Merchant payments:row:6",
+        "travel-registers:People:row:6",
+        "travel-registers:Review ledger:row:6",
+        "travel-registers:Review ledger:row:7",
+        "travel-registers:Review ledger:row:8",
+        "travel-registers:Review packets:row:6",
+        "travel-registers:Review packets:row:7",
+        "travel-registers:Review packets:row:8",
+        "travel-registers:Trips:row:6"
+      ]
+    },
+    "original_request_ids": [
+      "REQ-C01"
+    ],
+    "paid_cents": 10000,
+    "paid_cents_complete": true,
+    "paid_cents_semantics": "Unique unchanged source-backed request/cost attribution; retained evidence only.",
+    "policy_calculated_allowed_cents": 10000,
+    "reason": "Closed within retained evidence: current approvals, unique unchanged cost/request basis, accepted obligation and confirmed net settlement agree. Native-policy completeness remains unverified.",
+    "review_evidence_status": "supported",
+    "revision": 1,
+    "source_refs": [
+      "initial-claims:page:1:claim"
+    ],
+    "status": "closed-reimbursed",
+    "travel_cancellation_scope": "no_observed_cancellation",
+    "trip_id": "T01",
+    "trip_revision": 1
+  },
+  "held_other_claims": 120,
+  "standalone_verification": {
+    "actual_financial_closures": 1,
+    "current_claims": 121,
+    "open_repairs": 698,
+    "run_id": "omega4-attempt002-ordinary-closure-operator-v2",
+    "verified_files": 22,
+    "verified_snapshots": 4
+  },
+  "unrelated_claims_equal_v1": true
+}

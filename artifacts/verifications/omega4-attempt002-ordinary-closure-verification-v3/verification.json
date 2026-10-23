@@ -1,0 +1,92 @@
+{
+  "attribution": "Derived unique claim/revision/cost/request joins for the four selections; Finance has no explicit revision/cost fields. Other unknown attribution is not zero or closed.",
+  "certificate_and_non_cli_validation_functions_unchanged": true,
+  "closure_amounts_cents": {
+    "C01": 10000,
+    "C04": 10000,
+    "C05": 100000,
+    "C06": 100001
+  },
+  "comparisons": {
+    "all_four_snapshot_business_views_match_verified_temporary_run": true,
+    "claims_csv_matches_verified_temporary_run": true,
+    "reconciliation_core_matches_verified_temporary_run": true,
+    "temporary_queue_identical_except_run_id": true,
+    "v2_finance_facts_and_unaffected_claim_findings_unchanged": true,
+    "validation_core_matches_verified_temporary_run": true
+  },
+  "current_claims": 121,
+  "exact_source_copies": [
+    "sources/claim-updates.pdf",
+    "sources/initial-claims.pdf",
+    "sources/receipts.pdf",
+    "sources/travel-registers.xlsx",
+    "supplemental/POL-2026.2-20261020-browser-copy.provenance.json",
+    "supplemental/POL-2026.2-20261020-browser-copy.txt",
+    "responses/policy.body"
+  ],
+  "financial_closures": 4,
+  "global_requirements": [
+    "policy_provenance",
+    "review_version_token",
+    "budget_completeness",
+    "assignment_access"
+  ],
+  "held_claims": 117,
+  "limitations": [
+    "Native policy completeness and package definitions remain unresolved.",
+    "No new payment, approval, Finance resolution, bank completeness, external operator acceptance or grading outcome is asserted.",
+    "Date-only evidence cannot establish intraday availability or reveal undated silent changes.",
+    "Containment/shared-blocker ordinary-closure builds remain disabled.",
+    "Sealed report header retains older blanket no-financial-closure wording; README provides the precise four-closure retained-evidence interpretation.",
+    "Historical step2 runner contains original checkout and temporary allowlist locators; it is preserved execution evidence, not a portable post-commit full-test command."
+  ],
+  "negative_controls": {
+    "C08": {
+      "diagnostics": [
+        "approval_evidence",
+        "inherited_validation_limits",
+        "missing_finance_request"
+      ],
+      "status": "held"
+    },
+    "C18": {
+      "diagnostics": [
+        "approval_evidence",
+        "inherited_validation_limits",
+        "decision_001_original_request_hold",
+        "late_original_request_settlement",
+        "overpaid_against_request",
+        "request_revision_cost_binding"
+      ],
+      "status": "held"
+    }
+  },
+  "normalization_diagnostics": 18,
+  "open_repairs": 683,
+  "original_acquisition_manifest_matches": true,
+  "repair_state_counts": {
+    "cleared_by_recheck": 230,
+    "open": 683,
+    "superseded": 51
+  },
+  "scope": "New versioned build and independent integrity/business comparison; original 88-test execution preserved, not rerun.",
+  "selection": [
+    "C01",
+    "C04",
+    "C05",
+    "C06"
+  ],
+  "tests": {
+    "errors": 0,
+    "existing_passed": 39,
+    "failures": 0,
+    "rerun_during_packaging": false,
+    "skips": 0,
+    "supplemental_passed": 49,
+    "total_passed": 88
+  },
+  "total_closed_cents": 220001,
+  "verified_bound_operator_files": 22,
+  "verified_snapshots": 4
+}

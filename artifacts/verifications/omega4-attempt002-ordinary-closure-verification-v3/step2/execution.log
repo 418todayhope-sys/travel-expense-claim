@@ -1,0 +1,13 @@
+TEMPORARY_EVIDENCE /tmp/omega4-v3-step2-8h_zcqa8
+CLI validation.validate --run exit 2
+CLI reconciliation.reconcile --run exit 2
+CLI operator_delivery.build build exit 2
+CLI operator_delivery.build verify exit 0
+TEMPORARY_OUTPUT_VERIFIED {'actual_financial_closures': 4, 'current_claims': 121, 'open_repairs': 683, 'run_id': 'omega4-v3-temporary-verification', 'verified_files': 22, 'verified_snapshots': 4}
+EXISTING_REGRESSION_TESTS 39
+EXISTING_RESULTS {"total": 39, "passed": 39, "failures": [], "errors": [], "skipped": []}
+SUPPLEMENTAL_CASES 49
+SUPPLEMENTAL_RESULTS {"total": 49, "passed": 49, "failures": [], "errors": [], "skipped": []}
+PRESERVATION {"all_state_equal": true, "files_checked": 402, "index_unchanged": true, "unstaged_v3_edit_unchanged": true, "head_unchanged": true, "refs_unchanged": true, "staged_inventory_hash": "bd413067415932b53803d840181f3d132f31794291541199d0645696c2c1a83b", "elapsed_seconds": 249.987}
+CLOSURE_TOTALS {'closed-reimbursed': 4, 'held': 117}
+TOTAL_TESTS 88 TOTAL_PASSED 88

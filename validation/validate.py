@@ -218,7 +218,7 @@ def business_disposition(doc, claim, claim_review):
             'scope': 'This claim revision in retained evidence; not payment authorization or financial closure.'}
 
 
-def review(doc, claim, trip, person, batch, subject_type, amount, cancel_context=()):
+def review(doc, claim, trip, person, batch, subject_type, amount, cancel_context=(), evidence_dates=()):
     """Validate supplied decisions and packets; never supply discretionary judgment."""
     tv, pv = trip['values'], person['values']
     subject = claim['claim_id'] if subject_type == 'claim' else tv['Permit reference']
@@ -249,6 +249,12 @@ def review(doc, claim, trip, person, batch, subject_type, amount, cancel_context
         time = instant(v.get('Decision time (UTC)'))
         if time is None or time.astimezone(ZONE).date() > CASE_DATE:
             add('review_time', 'unresolved', 'Decision time missing, non-UTC or future.', 'clock')
+        if evidence_dates:
+            fresh = time is not None and all(date is not None and date <= time.astimezone(ZONE).date()
+                                             for date, _ in evidence_dates)
+            add('review_evidence_freshness', 'supported' if fresh else 'blocked',
+                'Receipt and settled merchant evidence must be dated on or before this review; subsequent valid reviews are required for later evidence.',
+                'freshness', [ref for _, ref in evidence_dates])
         versions = v.get('Source revisions') or []
         if not {'POL-2026.2', 'SRC-D-3'}.issubset(versions) or any(t.startswith('POL-') and t != 'POL-2026.2' for t in versions) or any(t.startswith('SRC-') and t != 'SRC-D-3' for t in versions):
             add('review_sources', 'blocked', 'Policy or retained business-source revision is missing or stale.', 'freshness')
@@ -482,7 +488,42 @@ def permit_findings(doc, claim, trip, person, batch, affected):
     return finding(code, state, reason, refs + [e['record_id'] for e in reviewed['imports']], 'permit'), reviewed
 
 
-def evaluate(doc, normalization_report, through_batch=4):
+def ordinary_review_binding(doc, claim, reviewed, expenses, findings, diagnostics):
+    """Narrow retained-evidence join, not a new human decision or package waiver.
+
+    Interview 294/302 confirms entitlement through current role approvals.
+    Restrict this path to one unchanged domestic purchase with no exception.
+    Corrections, shared costs, ambiguous/invalid replies and returns fail closed.
+    """
+    family = [c for c in doc['claims'] if c['claim_id'] == claim['claim_id']]
+    costs = claim['expenses']
+    if (len(family) != 1 or claim['revision'] != 1 or len(costs) != 1 or claim.get('finance_exception')
+            or claim.get('related_claim_ids') or claim.get('status_observed') != 'submitted'
+            or not reviewed or diagnostics or status(findings) != 'supported'
+            or not any(f['code'] == 'domestic_permit' for f in findings)
+            or any(e['status'] != 'supported' for e in expenses)
+            or expenses[0]['calculated_allowed_cents'] is None
+            or expenses[0]['calculated_allowed_cents'] <= 0):
+        return False
+    if sum(e['expense_id'] == costs[0]['expense_id'] for c in doc['claims'] for e in c['expenses']) != 1:
+        return False
+    roles = reviewed['required_roles']
+    # Retain earlier reviews as history, excluding only otherwise-valid approvals
+    # that are provably stale against the supporting evidence dates.
+    imports = [e for e in reviewed['imports'] if not (
+        e['revision'] == claim['revision'] and e['outcome'] == 'approve'
+        and any(f['code'] == 'review_evidence_freshness' and f['status'] == 'blocked' for f in e['findings'])
+        and all(f['status'] == 'supported' for f in e['findings'] if f['code'] != 'review_evidence_freshness'))]
+    return (all(e['revision'] == claim['revision'] and e['status'] == 'supported'
+                and e['outcome'] == 'approve' for e in imports)
+            and all(sum(role in e['roles'] for e in imports) == 1 for role in roles)
+            and status([f for f in reviewed['findings'] if f['code'] != 'reviewed_entitlement_binding']) == 'supported')
+
+
+def evaluate(doc, normalization_report, through_batch=4, *, ordinary_claim_ids=()):
+    ordinary_claim_ids = sorted(set(ordinary_claim_ids))
+    if set(ordinary_claim_ids) - {c['claim_id'] for c in doc['claims']}:
+        raise ValueError('Ordinary review selection names an unknown claim')
     if not isinstance(through_batch, int) or isinstance(through_batch, bool) or through_batch < 1:
         raise ValueError('through_batch must be a positive integer')
     supplied_batches = {c['arrival_batch'] for c in doc['claims']}
@@ -516,7 +557,15 @@ def evaluate(doc, normalization_report, through_batch=4):
             fs.append(finding('trip_dates', 'supported' if start and end and start <= end else 'unresolved', 'Trip dates must be present and ordered; filing uses original planned end.', [trip['record_id']], 'filing'))
         lines = [expense_findings(doc, c, e, trip, person, permission, affected) for e in c['expenses']]
         total = sum(e['calculated_allowed_cents'] for e in lines) if lines and all(e['calculated_allowed_cents'] is not None for e in lines) else None
-        claim_review = review(doc, c, trip, person, through_batch, 'claim', Decimal(total) / 100 if total is not None else None, confirmed) if trip and person else None
+        evidence_dates = []
+        if c['claim_id'] in ordinary_claim_ids:
+            for expense in c['expenses']:
+                evidence_dates.extend((day(receipt.get('issued_date')), receipt['record_id'])
+                                      for receipt in doc['receipts'] if receipt['receipt_id'] == expense['receipt_id'])
+                evidence_dates.extend((day(row['values'].get('Paid date')), row['record_id'])
+                                      for row in rows(doc, 'Merchant payments')
+                                      if row['values'].get('Expense reference') == expense['expense_id'])
+        claim_review = review(doc, c, trip, person, through_batch, 'claim', Decimal(total) / 100 if total is not None else None, confirmed, evidence_dates) if trip and person else None
         prior = [x for x in available if x['claim_id'] == c['claim_id'] and x['revision'] < c['revision']]
         fs.append(finding('correction_recheck', 'supported', 'Full current-revision dependency recheck; no prior claim approval is inherited, including unchanged totals.', [c['record_id']] + [x['record_id'] for x in prior], 'freshness'))
         shared = {e['expense_id']: [x['record_id'] for x in available if x['claim_id'] != c['claim_id'] and any(old['expense_id'] == e['expense_id'] for old in x['expenses'])] for e in c['expenses']}
@@ -526,6 +575,16 @@ def evaluate(doc, normalization_report, through_batch=4):
         finance_candidates = [r for r in rows(doc, 'Finance activity') if visible(r, through_batch) and r['values'].get('Claim reference') == c['claim_id']]
         if prior and finance_candidates:
             fs.append(finding('original_request_finance_hold', 'blocked', 'Correction with original-request Finance observations: hold pending explicit original-request resolution validation and current reviews. Candidate rows are not admitted or attributed to a revision.', [c['record_id'], 'decision:001'] + [r['record_id'] for r in finance_candidates], 'finance_hold', person['values']['Finance officer'] if person else 'Finance'))
+        claim_diagnostics = [i for i in normalization_report['issues'] if i['record_id'] == c['record_id'] or i['record_id'].startswith(c['record_id'] + ':')]
+        if (c['claim_id'] in ordinary_claim_ids and not affected
+                and ordinary_review_binding(doc, c, claim_review, lines, fs, claim_diagnostics)):
+            for f in claim_review['findings']:
+                if f['code'] == 'reviewed_entitlement_binding':
+                    f.update(status='supported', resolution_needed=None,
+                             reason='Derived reviewed entitlement: sole unchanged purchase, exact current role approvals and matching packets; no exception or competing basis. No redundant numeric packet field is required.',
+                             source_refs=sorted(set(f['source_refs'] + ['interview:ordinary_entitlement'] +
+                                                   [ref for line in lines for x in line['findings'] for ref in x['source_refs']])))
+            claim_review['status'] = status(claim_review['findings'])
         allfs = fs + [f for line in lines for f in line['findings']] + (claim_review['findings'] if claim_review else [])
         eligibility = [f for f in fs if f['code'] in ('claim_identity', 'trip_dates', 'exception_cost_binding')] + [f for line in lines for f in line['findings']]
         claim_results.append({'claim_id': c['claim_id'], 'revision': c['revision'], 'arrival_batch': c['arrival_batch'],
@@ -596,7 +655,10 @@ def evaluate(doc, normalization_report, through_batch=4):
                                'supplied_ledger_available_cents': cents(allocation - net - remaining, Decimal(1)) if valid else None,
                                'scope': 'Supplied Budget rows only; excludes deferred accepted-request admission. Not funding approval.',
                                'source_refs': [r['record_id'] for r in scoped]})
-    return {'schema_version': 'omega4-policy-validation/1', 'mode': 'offline-retained-normalization',
+    if ordinary_claim_ids:
+        index['interview:ordinary_entitlement'] = {'path': INTERVIEW, 'sha256': digest((ROOT / INTERVIEW).read_bytes()), 'lines': [294, 302, 454]}
+    return {**({'ordinary_claim_ids': ordinary_claim_ids} if ordinary_claim_ids else {}),
+            'schema_version': 'omega4-policy-validation/1', 'mode': 'offline-retained-normalization',
             'case_clock': {'date': CASE_DATE.isoformat(), 'timezone': 'Europe/Amsterdam', 'source_ref': 'policy:clock'},
             'through_batch': through_batch, 'claims': claim_results, 'cancellations': cancel_records,
             'normalization_diagnostics': normalization_report['issues'], 'global_findings': global_findings,
@@ -604,10 +666,12 @@ def evaluate(doc, normalization_report, through_batch=4):
             'standalone_permit_reviews': standalone_permits,
             'source_index': index,
             'limitations': ['No Finance event admission, request creation, transfers, net paid, balance, financial closure, batch-state snapshots or final operations report.',
-                            'Claim packet schema lacks reviewed-entitlement/exception identifiers; arithmetic/exception visibility to reviewers remains unresolved.',
+                            ('Explicitly selected unchanged single-cost claims may derive reviewed entitlement from exact current approvals; all other packet/exception bindings remain unresolved.' if ordinary_claim_ids else
+                             'Claim packet schema lacks reviewed-entitlement/exception identifiers; arithmetic/exception visibility to reviewers remains unresolved.'),
                             'Findings on historical revisions are rechecked against facts visible at the selected batch, not reconstructed execution snapshots.',
                             'Merchant/receipt/trip/cap/FX/directory rows have no arrival batches; retained base tables are used as supplied without inventing availability times.',
-                            'No policy or amount authorization is inferred from otherwise supported arithmetic; global unresolved findings remain applicable.']}
+                            ('Selected ordinary review joins use supplied human approvals, never arithmetic alone. Package-wide unresolved findings remain disclosed and uncertified.' if ordinary_claim_ids else
+                             'No policy or amount authorization is inferred from otherwise supported arithmetic; global unresolved findings remain applicable.')]}
 
 
 def load_verified(run, normalized):
@@ -629,16 +693,18 @@ def load_verified(run, normalized):
     return saved, saved_report
 
 
-def validate(run, normalized, output, through_batch=4):
+def validate(run, normalized, output, through_batch=4, *, ordinary_claim_ids=()):
     run, normalized, output = run.resolve(), normalized.resolve(), output.resolve()
     if output.exists():
         raise FileExistsError('Refusing existing validation output: ' + str(output))
     if output.is_relative_to(run) or output.is_relative_to(normalized):
         raise ValueError('Validation output must be outside retained acquisition/normalization evidence')
     doc, report = load_verified(run, normalized)
-    result = evaluate(doc, report, through_batch)
+    result = evaluate(doc, report, through_batch, ordinary_claim_ids=ordinary_claim_ids)
     paths = [run / 'sources.json', normalized / 'records.v1.json', normalized / 'parsing-report.v1.json',
              normalized / 'parsing-report.v1.md'] + [ROOT / p for p in (POLICY, PROVENANCE, INTERVIEW, DECISION, ASSIGNMENT, 'snapshot.schema.json', 'validation/validate.py', 'normalization/normalize.py', 'acquisition/retain.py')]
+    if ordinary_claim_ids:
+        paths.append(ROOT / 'operator_delivery/ordinary-closure.md')
     result['input_bindings'] = [{'path': str(p.relative_to(ROOT)) if p.is_relative_to(ROOT) else str(p), 'sha256': digest(p.read_bytes())} for p in paths]
     result['summary'] = {'claim_revisions': len(result['claims']), 'current_claims': sum(c['current_at_batch'] for c in result['claims']),
                          'expense_occurrences': sum(len(c['expenses']) for c in result['claims']),
@@ -661,9 +727,14 @@ def main():
     parser.add_argument('--normalized', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--through-batch', type=int, default=4)
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument('--ordinary-claim', action='append', default=[], help='Explicitly selected claim for the guarded unchanged-purchase path; does not enable other claims')
+    selection.add_argument('--ordinary-v3', dest='ordinary_claim', action='store_const',
+                           const=['C01', 'C04', 'C05', 'C06'],
+                           help='Select only C01/C04/C05/C06 through the unchanged ordinary-closure guards')
     args = parser.parse_args()
     try:
-        result = validate(args.run.resolve(), args.normalized.resolve(), args.output.resolve(), args.through_batch)
+        result = validate(args.run.resolve(), args.normalized.resolve(), args.output.resolve(), args.through_batch, ordinary_claim_ids=args.ordinary_claim)
     except (ValueError, OSError, KeyError) as exc:
         print(str(exc)); return 1
     print(json.dumps(result['summary'], sort_keys=True))

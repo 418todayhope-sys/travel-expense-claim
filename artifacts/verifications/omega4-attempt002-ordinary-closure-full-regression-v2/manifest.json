@@ -1,0 +1,131 @@
+{
+  "files": [
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/README.md",
+      "sha256": "0122b00d3fbf0ee84e7e15621573f2755a6d67d65055845c5a4acc51e0338077"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/after.json",
+      "sha256": "91263cdef13c0444d7fe6c0d921ca2cf88dba95863eac8109bc67dabf23f5b62"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/before.json",
+      "sha256": "91263cdef13c0444d7fe6c0d921ca2cf88dba95863eac8109bc67dabf23f5b62"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/closure-verification.json",
+      "sha256": "465f31fe4511a2b2bebd5aaa9533d6a29e89f55c278c9e27a9befb93262db059"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/fixture-verification.json",
+      "sha256": "7d0414ef8a0adf49ba61e73ade3e9bd009322a546aea58ef1775cf1060a441c8"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/full-regression.log",
+      "sha256": "61ff2893da3247489c3385bdbfd83b8f7c6f84e5e1b25ab768871c85fc58a341"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/original-runner.py",
+      "sha256": "1cf08b72a1ab8d4d8e027405b37319f1a8870e190c7fd2a41fd015e98f51bd45"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/packaging-baseline.json",
+      "sha256": "4ffe3d6723cf4a4ee125d9d8f5f59d0a2bc786ba8ecf23bd0584e6c68fbf05ae"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/packaging-verification.json",
+      "sha256": "4f61232a961fd8bee043f24cb177bb9074b97bfffb0591c93e8646c50998da5b"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/preservation.json",
+      "sha256": "38670eb09864e21a278cb22b3c3715551cfba1e7a6116d5eb2395bc709fc033e"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/replay.py",
+      "sha256": "01d0910fd5871ee13f1fccf79df428f4884a5b59b07b1911e65222ed271b04e7"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/tests.json",
+      "sha256": "656c1b8e25dfd97b7a2e5aa55451e11da12be4477ed71bc428c3c3f67fc02d02"
+    },
+    {
+      "path": "operator_delivery/ordinary-closure-v2-handoff.md",
+      "sha256": "c091dab934ff1ef6f49725e67d00788716a4d1c9045bf7ecd23022cd5244e027"
+    }
+  ],
+  "input_bindings": [
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/manifest.json",
+      "sha256": "078b17daca52d79c7025176af2fd699bdc346b7589439fd9c026b2e768e6fccb"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/operator-manifest.v1.json",
+      "sha256": "9ef14f10fc5b2421b20e9212f619ff44974bd432a24a188ce8a92a4367b2d41f"
+    },
+    {
+      "path": "artifacts/validations/omega4-attempt002-ordinary-closure-validation-v2/findings.v1.json",
+      "sha256": "f17733bf05da868fa8dd8374bcf301296c626f3dd8c1f642c25b5d336fd22afd"
+    },
+    {
+      "path": "artifacts/reconciliations/omega4-attempt002-ordinary-closure-reconciliation-v2/reconciliation.v1.json",
+      "sha256": "24169304549aa26f96df0a4b0c09eab015cc0169c4a45cabc881389ebea494c7"
+    },
+    {
+      "path": "validation/validate.py",
+      "sha256": "563c7448f15731fdedf2637e0294dd4ca316d21f286a4943f8458484ee26fd7b"
+    },
+    {
+      "path": "reconciliation/reconcile.py",
+      "sha256": "63e46cddfd56bb5fe05bed8b2f2d011dd74d46e4d17097bdbe7ca367e2d85c11"
+    },
+    {
+      "path": "operator_delivery/build.py",
+      "sha256": "c0e9b326e36209a3f5ab1b502392a267764df17a6e97a0c6471710e7a66007fc"
+    }
+  ],
+  "manifest_self_hash_excluded": true,
+  "mode": "preserved-original-execution-evidence",
+  "original_sources": [
+    {
+      "original_locator": "/tmp/omega4-v2-full-regression-03ngqrb9/after.json",
+      "packaged_path": "after.json",
+      "sha256": "91263cdef13c0444d7fe6c0d921ca2cf88dba95863eac8109bc67dabf23f5b62"
+    },
+    {
+      "original_locator": "/tmp/omega4-v2-full-regression-03ngqrb9/before.json",
+      "packaged_path": "before.json",
+      "sha256": "91263cdef13c0444d7fe6c0d921ca2cf88dba95863eac8109bc67dabf23f5b62"
+    },
+    {
+      "original_locator": "/tmp/omega4-v2-full-regression-03ngqrb9/closure-verification.json",
+      "packaged_path": "closure-verification.json",
+      "sha256": "465f31fe4511a2b2bebd5aaa9533d6a29e89f55c278c9e27a9befb93262db059"
+    },
+    {
+      "original_locator": "/tmp/omega4-v2-full-regression-03ngqrb9/fixture-verification.json",
+      "packaged_path": "fixture-verification.json",
+      "sha256": "7d0414ef8a0adf49ba61e73ade3e9bd009322a546aea58ef1775cf1060a441c8"
+    },
+    {
+      "original_locator": "/tmp/omega4-v2-full-regression.log",
+      "packaged_path": "full-regression.log",
+      "sha256": "61ff2893da3247489c3385bdbfd83b8f7c6f84e5e1b25ab768871c85fc58a341"
+    },
+    {
+      "original_locator": "/tmp/omega4-v2-full-regression.py",
+      "packaged_path": "original-runner.py",
+      "sha256": "1cf08b72a1ab8d4d8e027405b37319f1a8870e190c7fd2a41fd015e98f51bd45"
+    },
+    {
+      "original_locator": "/tmp/omega4-v2-full-regression-03ngqrb9/preservation.json",
+      "packaged_path": "preservation.json",
+      "sha256": "38670eb09864e21a278cb22b3c3715551cfba1e7a6116d5eb2395bc709fc033e"
+    },
+    {
+      "original_locator": "/tmp/omega4-v2-full-regression-03ngqrb9/tests.json",
+      "packaged_path": "tests.json",
+      "sha256": "656c1b8e25dfd97b7a2e5aa55451e11da12be4477ed71bc428c3c3f67fc02d02"
+    }
+  ],
+  "schema_version": "omega4-full-regression-packaging/1"
+}

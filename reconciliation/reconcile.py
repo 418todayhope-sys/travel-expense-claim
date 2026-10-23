@@ -43,6 +43,40 @@ def payload(row, headers):
                     if headers.get(col, col) != 'Arrival batch'}}
 
 
+def invalid_arrival_dependencies(finance_rows):
+    """Resolve only explicit request/event/payment links, never amount similarity.
+
+    Malformed deliveries have no reliable arrival boundary. Their linked cases
+    therefore remain held at every horizon; unrelated cases remain resumable.
+    """
+    affected = defaultdict(list)
+    for bad in finance_rows:
+        batch = bad['values'].get('Arrival batch')
+        if isinstance(batch, int) and not isinstance(batch, bool) and batch >= 1:
+            continue
+        linked = [bad]
+        requests, activities = set(), set()
+        while True:
+            for row in linked:
+                fields = row['values']
+                requests.update([fields.get('Request reference')])
+                activities.update([fields.get('Activity reference'), fields.get('Original activity reference')])
+            requests.discard(None); requests.discard('')
+            activities.discard(None); activities.discard('')
+            expanded = [row for row in finance_rows if row is bad or
+                        row['values'].get('Request reference') in requests or
+                        row['values'].get('Activity reference') in activities or
+                        row['values'].get('Original activity reference') in activities]
+            if len(expanded) == len(linked):
+                break
+            linked = expanded
+        refs = [row['record_id'] for row in linked]
+        for claim in {row['values'].get('Claim reference') for row in linked} - {None, ''}:
+            affected[claim].append(diagnostic('finance_arrival_dependency',
+                'Malformed Finance arrival retained: explicit claim/request/event/payment links require resolution before closure.', refs))
+    return affected
+
+
 def validation_core(saved):
     return {k: value for k, value in saved.items() if k not in ('input_bindings', 'summary')}
 
@@ -68,9 +102,11 @@ def load_verified(run, normalized, validated):
         normalized / 'parsing-report.v1.json', normalized / 'parsing-report.v1.md')}
     expected_paths.update(str((ROOT / p).resolve()) for p in (v.POLICY, v.PROVENANCE, v.INTERVIEW, v.DECISION,
         v.ASSIGNMENT, 'snapshot.schema.json', 'validation/validate.py', 'normalization/normalize.py', 'acquisition/retain.py'))
+    if saved.get('ordinary_claim_ids'):
+        expected_paths.add(str((ROOT / 'operator_delivery/ordinary-closure.md').resolve()))
     if set(bound) != expected_paths:
         raise ValueError('Validation governing input bindings are missing or unexpected')
-    rebuilt = v.evaluate(doc, report, saved['through_batch'])
+    rebuilt = v.evaluate(doc, report, saved['through_batch'], ordinary_claim_ids=saved.get('ordinary_claim_ids', ()))
     if validation_core(saved) != rebuilt:
         raise ValueError('Validation evidence differs from deterministic recomputation')
     expected_summary = {
@@ -295,12 +331,80 @@ def orphan_request_views(events, requests):
     return result
 
 
-def basis_links(doc, policy_at_acceptance, request):
+def ordinary_certificate(doc, policy, claim, request, events):
+    """Prove only a selected, unchanged single-cost ordinary settlement.
+
+    Package certification remains unresolved. No correction/exception/refund/
+    cancellation can enter this path, with or without a matching total.
+    """
+    if (not claim or claim['approval_status'] != 'supported' or claim['status'] != 'supported'
+            or claim['eligibility_status'] != 'supported' or claim['normalization_diagnostics']
+            or claim['cancellation_ids'] or claim['travel_cancellation_scope'] != 'no_observed_cancellation'
+            or len(claim['expenses']) != 1 or request['diagnostics'] or request['uncertain_event_ids']
+            or request['acceptance_status'] != 'admitted' or request['cancel_pending'] or request['cancelled']
+            or len(request['event_ids']) != 2 or len(request['accepted_event_ids']) != 1
+            or len(request['settlement_event_ids']) != 1
+            or request['original_accepted_cents'] != request['accepted_cents']
+            or request['net_confirmed_settled_cents'] != request['accepted_cents']
+            or request['accepted_cents'] != claim['calculated_allowed_cents']):
+        return None
+    if invalid_arrival_dependencies(v.rows(doc, 'Finance activity')).get(claim['claim_id']):
+        return None
+    family = [c for c in doc['claims'] if c['claim_id'] == claim['claim_id']]
+    if len(family) != 1 or family[0].get('finance_exception') or family[0].get('related_claim_ids'):
+        return None
+    # A second request, even unresolved, is a competing original obligation.
+    deliveries = [r for r in v.rows(doc, 'Finance activity') if r['values'].get('Claim reference') == claim['claim_id']]
+    if {r['values'].get('Request reference') for r in deliveries} != {request['request_id']}:
+        return None
+    accepted = events[request['accepted_event_ids'][0]]
+    settled = events[request['settlement_event_ids'][0]]
+    if (accepted['admission_status'] != 'admitted' or settled['admission_status'] != 'admitted'
+            or v.instant(settled['business_time']) < v.instant(accepted['business_time'])):
+        return None
+    # Unknown package scope is disclosed separately, never silently certified.
+    known_package = {'policy_provenance', 'review_version_token', 'budget_completeness', 'assignment_access'}
+    if any(f['code'] not in known_package or f['status'] != 'unresolved' for f in policy['global_findings']):
+        return None
+    reviewed = claim['claim_review']
+    when = min(v.instant(e['decision_time']) for e in reviewed['imports'])
+    source = family[0]
+    person = v.unique([r for r in v.rows(doc, 'People') if r['values']['Employee ID'] == source['employee_id']])
+    if not person:
+        return None
+    pv = person['values']
+    budget = v.unique([b for b in policy['supplied_budget_context'] if
+                      (b['department'], b['project'], b['period']) == (pv['Department'], pv['Project'], pv['Budget period'])])
+    if not budget or budget['supplied_ledger_available_cents'] is None or budget['supplied_ledger_available_cents'] < request['accepted_cents']:
+        return None
+    # Do not reconstruct an unreviewed dynamic budget in this narrow path.
+    for row in v.rows(doc, 'Finance activity'):
+        x = row['values']
+        if x.get('Activity type') == 'accepted' and v.instant(x.get('Activity time (UTC)')) and v.instant(x['Activity time (UTC)']) < when:
+            other = v.unique([c for c in doc['claims'] if c['claim_id'] == x.get('Claim reference')])
+            directory = v.unique([p for p in v.rows(doc, 'People') if other and p['values']['Employee ID'] == other['employee_id']])
+            if not directory or all(directory['values'].get(k) == pv.get(k) for k in ('Department', 'Project', 'Budget period')):
+                return None
+    refs = set(request['source_refs'] + [claim['source_ref'], 'interview:ordinary_entitlement',
+                                       'policy:finance_admission', 'policy:finance_reconciliation'])
+    for f in (claim['findings'] + reviewed['findings']
+              + [f for e in reviewed['imports'] for f in e['findings']]
+              + [f for e in claim['expenses'] for f in e['findings']]):
+        refs.update(f['source_refs'])
+    return {'schema_version': 'omega4-ordinary-closure/1', 'claim_id': claim['claim_id'], 'revision': claim['revision'],
+            'expense_id': claim['expenses'][0]['expense_id'], 'request_id': request['request_id'],
+            'amount_cents': request['accepted_cents'], 'decision_ids': sorted(set(reviewed['selected_decisions'].values())),
+            'accepted_event_id': accepted['event_id'], 'settlement_event_id': settled['event_id'],
+            'source_refs': sorted(refs), 'scope': 'Derived closure within retained evidence; no new payment or external completeness certification.',
+            'package_certification': 'unresolved'}
+
+
+def basis_links(doc, policy_at_acceptance, request, events=None, ordinary_claim_ids=()):
     """Retain potential bases separately from source-explicit request identity."""
     candidates = [c for c in policy_at_acceptance['claims'] if c['claim_id'] == request['claim_id']]
     current = v.unique([c for c in candidates if c['current_at_batch']])
     refs = request['source_refs'] + [c['source_ref'] for c in candidates]
-    return {'candidate_revision': current['revision'] if current else None,
+    result = {'candidate_revision': current['revision'] if current else None,
             'observed_revision_candidates': [c['revision'] for c in candidates],
             'candidate_trip_id': current['trip_id'] if current else None,
             'candidate_trip_revision': current['trip_revision'] if current else None,
@@ -310,6 +414,12 @@ def basis_links(doc, policy_at_acceptance, request):
             'selected_review_ids_at_acceptance': current['claim_review']['selected_decisions'] if current and current['claim_review'] else {},
             'diagnostics': [diagnostic('request_revision_cost_binding',
                 'Source-explicit request/claim link exists, but Finance has no claim-revision/expense fields. Current-at-acceptance candidates are not certified attribution or authority.', refs)]}
+    certificate = (ordinary_certificate(doc, policy_at_acceptance, current, request, events)
+                   if request['claim_id'] in ordinary_claim_ids else None)
+    if certificate:
+        result.update(attributed_revision=current['revision'], attributed_expenses=result['candidate_expenses'],
+                      status='supported', diagnostics=[], ordinary_closure=certificate)
+    return result
 
 
 def gross_amounts(doc, claim):
@@ -378,7 +488,8 @@ def evaluate(doc, report, validated, through_batch=None):
     horizon = validated['through_batch'] if through_batch is None else through_batch
     if not isinstance(horizon, int) or isinstance(horizon, bool) or not 1 <= horizon <= validated['through_batch']:
         raise ValueError('Reconciliation batch must be within the verified validation horizon')
-    policy_cache = {batch: v.evaluate(doc, report, batch) for batch in range(1, horizon + 1)}
+    targets = validated.get('ordinary_claim_ids', ())
+    policy_cache = {batch: v.evaluate(doc, report, batch, ordinary_claim_ids=targets) for batch in range(1, horizon + 1)}
     finance_rows = v.rows(doc, 'Finance activity')
     headers = doc['workbook']['Finance activity']['headers']
     events, requests, deliveries, batch_views, global_issues = {}, {}, [], [], []
@@ -442,6 +553,7 @@ def evaluate(doc, report, validated, through_batch=None):
             deliveries.append({'record_id': row['record_id'], 'source': row['source'], 'values': deepcopy(row['values']),
                                'raw_cells': deepcopy(row['raw_cells']), 'arrival_batch': value, 'event_id': row['values'].get('Activity reference'), 'classification': 'invalid_arrival'})
             global_issues.append(diagnostic('finance_arrival', 'Invalid arrival batch; delivery retained without admission.', [row['record_id']]))
+    invalid_dependencies = invalid_arrival_dependencies(finance_rows)
     request_results = [request_view(r, events) for _, r in sorted(requests.items())] + orphan_request_views(events, requests)
     acceptance_policy = {}
     for request in request_results:
@@ -458,8 +570,8 @@ def evaluate(doc, report, validated, through_batch=None):
             for tab, field in [('Review ledger', 'Decision time (UTC)'), ('Travel cancellations', 'Activity time (UTC)')]:
                 historical_doc['workbook'][tab]['rows'] = [r for r in v.rows(historical_doc, tab) if
                     not v.instant(r['values'].get(field)) or v.instant(r['values'][field]) <= v.instant(request['accepted_at'])]
-            acceptance_policy[key] = v.evaluate(historical_doc, report, request['first_acceptance_batch'])
-        request['basis_links'] = basis_links(doc, acceptance_policy[key], request)
+            acceptance_policy[key] = v.evaluate(historical_doc, report, request['first_acceptance_batch'], ordinary_claim_ids=targets)
+        request['basis_links'] = basis_links(doc, acceptance_policy[key], request, events, targets)
     final_policy = policy_cache[horizon]
     claim_results = []
     for policy_claim in final_policy['claims']:
@@ -485,6 +597,8 @@ def evaluate(doc, report, validated, through_batch=None):
             fs.extend(req['basis_links']['diagnostics'])
             if req['uncertain_event_ids']:
                 fs.append(diagnostic('unresolved_request_events', 'One or more original-request deliveries remain unresolved/conflicting; admitted money is preserved separately.', req['source_refs']))
+        if claim['claim_id'] in targets:
+            fs.extend(invalid_dependencies.get(claim['claim_id'], []))
         exclusions, incremental, shared_diagnostics = shared_cost_candidates(doc, claim, policy_claim, request_results, policy_cache)
         fs.extend(shared_diagnostics)
         gross, gross_eur = gross_amounts(doc, claim)
@@ -501,7 +615,20 @@ def evaluate(doc, report, validated, through_batch=None):
                 'attribution_status': 'unresolved: no source-explicit request/cost allocation',
                 'candidate_request_ids': [req['request_id'] for req in related if expense['expense_id'] in req['basis_links'].get('candidate_expenses', [])],
                 'source_refs': sorted({expense['record_id']} | {ref for finding in line['findings'] for ref in finding['source_refs']})})
-        claim_results.append({'claim_id': claim['claim_id'], 'revision': claim['revision'], 'current_at_batch': policy_claim['current_at_batch'],
+        closure = related[0]['basis_links'].get('ordinary_closure') if len(related) == 1 else None
+        if (closure and policy_claim['status'] == 'supported' and policy_claim['current_at_batch']
+                and not exclusions and not policy_diagnostics
+                and all(f['code'] == 'inherited_validation_limits' for f in fs)):
+            # The old blanket inheritance is not a proven local business defect.
+            # Keep every global finding in validation_global_findings and package work.
+            fs = []
+            for expense in expense_results:
+                expense.update(accepted_cents=closure['amount_cents'], net_confirmed_settled_cents=closure['amount_cents'],
+                               attribution_status='supported: unique unchanged source-backed join')
+        else:
+            closure = None
+        claim_results.append({**({'ordinary_closure': closure} if closure else {}),
+            'claim_id': claim['claim_id'], 'revision': claim['revision'], 'current_at_batch': policy_claim['current_at_batch'],
             'trip_id': claim['trip_id'], 'trip_revision': claim['trip_revision'], 'source_refs': [claim['record_id']],
             'gross_original_by_currency': gross, 'gross_purchase_cents': gross_eur,
             'expenses': expense_results,
@@ -509,10 +636,12 @@ def evaluate(doc, report, validated, through_batch=None):
             'approval_status': policy_claim['approval_status'], 'selected_current_review_ids': policy_claim['claim_review']['selected_decisions'] if policy_claim['claim_review'] else {},
             'business_disposition': deepcopy(policy_claim['business_disposition']),
             'related_original_request_ids': [r['request_id'] for r in related],
-            'revision_accepted_cents': None, 'revision_net_confirmed_settled_cents': None,
-            'revision_attribution_status': 'unresolved: explicit request/revision/cost lineage missing',
+            'revision_accepted_cents': closure['amount_cents'] if closure else None,
+            'revision_net_confirmed_settled_cents': closure['amount_cents'] if closure else None,
+            'revision_attribution_status': 'supported: unique unchanged source-backed join' if closure else 'unresolved: explicit request/revision/cost lineage missing',
             'prior_cost_candidates': exclusions, 'incremental_policy_candidate_cents': incremental,
-            'incremental_authorized_cents': None, 'payment_readiness': 'blocked' if any(f['status'] == 'blocked' for f in fs) else 'unresolved',
+            'incremental_authorized_cents': 0 if closure else None,
+            'payment_readiness': 'settled_no_new_payment' if closure else 'blocked' if any(f['status'] == 'blocked' for f in fs) else 'unresolved',
             'travel_cancellation_scope': policy_claim['travel_cancellation_scope'], 'cancellation_ids': policy_claim['cancellation_ids'],
             'normalization_diagnostics': policy_claim['normalization_diagnostics'], 'policy_diagnostics': policy_diagnostics, 'diagnostics': fs})
     cancellation_results = []
@@ -539,7 +668,8 @@ def evaluate(doc, report, validated, through_batch=None):
         all_unresolved += [diagnostic('policy_' + f['code'], f['reason'], f['source_refs'], f['owner'], f['status']) for f in claim['policy_diagnostics']]
     unique_issues = {v.digest(v.encoded(item)): item for item in all_unresolved}
     all_unresolved = [dict(unique_issues[key], item_id='finance-issue:' + key) for key in sorted(unique_issues)]
-    return {'schema_version': 'omega4-finance-reconciliation/1', 'mode': 'offline-retained-replay',
+    return {**({'ordinary_claim_ids': list(targets)} if targets else {}),
+        'schema_version': 'omega4-finance-reconciliation/1', 'mode': 'offline-retained-replay',
         'case_clock': validated['case_clock'], 'through_batch': horizon, 'finance_deliveries': deliveries,
         'finance_events': [e for _, e in sorted(events.items())], 'requests': request_results, 'claims': claim_results,
         'travel_cancellations': cancellation_results, 'batch_views': batch_views,
@@ -548,11 +678,13 @@ def evaluate(doc, report, validated, through_batch=None):
         'unresolved_items': all_unresolved, 'source_index': source_index,
         'limitations': [
             'Finance fact admission validates immutable identity, actor/payee, request, currency, cents, time and refund linkage; it does not certify discretionary approval or authorize new payment.',
-            'No explicit claim revision or expense columns occur in Finance. Candidate historical/current bases and shared-cost exclusions remain conditional; revision-level accepted/net money is null.',
+            ('Only explicitly selected unique unchanged ordinary bases can receive derived revision/cost attribution after full matching settlement. All other bases remain conditional and unknown.' if targets else
+             'No explicit claim revision or expense columns occur in Finance. Candidate historical/current bases and shared-cost exclusions remain conditional; revision-level accepted/net money is null.'),
             'Net-confirmed amounts cover the admitted retained request ledger only; they do not certify external bank completeness. With unresolved/conflicting deliveries or no settlement report, exact net is null and admitted subtotals remain visible.',
             'All increment 3 policy/packet/version/completeness gaps are preserved. No historical approval or request-level resolution creates current authorization.',
             'Confirmed Finance cancellation releases the accepted request target to zero, preserves its original acceptance, and never erases a later reported transfer or changes gross/policy-allowed costs.',
-            'Resolution amounts are assessed at request level; no claim closure, new request, actual transfer, claims.csv, report.md, Skill or submission output is produced.']}
+            ('Selected ordinary closure certificates record existing retained settlement only. Global certification stays unresolved; no new request, payment or external action is authorized.' if targets else
+             'Resolution amounts are assessed at request level; no claim closure, new request, actual transfer, claims.csv, report.md, Skill or submission output is produced.')]}
 
 
 def reconcile(run, normalized, validated, output, through_batch=None):

@@ -1,0 +1,30 @@
+test_acceptance_cannot_precede_current_approval (test_ordinary_closure.OrdinaryClosureTests.test_acceptance_cannot_precede_current_approval) ... ok
+test_adjustment_without_required_finance_resolution (test_ordinary_closure.OrdinaryClosureTests.test_adjustment_without_required_finance_resolution) ... ok
+test_c01_source_join_and_snapshot_csv_close_without_new_payment (test_ordinary_closure.OrdinaryClosureTests.test_c01_source_join_and_snapshot_csv_close_without_new_payment) ... ok
+test_conflicting_current_role_responses (test_ordinary_closure.OrdinaryClosureTests.test_conflicting_current_role_responses) ... ok
+test_conflicting_settlement_duplicate (test_ordinary_closure.OrdinaryClosureTests.test_conflicting_settlement_duplicate) ... ok
+test_corrected_cancellation_cases_cannot_opt_in_past_finance_holds (test_ordinary_closure.OrdinaryClosureTests.test_corrected_cancellation_cases_cannot_opt_in_past_finance_holds) ... ok
+test_corrected_claim_and_future_competing_revision_stay_held (test_ordinary_closure.OrdinaryClosureTests.test_corrected_claim_and_future_competing_revision_stay_held) ... ok
+test_create_only_versioned_stages_and_standalone_operator_verification (test_ordinary_closure.OrdinaryClosureTests.test_create_only_versioned_stages_and_standalone_operator_verification) ... ok
+test_default_reconciliation_is_identical_to_preserved_result (test_ordinary_closure.OrdinaryClosureTests.test_default_reconciliation_is_identical_to_preserved_result) ... ok
+test_exact_duplicate_settlement_deliveries_count_once (test_ordinary_closure.OrdinaryClosureTests.test_exact_duplicate_settlement_deliveries_count_once) ... ok
+test_exception_is_not_an_ordinary_closure_even_if_amount_matches (test_ordinary_closure.OrdinaryClosureTests.test_exception_is_not_an_ordinary_closure_even_if_amount_matches) ... ok
+test_mismatched_acceptance (test_ordinary_closure.OrdinaryClosureTests.test_mismatched_acceptance) ... ok
+test_missing_approval (test_ordinary_closure.OrdinaryClosureTests.test_missing_approval) ... ok
+test_missing_merchant_payment (test_ordinary_closure.OrdinaryClosureTests.test_missing_merchant_payment) ... ok
+test_missing_packet (test_ordinary_closure.OrdinaryClosureTests.test_missing_packet) ... ok
+test_missing_settlement_does_not_mean_known_zero (test_ordinary_closure.OrdinaryClosureTests.test_missing_settlement_does_not_mean_known_zero) ... ok
+test_multiple_costs_are_outside_narrow_path (test_ordinary_closure.OrdinaryClosureTests.test_multiple_costs_are_outside_narrow_path) ... ok
+test_new_or_blocked_global_requirement_is_not_waived (test_ordinary_closure.OrdinaryClosureTests.test_new_or_blocked_global_requirement_is_not_waived) ... ok
+test_no_automatic_closure_or_changes_to_other_claims (test_ordinary_closure.OrdinaryClosureTests.test_no_automatic_closure_or_changes_to_other_claims) ... ok
+test_no_closure_before_settlement_arrival (test_ordinary_closure.OrdinaryClosureTests.test_no_closure_before_settlement_arrival) ... ok
+test_package_unknowns_and_normalization_diagnostics_are_not_waived (test_ordinary_closure.OrdinaryClosureTests.test_package_unknowns_and_normalization_diagnostics_are_not_waived) ... ok
+test_shared_cost_identity_requires_separate_reconciliation (test_ordinary_closure.OrdinaryClosureTests.test_shared_cost_identity_requires_separate_reconciliation) ... ok
+test_snapshot_guard_rejects_amount_or_proof_tampering (test_ordinary_closure.OrdinaryClosureTests.test_snapshot_guard_rejects_amount_or_proof_tampering) ... ok
+test_unresolved_competing_original_request (test_ordinary_closure.OrdinaryClosureTests.test_unresolved_competing_original_request) ... ok
+test_wrong_actor_is_not_current_authority (test_ordinary_closure.OrdinaryClosureTests.test_wrong_actor_is_not_current_authority) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 78.803s
+
+OK

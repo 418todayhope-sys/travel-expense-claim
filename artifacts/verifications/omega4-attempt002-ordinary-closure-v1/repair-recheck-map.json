@@ -1,0 +1,257 @@
+[
+  {
+    "code": "reviewed_entitlement_binding",
+    "evidence_certificate": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/batches/004.json#claims/C01/ordinary_closure",
+    "new_run_state": "not_reproduced_after_source_recheck",
+    "old_state": "open",
+    "prior_record": {
+      "code": "reviewed_entitlement_binding",
+      "expense_id": null,
+      "first_seen_batch": 1,
+      "history": [
+        {
+          "batch": 1,
+          "owner": "ADMIN-01",
+          "reason": "Packets have no reviewed claim entitlement field or exception-reference field; amount/exception seen by reviewers cannot be independently matched.",
+          "source_refs": [
+            "initial-claims:page:1:claim",
+            "travel-registers:Review ledger:row:6",
+            "travel-registers:Review ledger:row:7",
+            "travel-registers:Review ledger:row:8"
+          ],
+          "state": "open"
+        }
+      ],
+      "last_seen_batch": 4,
+      "owner": "ADMIN-01",
+      "reason": "Packets have no reviewed claim entitlement field or exception-reference field; amount/exception seen by reviewers cannot be independently matched.",
+      "record_id": "repair:0de527eaee0e67016934a34882a32ef5bbb60b321d76f2fe3f5b620259acf297",
+      "resolution_needed": "Packets have no reviewed claim entitlement field or exception-reference field; amount/exception seen by reviewers cannot be independently matched.",
+      "revision": 1,
+      "run_id": "omega4-attempt002-business-disposition-operator-v1",
+      "source_refs": [
+        "initial-claims:page:1:claim",
+        "travel-registers:Review ledger:row:6",
+        "travel-registers:Review ledger:row:7",
+        "travel-registers:Review ledger:row:8"
+      ],
+      "state": "open",
+      "subject_id": "C01",
+      "subject_type": "claim"
+    },
+    "prior_register": "artifacts/runs/omega4-attempt002-business-disposition-operator-v1/repair-queue.json",
+    "prior_register_sha256": "c893dbd52ffa124f3f5b34f332c181669e386200546e5af6e4e4486d2c96b9a6",
+    "record_id": "repair:0de527eaee0e67016934a34882a32ef5bbb60b321d76f2fe3f5b620259acf297",
+    "subject_id": "C01"
+  },
+  {
+    "code": "approval_evidence",
+    "evidence_certificate": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/batches/004.json#claims/C01/ordinary_closure",
+    "new_run_state": "not_reproduced_after_source_recheck",
+    "old_state": "open",
+    "prior_record": {
+      "code": "approval_evidence",
+      "expense_id": null,
+      "first_seen_batch": 1,
+      "history": [
+        {
+          "batch": 1,
+          "owner": "ADMIN-01",
+          "reason": "Current revision role/packet/amount evidence must be fully supported before further payment; Finance acceptance is not an approval substitute.",
+          "source_refs": [
+            "initial-claims:page:1:claim"
+          ],
+          "state": "open"
+        }
+      ],
+      "last_seen_batch": 4,
+      "owner": "ADMIN-01",
+      "reason": "Current revision role/packet/amount evidence must be fully supported before further payment; Finance acceptance is not an approval substitute.",
+      "record_id": "repair:18db3e8150d48408daa883ef9c2693db77b282f91f03d48ca5b0187b3fcc407a",
+      "resolution_needed": "Current revision role/packet/amount evidence must be fully supported before further payment; Finance acceptance is not an approval substitute.",
+      "revision": 1,
+      "run_id": "omega4-attempt002-business-disposition-operator-v1",
+      "source_refs": [
+        "initial-claims:page:1:claim"
+      ],
+      "state": "open",
+      "subject_id": "C01",
+      "subject_type": "claim"
+    },
+    "prior_register": "artifacts/runs/omega4-attempt002-business-disposition-operator-v1/repair-queue.json",
+    "prior_register_sha256": "c893dbd52ffa124f3f5b34f332c181669e386200546e5af6e4e4486d2c96b9a6",
+    "record_id": "repair:18db3e8150d48408daa883ef9c2693db77b282f91f03d48ca5b0187b3fcc407a",
+    "subject_id": "C01"
+  },
+  {
+    "code": "request_revision_cost_binding",
+    "evidence_certificate": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/batches/004.json#claims/C01/ordinary_closure",
+    "new_run_state": "cleared_by_recheck",
+    "old_state": "open",
+    "prior_record": {
+      "code": "request_revision_cost_binding",
+      "expense_id": null,
+      "first_seen_batch": 1,
+      "history": [
+        {
+          "batch": 1,
+          "owner": "FIN-01",
+          "reason": "Source-explicit request/claim link exists, but Finance has no claim-revision/expense fields. Current-at-acceptance candidates are not certified attribution or authority.",
+          "source_refs": [
+            "initial-claims:page:1:claim",
+            "travel-registers:Finance activity:row:33"
+          ],
+          "state": "open"
+        },
+        {
+          "batch": 2,
+          "owner": "FIN-01",
+          "reason": "Source-explicit request/claim link exists, but Finance has no claim-revision/expense fields. Current-at-acceptance candidates are not certified attribution or authority.",
+          "source_refs": [
+            "initial-claims:page:1:claim",
+            "travel-registers:Finance activity:row:33",
+            "travel-registers:Finance activity:row:6"
+          ],
+          "state": "open"
+        },
+        {
+          "batch": 4,
+          "owner": "FIN-01",
+          "reason": "Source-explicit request/claim link exists, but Finance has no claim-revision/expense fields. Current-at-acceptance candidates are not certified attribution or authority.",
+          "source_refs": [
+            "initial-claims:page:1:claim",
+            "travel-registers:Finance activity:row:31",
+            "travel-registers:Finance activity:row:33",
+            "travel-registers:Finance activity:row:6"
+          ],
+          "state": "open"
+        }
+      ],
+      "last_seen_batch": 4,
+      "owner": "FIN-01",
+      "reason": "Source-explicit request/claim link exists, but Finance has no claim-revision/expense fields. Current-at-acceptance candidates are not certified attribution or authority.",
+      "record_id": "repair:1e024a630db57c9c46bbc23214a8438676a5f11e7373f0fa25aa77733b91bd56",
+      "resolution_needed": "Source-explicit request/claim link exists, but Finance has no claim-revision/expense fields. Current-at-acceptance candidates are not certified attribution or authority.",
+      "revision": null,
+      "run_id": "omega4-attempt002-business-disposition-operator-v1",
+      "source_refs": [
+        "initial-claims:page:1:claim",
+        "travel-registers:Finance activity:row:31",
+        "travel-registers:Finance activity:row:33",
+        "travel-registers:Finance activity:row:6"
+      ],
+      "state": "open",
+      "subject_id": "REQ-C01",
+      "subject_type": "request"
+    },
+    "prior_register": "artifacts/runs/omega4-attempt002-business-disposition-operator-v1/repair-queue.json",
+    "prior_register_sha256": "c893dbd52ffa124f3f5b34f332c181669e386200546e5af6e4e4486d2c96b9a6",
+    "record_id": "repair:1e024a630db57c9c46bbc23214a8438676a5f11e7373f0fa25aa77733b91bd56",
+    "subject_id": "REQ-C01"
+  },
+  {
+    "code": "inherited_validation_limits",
+    "evidence_certificate": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/batches/004.json#claims/C01/ordinary_closure",
+    "new_run_state": "cleared_by_recheck",
+    "old_state": "open",
+    "prior_record": {
+      "code": "inherited_validation_limits",
+      "expense_id": null,
+      "first_seen_batch": 1,
+      "history": [
+        {
+          "batch": 1,
+          "owner": "Facilitator",
+          "reason": "Preserved policy/version/budget and packet-definition gaps still prevent certified payment readiness.",
+          "source_refs": [
+            "initial-claims:page:1:claim"
+          ],
+          "state": "open"
+        }
+      ],
+      "last_seen_batch": 4,
+      "owner": "Facilitator",
+      "reason": "Preserved policy/version/budget and packet-definition gaps still prevent certified payment readiness.",
+      "record_id": "repair:88cb30452b47cf13ffa0fbc1c0920efffb8ac6819b22705286ff096beefe251e",
+      "resolution_needed": "Preserved policy/version/budget and packet-definition gaps still prevent certified payment readiness.",
+      "revision": 1,
+      "run_id": "omega4-attempt002-business-disposition-operator-v1",
+      "source_refs": [
+        "initial-claims:page:1:claim"
+      ],
+      "state": "open",
+      "subject_id": "C01",
+      "subject_type": "claim"
+    },
+    "prior_register": "artifacts/runs/omega4-attempt002-business-disposition-operator-v1/repair-queue.json",
+    "prior_register_sha256": "c893dbd52ffa124f3f5b34f332c181669e386200546e5af6e4e4486d2c96b9a6",
+    "record_id": "repair:88cb30452b47cf13ffa0fbc1c0920efffb8ac6819b22705286ff096beefe251e",
+    "subject_id": "C01"
+  },
+  {
+    "code": "request_revision_cost_binding",
+    "evidence_certificate": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/batches/004.json#claims/C01/ordinary_closure",
+    "new_run_state": "cleared_by_recheck",
+    "old_state": "open",
+    "prior_record": {
+      "code": "request_revision_cost_binding",
+      "expense_id": null,
+      "first_seen_batch": 1,
+      "history": [
+        {
+          "batch": 1,
+          "owner": "FIN-01",
+          "reason": "Source-explicit request/claim link exists, but Finance has no claim-revision/expense fields. Current-at-acceptance candidates are not certified attribution or authority.",
+          "source_refs": [
+            "initial-claims:page:1:claim",
+            "travel-registers:Finance activity:row:33"
+          ],
+          "state": "open"
+        },
+        {
+          "batch": 2,
+          "owner": "FIN-01",
+          "reason": "Source-explicit request/claim link exists, but Finance has no claim-revision/expense fields. Current-at-acceptance candidates are not certified attribution or authority.",
+          "source_refs": [
+            "initial-claims:page:1:claim",
+            "travel-registers:Finance activity:row:33",
+            "travel-registers:Finance activity:row:6"
+          ],
+          "state": "open"
+        },
+        {
+          "batch": 4,
+          "owner": "FIN-01",
+          "reason": "Source-explicit request/claim link exists, but Finance has no claim-revision/expense fields. Current-at-acceptance candidates are not certified attribution or authority.",
+          "source_refs": [
+            "initial-claims:page:1:claim",
+            "travel-registers:Finance activity:row:31",
+            "travel-registers:Finance activity:row:33",
+            "travel-registers:Finance activity:row:6"
+          ],
+          "state": "open"
+        }
+      ],
+      "last_seen_batch": 4,
+      "owner": "FIN-01",
+      "reason": "Source-explicit request/claim link exists, but Finance has no claim-revision/expense fields. Current-at-acceptance candidates are not certified attribution or authority.",
+      "record_id": "repair:a89925d39fe642648206a7acef9745372fa7df194d08662705a120835738c75c",
+      "resolution_needed": "Source-explicit request/claim link exists, but Finance has no claim-revision/expense fields. Current-at-acceptance candidates are not certified attribution or authority.",
+      "revision": 1,
+      "run_id": "omega4-attempt002-business-disposition-operator-v1",
+      "source_refs": [
+        "initial-claims:page:1:claim",
+        "travel-registers:Finance activity:row:31",
+        "travel-registers:Finance activity:row:33",
+        "travel-registers:Finance activity:row:6"
+      ],
+      "state": "open",
+      "subject_id": "C01",
+      "subject_type": "claim"
+    },
+    "prior_register": "artifacts/runs/omega4-attempt002-business-disposition-operator-v1/repair-queue.json",
+    "prior_register_sha256": "c893dbd52ffa124f3f5b34f332c181669e386200546e5af6e4e4486d2c96b9a6",
+    "record_id": "repair:a89925d39fe642648206a7acef9745372fa7df194d08662705a120835738c75c",
+    "subject_id": "C01"
+  }
+]

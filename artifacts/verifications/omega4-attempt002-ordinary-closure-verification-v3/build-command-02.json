@@ -1,0 +1,20 @@
+{
+  "command": [
+    "/home/maxg/travel-expense-claim/.venv/bin/python",
+    "-B",
+    "-m",
+    "reconciliation.reconcile",
+    "--run",
+    "/home/maxg/travel-expense-claim-omega4/artifacts/runs/omega4-live-20261020-attempt002",
+    "--normalized",
+    "/home/maxg/travel-expense-claim-omega4/artifacts/normalizations/omega4-attempt002-normalization-v1",
+    "--validated",
+    "/home/maxg/travel-expense-claim-omega4/artifacts/validations/omega4-attempt002-ordinary-closure-validation-v3",
+    "--output",
+    "/home/maxg/travel-expense-claim-omega4/artifacts/reconciliations/omega4-attempt002-ordinary-closure-reconciliation-v3"
+  ],
+  "exit_code": 2,
+  "expected_exit_code": 2,
+  "stderr": "",
+  "stdout": "{\"accepted_requests\": 104, \"admitted_event_type_counts\": {\"accepted\": 104, \"adjustment\": 1, \"cancellation_requested\": 1, \"cancelled\": 1, \"failed\": 1, \"refund\": 2, \"resolution\": 2, \"retry_authorized\": 1, \"settled\": 106}, \"admitted_finance_events\": 219, \"admitted_net_cents\": 1203415, \"admitted_refund_cents\": 3000, \"admitted_settled_cents\": 1206415, \"business_cancellation_processes\": 4, \"claim_revisions\": 127, \"current_accepted_cents\": 1193415, \"current_claims\": 121, \"distinct_finance_events\": 219, \"expense_occurrences\": 208, \"finance_batch_views\": 4, \"finance_deliveries\": 220, \"normalization_diagnostic_count\": 18, \"observed_request_references\": 104, \"original_accepted_cents\": 1205415, \"repeated_finance_deliveries\": 1, \"unresolved_finance_events\": 0, \"unresolved_item_count\": 602}\n"
+}

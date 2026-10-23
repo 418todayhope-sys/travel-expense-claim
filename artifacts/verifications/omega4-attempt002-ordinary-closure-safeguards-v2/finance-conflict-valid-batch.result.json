@@ -1,0 +1,40 @@
+{
+  "admitted_request_net_cents": 10000,
+  "allowed_cents": 10000,
+  "approval_status": "supported",
+  "approval_times": [
+    "2026-09-03T12:00:00Z",
+    "2026-09-03T12:00:00Z",
+    "2026-09-03T12:00:00Z"
+  ],
+  "balance_cents": null,
+  "case": "finance-conflict-valid-batch",
+  "claim_issue_ids": [
+    "repair:7f476446bace2823198d735d9bc4331744c48eb311b9164b1c7049faee0a7396",
+    "repair:88cb30452b47cf13ffa0fbc1c0920efffb8ac6819b22705286ff096beefe251e",
+    "repair:a89925d39fe642648206a7acef9745372fa7df194d08662705a120835738c75c"
+  ],
+  "description": "Finance activity row 31: F-C01-1 amount 100.00 -> 101.00; batch stays 4.",
+  "event_conflicting_delivery_ids": [
+    "travel-registers:Finance activity:row:31"
+  ],
+  "finance_arrival_diagnostics": [],
+  "known_paid_cents": null,
+  "operator_items_for_row31": [
+    "request_revision_cost_binding",
+    "unresolved_request_events",
+    "request_revision_cost_binding"
+  ],
+  "ordinary_certificate_created": false,
+  "receipt_issued_date": "2026-09-01",
+  "request_diagnostics": [],
+  "request_uncertain_event_ids": [
+    "F-C01-1"
+  ],
+  "row31_delivery_classification": [
+    "conflicting_delivery"
+  ],
+  "snapshot_guard_passed": true,
+  "status": "held",
+  "synthetic": true
+}

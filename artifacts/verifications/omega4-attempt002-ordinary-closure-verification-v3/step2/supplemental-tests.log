@@ -1,0 +1,103 @@
+unittest.case.FunctionTestCase (positive)
+C01: independent exact certificate and attributed amount ... ok
+unittest.case.FunctionTestCase (probe)
+C01: duplicate ... ok
+unittest.case.FunctionTestCase (probe)
+C01: conflict ... ok
+unittest.case.FunctionTestCase (probe)
+C01: invalid_conflict ... ok
+unittest.case.FunctionTestCase (probe)
+C01: refund ... ok
+unittest.case.FunctionTestCase (probe)
+C01: later_receipt ... ok
+unittest.case.FunctionTestCase (probe)
+C01: late_approval ... ok
+unittest.case.FunctionTestCase (probe)
+C01: correction ... ok
+unittest.case.FunctionTestCase (probe)
+C01: cancellation ... ok
+unittest.case.FunctionTestCase (probe)
+C01: missing_merchant ... ok
+unittest.case.FunctionTestCase (positive)
+C04: independent exact certificate and attributed amount ... ok
+unittest.case.FunctionTestCase (probe)
+C04: duplicate ... ok
+unittest.case.FunctionTestCase (probe)
+C04: conflict ... ok
+unittest.case.FunctionTestCase (probe)
+C04: invalid_conflict ... ok
+unittest.case.FunctionTestCase (probe)
+C04: refund ... ok
+unittest.case.FunctionTestCase (probe)
+C04: later_receipt ... ok
+unittest.case.FunctionTestCase (probe)
+C04: late_approval ... ok
+unittest.case.FunctionTestCase (probe)
+C04: correction ... ok
+unittest.case.FunctionTestCase (probe)
+C04: cancellation ... ok
+unittest.case.FunctionTestCase (probe)
+C04: missing_merchant ... ok
+unittest.case.FunctionTestCase (positive)
+C05: independent exact certificate and attributed amount ... ok
+unittest.case.FunctionTestCase (probe)
+C05: duplicate ... ok
+unittest.case.FunctionTestCase (probe)
+C05: conflict ... ok
+unittest.case.FunctionTestCase (probe)
+C05: invalid_conflict ... ok
+unittest.case.FunctionTestCase (probe)
+C05: refund ... ok
+unittest.case.FunctionTestCase (probe)
+C05: later_receipt ... ok
+unittest.case.FunctionTestCase (probe)
+C05: late_approval ... ok
+unittest.case.FunctionTestCase (probe)
+C05: correction ... ok
+unittest.case.FunctionTestCase (probe)
+C05: cancellation ... ok
+unittest.case.FunctionTestCase (probe)
+C05: missing_merchant ... ok
+unittest.case.FunctionTestCase (positive)
+C06: independent exact certificate and attributed amount ... ok
+unittest.case.FunctionTestCase (probe)
+C06: duplicate ... ok
+unittest.case.FunctionTestCase (probe)
+C06: conflict ... ok
+unittest.case.FunctionTestCase (probe)
+C06: invalid_conflict ... ok
+unittest.case.FunctionTestCase (probe)
+C06: refund ... ok
+unittest.case.FunctionTestCase (probe)
+C06: later_receipt ... ok
+unittest.case.FunctionTestCase (probe)
+C06: late_approval ... ok
+unittest.case.FunctionTestCase (probe)
+C06: correction ... ok
+unittest.case.FunctionTestCase (probe)
+C06: cancellation ... ok
+unittest.case.FunctionTestCase (probe)
+C06: missing_merchant ... ok
+unittest.case.FunctionTestCase (threshold)
+Exact EUR1000 versus EUR1000.01 director threshold ... ok
+unittest.case.FunctionTestCase (director)
+C06: director missing ... ok
+unittest.case.FunctionTestCase (director)
+C06: director wrong_actor ... ok
+unittest.case.FunctionTestCase (held)
+C08: remains held under preset ... ok
+unittest.case.FunctionTestCase (held)
+C18: remains held under preset ... ok
+unittest.case.FunctionTestCase (only_four)
+No claim outside the four selected claims closes ... ok
+unittest.case.FunctionTestCase (source_timing)
+All four source approvals fresh and before acceptance ... ok
+unittest.case.FunctionTestCase (unchanged_finance)
+Finance admitted facts and all other claim findings unchanged versus v2 ... ok
+unittest.case.FunctionTestCase (batch_checks)
+Four snapshot chain and no closure before batch2 settlement ... ok
+
+----------------------------------------------------------------------
+Ran 49 tests in 85.224s
+
+OK

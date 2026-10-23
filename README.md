@@ -20,8 +20,21 @@ insufficient. No actual financial closure or submission is asserted.
 
 ## Current interim handoff and offline verification
 
-The latest result is the [business-disposition handoff](artifacts/runs/omega4-attempt002-business-disposition-shared-blockers-v1/report.md).
-See [current replay and verification commands](operator_delivery/business-dispositions.md).
+Start with the [v3 handoff addendum](operator_delivery/ordinary-closure-v3-handoff.md)
+and [authoritative v3 verification evidence](artifacts/verifications/omega4-attempt002-ordinary-closure-verification-v3/README.md).
+Four selected retained-evidence closures total 220001 cents; 117 claims remain held.
+The addendum corrects the replay example and explains sealed historical wording
+and isolated verification with the original hash-bound documentation.
+
+### Historical interim handoffs
+
+The [selected ordinary-closure correction](operator_delivery/ordinary-closure.md)
+adds an explicit opt-in C01 path and a separately versioned operator result.
+It records existing retained settlement evidence, leaves every other claim held,
+and preserves the earlier interim handoffs and package-wide unknowns below.
+
+An earlier result is the [business-disposition handoff](artifacts/runs/omega4-attempt002-business-disposition-shared-blockers-v1/report.md).
+See [historical replay and verification commands](operator_delivery/business-dispositions.md).
 C13/r1 remains withdrawn and C14/r1 rejected in retained business evidence; both remain financially held.
 
 The preceding result is [shared-blockers-v1 report](artifacts/runs/omega4-attempt002-shared-blockers-v1/report.md),
@@ -33,7 +46,7 @@ interim participant milestone: 121 current claims remain financially held, with
 582 open repairs and zero financial closures. This is no external operator
 acceptance, assignment completion, grade or payment authorization.
 
-Start with the [current operator commands and offline environment procedure](operator_delivery/shared-blockers.md).
+See the [historical operator commands and offline environment procedure](operator_delivery/shared-blockers.md).
 That reference explains Decision 003 case/blocker navigation and Decision 002
 containment, exit codes, failure handling, and fresh temporary replay destinations.
 

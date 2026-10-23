@@ -1,6 +1,7 @@
 """Scope A increment 5. Verified offline replay, sealed batches, and owned work.
 
-No authority repair, inferred revision attribution, or external action is performed.
+No authority repair or external action is performed. Explicitly selected ordinary
+closures require a verified, unique source-backed revision/cost join.
 """
 from __future__ import annotations
 
@@ -245,7 +246,7 @@ def project_claim(claim, issues, doc):
     owner = next((i['owner'] for i in issues if i['record_id'] in refs and i['code'] == 'decision_001_original_request_hold'), None)
     owner = owner or next((i['owner'] for i in issues if i['record_id'] in refs and i['code'] in ('merchant_payment', 'receipt_identity')), None)
     owner = owner or next((i['owner'] for i in issues if i['record_id'] in refs), 'Administration')
-    return {'claim_id': claim['claim_id'], 'revision': claim['revision'], 'trip_id': claim['trip_id'], 'trip_revision': claim['trip_revision'],
+    result = {'claim_id': claim['claim_id'], 'revision': claim['revision'], 'trip_id': claim['trip_id'], 'trip_revision': claim['trip_revision'],
         'status': 'held', 'lines': lines, 'business_disposition': deepcopy(disposition),
         'allowed_cents': sum(line['allowed_cents'] for line in lines) if lines and all(line['allowed_cents'] is not None for line in lines) else None,
         'allowed_cents_scope': 'supported expense arithmetic/exclusion only; not reviewed payment authority',
@@ -259,6 +260,19 @@ def project_claim(claim, issues, doc):
         'original_request_ids': claim['related_original_request_ids'], 'source_refs': claim['source_refs'],
         'incremental_policy_candidate_cents': claim['incremental_policy_candidate_cents'],
         'travel_cancellation_scope': claim['travel_cancellation_scope']}
+    proof = claim.get('ordinary_closure')
+    if proof and not refs and not claim['diagnostics'] and not claim['policy_diagnostics']:
+        amount = proof['amount_cents']
+        result.update(status='closed-reimbursed', ordinary_closure=deepcopy(proof),
+                      allowed_cents=amount, authorized_allowed_cents=amount,
+                      allowed_cents_scope='Reviewed entitlement derived from exact current source approvals.',
+                      paid_cents=amount, known_paid_cents=amount, paid_cents_complete=True,
+                      paid_cents_semantics='Unique unchanged source-backed request/cost attribution; retained evidence only.',
+                      balance_cents=0, decision_ids_are_authorization=True, next_owner=None,
+                      financial_closure_status='supported_retained_evidence',
+                      reason='Closed within retained evidence: current approvals, unique unchanged cost/request basis, accepted obligation and confirmed net settlement agree. Native-policy completeness remains unverified.')
+        result['lines'][0].update(accepted_cents=amount, known_paid_cents=amount)
+    return result
 
 
 def snapshot(result, doc, report, run_id, source_binding, predecessor, queue_binding, active, projected_cancellations):
@@ -278,7 +292,7 @@ def snapshot(result, doc, report, run_id, source_binding, predecessor, queue_bin
         'claim_revision_history': result['claims'], 'finance_deliveries': result['finance_deliveries'], 'finance_events': result['finance_events'],
         'decision_deliveries': decisions, 'cancellation_deliveries': [deepcopy(row) for row in v.rows(doc, 'Travel cancellations') if v.visible(row, batch)],
         'normalization_diagnostics': diagnostics, 'validation_global_findings': result['validation_global_findings'],
-        'source_index': result['source_index'], 'actual_financial_closure_count': 0,
+        'source_index': result['source_index'], 'actual_financial_closure_count': sum(c['status'] == 'closed-reimbursed' for c in current),
         'claim_arrival_boundaries': [{'claim_id': c['claim_id'], 'revision': c['revision'], 'arrival_batch': c['arrival_batch']}
                 for c in doc['claims'] if c['arrival_batch'] <= batch],
         'summary': {'current_claims': len(current), 'claim_revisions': len(result['claims']),
@@ -288,6 +302,8 @@ def snapshot(result, doc, report, run_id, source_binding, predecessor, queue_bin
                     'admitted_refund_cents': sum(q['admitted_refund_cents'] for q in result['requests']),
                     'admitted_net_cents': sum(q['admitted_net_cents'] for q in result['requests']),
                     'open_repairs': len(issues), 'normalization_diagnostics': len(diagnostics)}}
+    if result.get('ordinary_claim_ids'):
+        result_snapshot['ordinary_claim_ids'] = result['ordinary_claim_ids']
     check_snapshot(result_snapshot)
     return result_snapshot
 
@@ -320,7 +336,8 @@ def check_snapshot(value):
     if {(c['claim_id'], c['revision']) for c in value['claims']} != set(current.items()):
         raise ValueError('Stale/missing current claim revision')
     for c in value['claims']:
-        if not set(c['issue_record_ids']) <= ids or c['status'] != 'held' or c['financial_closure_status'] != 'unresolved':
+        closed = c['status'] == 'closed-reimbursed'
+        if not set(c['issue_record_ids']) <= ids or (not closed and (c['status'] != 'held' or c['financial_closure_status'] != 'unresolved')):
             raise ValueError('Unsupported closure/state or dangling claim issues')
         historical = next(h for h in value['claim_revision_history'] if (h['claim_id'], h['revision']) == (c['claim_id'], c['revision']))
         disposition = c['business_disposition']
@@ -329,7 +346,26 @@ def check_snapshot(value):
                 or not set(disposition['source_refs']) <= set(value['source_index'])
                 or not set(disposition['decision_ids']) <= set(c['decision_ids'])):
             raise ValueError('Unsupported business disposition or dangling evidence')
-        if c['paid_cents'] != 0 or c['known_paid_cents'] is not None or c['paid_cents_complete'] is not False or c['balance_cents'] is not None:
+        if closed:
+            proof = c.get('ordinary_closure')
+            q = v.unique([q for q in value['request_facts'] if proof and q['request_id'] == proof['request_id']])
+            if (not proof or c['claim_id'] not in value.get('ordinary_claim_ids', [])
+                    or historical.get('ordinary_closure') != proof or c['issue_record_ids']
+                    or c['financial_closure_status'] != 'supported_retained_evidence'
+                    or not q or q['basis_links'].get('ordinary_closure') != proof
+                    or q['diagnostics'] or q['uncertain_event_ids']
+                    or c['review_evidence_status'] != 'supported' or c['eligibility_status'] != 'supported'
+                    or not c['decision_ids_are_authorization']
+                    or sorted(c['decision_ids']) != proof['decision_ids']
+                    or c['allowed_cents'] != proof['amount_cents'] or c['paid_cents'] != proof['amount_cents']
+                    or c['authorized_allowed_cents'] != proof['amount_cents']
+                    or c['known_paid_cents'] != proof['amount_cents'] or c['paid_cents_complete'] is not True
+                    or c['balance_cents'] != 0 or q['accepted_cents'] != proof['amount_cents']
+                    or q['net_confirmed_settled_cents'] != proof['amount_cents']
+                    or not set(proof['source_refs']) <= set(value['source_index'])
+                    or not {proof['accepted_event_id'], proof['settlement_event_id']} <= finance):
+                raise ValueError('Unsupported ordinary closure or inconsistent attributed money')
+        elif c['paid_cents'] != 0 or c['known_paid_cents'] is not None or c['paid_cents_complete'] is not False or c['balance_cents'] is not None:
             raise ValueError('Unproven revision-attributed payment or balance')
         for ident in c['decision_ids']:
             decision = v.unique([d['values'] for d in value['decision_deliveries'] if d['values']['Decision reference'] == ident])
@@ -360,7 +396,7 @@ def check_snapshot(value):
         'admitted_refund_cents': sum(q['admitted_refund_cents'] for q in facts),
         'admitted_net_cents': sum(q['admitted_net_cents'] for q in facts), 'open_repairs': len(ids),
         'normalization_diagnostics': len(value['normalization_diagnostics'])}
-    if x != expected or value['actual_financial_closure_count'] != 0:
+    if x != expected or value['actual_financial_closure_count'] != sum(c['status'] == 'closed-reimbursed' for c in value['claims']):
         raise ValueError('Snapshot summary/closure count differs from evidence')
 
 
@@ -380,10 +416,12 @@ def markdown_report(run_id, snapshots, queue):
     summary = final['summary']
     lines = [f'# Operator handoff — {run_id}', '',
         'Mode: offline retained-source replay. No fresh acquisition, financial closure, external request or submission is asserted.', '',
-        f"Final batch: {final['batch_id']}; {len(final['claims'])} current claims, all held. Actual financial closures: 0.",
+        (f"Final batch: {final['batch_id']}; {len(final['claims'])} current claims; {final['actual_financial_closure_count']} supported ordinary closure(s) within retained evidence. All other claims remain held."
+         if final['actual_financial_closure_count'] else f"Final batch: {final['batch_id']}; {len(final['claims'])} current claims, all held. Actual financial closures: 0."),
         'Supported expense eligibility, supplied review replies, admitted request-level money and actual closure are separate facts.',
         'Business dispositions are retained independently: withdrawal/rejection does not authorize payment, clear repairs, or establish financial closure.',
-        'Unknown paid/balance amounts are blank in claims.csv. Snapshot paid_cents is only the proven attributed subtotal (0), with paid_cents_complete=false and known_paid_cents=null; it is not proof of zero payment.',
+        ('Selected supported closures have known paid/balance money; all other unknown paid/balance amounts remain blank in CSV. Their snapshot zero is an incomplete subtotal, not proof of zero payment.' if final.get('ordinary_claim_ids') else
+         'Unknown paid/balance amounts are blank in claims.csv. Snapshot paid_cents is only the proven attributed subtotal (0), with paid_cents_complete=false and known_paid_cents=null; it is not proof of zero payment.'),
         'Finance has no revision/cost columns: original requests are fully retained in request_facts; schema requests stays empty rather than inventing a required revision.', '',
         '## Retained evidence and replay', '',
         'See [sources.json](sources.json), [original acquisition manifest](acquisition-manifest.original.json) and [sealed manifest](operator-manifest.v1.json).',
@@ -399,6 +437,13 @@ def markdown_report(run_id, snapshots, queue):
     for c in final['claims']:
         money = lambda x: '' if x is None else str(x)
         lines.append(f"| {c['claim_id']}/r{c['revision']} | {c['eligibility_status']} | {c['review_evidence_status']} | {money(c['gross_purchase_cents'])} | {money(c['policy_calculated_allowed_cents'])} | {c['next_owner']} | {len(c['issue_record_ids'])} |")
+    if final.get('ordinary_claim_ids'):
+        lines += ['', '## Explicitly selected ordinary closure checks', '',
+                  'This is a retained-evidence conclusion, not an external completeness certificate, a new approval, or an instruction to pay again. Package-wide unknowns remain in the repair queue. Unselected claims retain their existing financial holds.']
+        for c in final['claims']:
+            if c.get('ordinary_closure'):
+                p = c['ordinary_closure']
+                lines.append(f"- {c['claim_id']}/r{c['revision']}: {c['status']}; reviewed/accepted/net {p['amount_cents']} cents; balance 0. Request {p['request_id']}; acceptance {p['accepted_event_id']}; settlement {p['settlement_event_id']}. Evidence: {', '.join(p['source_refs'])}.")
     lines += ['', '## Supported business dispositions (financial status remains held)', '']
     for c in final['claims']:
         disposition = c['business_disposition']
@@ -452,6 +497,8 @@ def build(acquisition, normalized, validated, reconciled, output, run_id, throug
         verify(replay_of.resolve())
         replay_binding = {'path': relative(replay_of / 'operator-manifest.v1.json'), 'sha256': v.digest((replay_of / 'operator-manifest.v1.json').read_bytes())}
     doc, report, validation, recon = load_verified(acquisition, normalized, validated, reconciled)
+    if dependency_containment and recon.get('ordinary_claim_ids'):
+        raise ValueError('Ordinary closure projection is not enabled for containment/shared-blocker builds')
     if through_batch < 1 or through_batch > recon['through_batch']:
         raise ValueError('Batch horizon exceeds verified reconciliation')
     legacy = None
@@ -574,6 +621,21 @@ def verify(output):
         inputs = {Path(i['path']).name: ROOT / i['path'] for i in sealed['input_bindings']}
         doc = json.loads(inputs['records.v1.json'].read_bytes())
         report = json.loads(inputs['parsing-report.v1.json'].read_bytes())
+        validated = json.loads(inputs['findings.v1.json'].read_bytes())
+        if snap.get('ordinary_claim_ids', []) != validated.get('ordinary_claim_ids', []):
+            raise ValueError('Ordinary claim selection differs from bound validation')
+        if snap.get('ordinary_claim_ids'):
+            replayed = r.evaluate(doc, report, validated, batch)
+            expected_claims = {(c['claim_id'], c['revision']): c for c in replayed['claims']}
+            for c in snap['claim_revision_history'] + snap['claims']:
+                proof = expected_claims[(c['claim_id'], c['revision'])].get('ordinary_closure')
+                if c.get('ordinary_closure') != proof:
+                    raise ValueError('Ordinary closure differs from source-derived replay')
+            for c in snap['claims']:
+                if (c['status'] == 'closed-reimbursed') != bool(expected_claims[(c['claim_id'], c['revision'])].get('ordinary_closure')):
+                    raise ValueError('Ordinary financial state differs from source-derived replay')
+            if snap['request_facts'] != replayed['requests']:
+                raise ValueError('Ordinary request facts differ from source-derived replay')
         expected_business = {(c['claim_id'], c['revision']): c['business_disposition']
                              for c in v.evaluate(doc, report, batch)['claims']}
         if any(c['business_disposition'] != expected_business[(c['claim_id'], c['revision'])]
@@ -618,7 +680,7 @@ def verify(output):
     if (output / 'report.md').read_bytes() != markdown_report(sealed['run_id'], snapshots, queues):
         raise ValueError('Report disagrees with sealed snapshots/queue updates')
     return {'run_id': sealed['run_id'], 'verified_snapshots': sealed['through_batch'], 'verified_files': len(files),
-            'current_claims': len(final['claims']), 'actual_financial_closures': 0, 'open_repairs': len(final['issues'])}
+            'current_claims': len(final['claims']), 'actual_financial_closures': final['actual_financial_closure_count'], 'open_repairs': len(final['issues'])}
 
 
 def main():
