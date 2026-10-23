@@ -5,6 +5,25 @@ description: Prepare traceable Alderbridge travel claim reviews, independent tri
 
 # Alderbridge Travel Expense Claim Skill
 
+## Updated verified Project D workflow: Omega Attempt 4
+
+Use [`omega-attempt4/`](../../omega-attempt4/) for the updated verified workflow.
+Read the [v3 operator handoff](../../omega-attempt4/operator_delivery/ordinary-closure-v3-handoff.md)
+and [v3 run report](../../omega-attempt4/artifacts/runs/omega4-attempt002-ordinary-closure-operator-v3/report.md).
+Follow the handoff's isolated verification procedure and explanation of the sealed
+report's stale blanket wording.
+
+Verified results are **4 supported retained-evidence closures totaling €2,200.01,
+with 117 claims held**. Isolated verification passed **589 original tests** and
+**39 Omega closure/safeguard tests**. These results do not establish package-wide
+certification, external acceptance, a grade or new payment authority.
+
+From the outer repository root, run `cd omega-attempt4` before Omega commands.
+Current v3 replay passed. The historical v2 full-regression wrapper requires an
+inner `.git` and assumes `.git/index`, so it is not portable in this subtree.
+Never patch sealed evidence to bypass this limitation. The original Skill content
+below remains preserved for its historical workflow.
+
 ## Inputs
 
 - A new run ID and the scenario's supplied case clock.

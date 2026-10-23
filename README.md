@@ -1,5 +1,25 @@
 # Alderbridge travel expense claims
 
+## Updated verified Project D workflow: Omega Attempt 4
+
+Use [`omega-attempt4/`](omega-attempt4/) for the updated verified workflow. Start
+with the [v3 operator handoff](omega-attempt4/operator_delivery/ordinary-closure-v3-handoff.md)
+and [v3 run report](omega-attempt4/artifacts/runs/omega4-attempt002-ordinary-closure-operator-v3/report.md).
+The handoff explains the sealed report's stale blanket wording and the required
+isolated verification procedure.
+
+Verified retained-evidence results: **4 supported closures totaling €2,200.01;
+117 claims remain held**. Isolated verification passed **589 original tests** and
+**39 Omega closure/safeguard tests**. This is not package-wide certification,
+external acceptance, a grading result or new payment authorization.
+
+Run Omega commands from **inside `omega-attempt4/`**, not this outer repository
+root: first run `cd omega-attempt4`, then follow the handoff. Current v3 replay
+passed. The historical v2 full-regression wrapper requires an inner `.git` and
+assumes `.git/index`; it is not portable in this subtree. Do not alter sealed
+artifacts to bypass that limitation. The original workflow and instructions below
+remain preserved for their historical scope.
+
 This repository is the Project D implementation for Alderbridge Consulting. The [Project D task](https://private-pecorino-70e.notion.site/Travel-expense-claim-Task-and-submission-3da0b700541e81249039eff895f77c98) and [snapshot schema](snapshot.schema.json) define the deliverables and retained-state contract. The [public template](https://github.com/GitRollTraining/travel-expense-claim) is the repository starting point.
 
 ## Interview rule
