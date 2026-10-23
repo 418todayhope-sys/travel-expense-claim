@@ -1,0 +1,176 @@
+{
+  "schema_version": "omega4-acquisition/1",
+  "run_id": "omega4-live-20261020-attempt001",
+  "source_version": null,
+  "case_clock": null,
+  "source_bindings": {
+    "path": "source-bindings.json",
+    "sha256": "4da06f1dab2cd65c5b6052a4767f5535f0360bcf69cc14abaf40c7d0516bd7c4"
+  },
+  "scope": "source acquisition only; no business parsing or completeness certification",
+  "result": "partial",
+  "files": [
+    {
+      "source_id": "initial-claims",
+      "url": "https://drive.google.com/file/d/13sRj6s_kMeP1hsYGstWWmfkb6SCN1YOS/view",
+      "retrieval_route": "https://drive.google.com/uc?export=download&id=13sRj6s_kMeP1hsYGstWWmfkb6SCN1YOS",
+      "locator": "Complete initial claim binder PDF",
+      "status": "read",
+      "error": null,
+      "path": "sources/initial-claims.pdf",
+      "sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+      "version": null,
+      "version_verified": false,
+      "byte_count": 182878,
+      "completeness": "unverified",
+      "missing_scope": [],
+      "observed_at": "2026-10-20T15:10:15.268003Z",
+      "structure": {
+        "pdf_envelope": true,
+        "page_text_inspection": "not performed by acquisition module"
+      },
+      "observation": {
+        "method": "fresh-unauthenticated-http",
+        "http_status": 200,
+        "final_url": "https://drive.usercontent.google.com/download?id=13sRj6s_kMeP1hsYGstWWmfkb6SCN1YOS&export=download",
+        "content_type": "application/octet-stream",
+        "response_path": "sources/initial-claims.pdf",
+        "byte_count": 182878,
+        "sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7"
+      },
+      "remaining_verification": [
+        "Complete relevant business content/history and semantic source version"
+      ]
+    },
+    {
+      "source_id": "claim-updates",
+      "url": "https://drive.google.com/file/d/16829RwrGrMCK9oq5TnWuytFewGk_8xQP/view",
+      "retrieval_route": "https://drive.google.com/uc?export=download&id=16829RwrGrMCK9oq5TnWuytFewGk_8xQP",
+      "locator": "Complete claim updates binder PDF",
+      "status": "read",
+      "error": null,
+      "path": "sources/claim-updates.pdf",
+      "sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+      "version": null,
+      "version_verified": false,
+      "byte_count": 12336,
+      "completeness": "unverified",
+      "missing_scope": [],
+      "observed_at": "2026-10-20T15:10:16.296106Z",
+      "structure": {
+        "pdf_envelope": true,
+        "page_text_inspection": "not performed by acquisition module"
+      },
+      "observation": {
+        "method": "fresh-unauthenticated-http",
+        "http_status": 200,
+        "final_url": "https://drive.usercontent.google.com/download?id=16829RwrGrMCK9oq5TnWuytFewGk_8xQP&export=download",
+        "content_type": "application/octet-stream",
+        "response_path": "sources/claim-updates.pdf",
+        "byte_count": 12336,
+        "sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b"
+      },
+      "remaining_verification": [
+        "Complete relevant business content/history and semantic source version"
+      ]
+    },
+    {
+      "source_id": "receipts",
+      "url": "https://drive.google.com/file/d/1Ynn1VLH-faRIy91xy95rOWwCBhy5mjjM/view",
+      "retrieval_route": "https://drive.google.com/uc?export=download&id=1Ynn1VLH-faRIy91xy95rOWwCBhy5mjjM",
+      "locator": "Complete receipt binder PDF",
+      "status": "read",
+      "error": null,
+      "path": "sources/receipts.pdf",
+      "sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+      "version": null,
+      "version_verified": false,
+      "byte_count": 166630,
+      "completeness": "unverified",
+      "missing_scope": [],
+      "observed_at": "2026-10-20T15:10:37.269678Z",
+      "structure": {
+        "pdf_envelope": true,
+        "page_text_inspection": "not performed by acquisition module"
+      },
+      "observation": {
+        "method": "fresh-unauthenticated-http",
+        "http_status": 200,
+        "final_url": "https://drive.usercontent.google.com/download?id=1Ynn1VLH-faRIy91xy95rOWwCBhy5mjjM&export=download",
+        "content_type": "application/octet-stream",
+        "response_path": "sources/receipts.pdf",
+        "byte_count": 166630,
+        "sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8"
+      },
+      "remaining_verification": [
+        "Complete relevant business content/history and semantic source version"
+      ]
+    },
+    {
+      "source_id": "travel-registers",
+      "url": "https://docs.google.com/spreadsheets/d/1338nvKD6rgAdLgGRhYCMMlQyDNLK0sE8pvFWrZAaaxg/edit",
+      "retrieval_route": "https://docs.google.com/spreadsheets/d/1338nvKD6rgAdLgGRhYCMMlQyDNLK0sE8pvFWrZAaaxg/export?format=xlsx",
+      "locator": "Complete workbook export; all ten tabs",
+      "status": "unavailable",
+      "error": "URLError: <urlopen error Redirect outside allowed public download hosts>",
+      "path": null,
+      "sha256": null,
+      "version": null,
+      "version_verified": false,
+      "byte_count": null,
+      "completeness": "unverified",
+      "missing_scope": [
+        "Complete workbook export; all ten tabs"
+      ],
+      "observed_at": "2026-10-20T15:10:37.803878Z"
+    },
+    {
+      "source_id": "policy",
+      "url": "https://private-pecorino-70e.notion.site/Project-D-Alderbridge-travel-reimbursement-policy-POL-2026-1-3d80b700541e81ed93ebd386abc1dcb0",
+      "retrieval_route": "https://private-pecorino-70e.notion.site/Project-D-Alderbridge-travel-reimbursement-policy-POL-2026-1-3d80b700541e81ed93ebd386abc1dcb0",
+      "locator": "Complete native Notion policy body",
+      "status": "unavailable",
+      "error": "Native Notion policy body/completeness cannot be verified by this HTTP adapter; shells and browser copies are not native policy retrieval",
+      "path": null,
+      "sha256": null,
+      "version": null,
+      "version_verified": false,
+      "byte_count": 19925,
+      "completeness": "unverified",
+      "missing_scope": [
+        "Complete native Notion policy body"
+      ],
+      "observed_at": "2026-10-20T15:10:38.355131Z",
+      "structure": {},
+      "observation": {
+        "method": "fresh-unauthenticated-http",
+        "http_status": 200,
+        "final_url": "https://private-pecorino-70e.notion.site/Project-D-Alderbridge-travel-reimbursement-policy-POL-2026-1-3d80b700541e81ed93ebd386abc1dcb0",
+        "content_type": "text/html; charset=utf-8",
+        "response_path": "responses/policy.body",
+        "byte_count": 19925,
+        "sha256": "f58d1d2b655687380d6c7d50ee2463edacb5ff4f1cad7fd9bb30eded2c56053c"
+      }
+    }
+  ],
+  "supplemental_evidence": [
+    {
+      "source_id": "user-browser-policy-20261020",
+      "native_acquisition": false,
+      "status": "retained",
+      "path": "supplemental/POL-2026.2-20261020-browser-copy.txt",
+      "sha256": "04d8121a91986dc0839094b5e7f574c44f6261c60c1c3ba9aeeee1c279ee5993",
+      "version": "POL-2026.2",
+      "provenance_path": "supplemental/POL-2026.2-20261020-browser-copy.provenance.json",
+      "provenance_sha256": "8e0d9fb0e30a6c5468e36ddc785842841eca8d6d922ecc1bd3baa90267c1359f",
+      "error": null,
+      "byte_count": 13506,
+      "source_url": "https://private-pecorino-70e.notion.site/Project-D-Alderbridge-travel-reimbursement-policy-POL-2026-1-3d80b700541e81ed93ebd386abc1dcb0",
+      "limitations": [
+        "Browser-visible copy; not native automated access.",
+        "Notion page/block completeness not independently verified.",
+        "Exact browser retrieval time is unknown; acquisition date is user-confirmed."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "files": [
+    {
+      "original_locator": "/tmp/omega4-v2-stage-audit-452aulfk/staged-hashes.json",
+      "path": "approved-v2-staged-hashes.json",
+      "sha256": "abba765fa7634e2825a74cb694b8d1235edd3ce1ff97cdba7a994ace0a2d4643"
+    },
+    {
+      "original_locator": "/tmp/omega4-v3-step3-preservation-0h06emff/before.json",
+      "path": "preservation-baseline.json",
+      "sha256": "0becc8784751f22e5b05ce8dfe4ef237150f9cfa94a1622cc48de63176fe7a16"
+    },
+    {
+      "original_locator": "/tmp/omega4-v3-step2-8h_zcqa8/after.json",
+      "path": "step2/after.json",
+      "sha256": "fa02fb44f5000a2ac82a95831369ffcc8e745a50c5d9cdb29f0cbfb029992730"
+    },
+    {
+      "original_locator": "/tmp/omega4-v3-step2-8h_zcqa8/before.json",
+      "path": "step2/before.json",
+      "sha256": "fa02fb44f5000a2ac82a95831369ffcc8e745a50c5d9cdb29f0cbfb029992730"
+    },
+    {
+      "original_locator": "/tmp/omega4-v3-step2-8h_zcqa8/closure-results.json",
+      "path": "step2/closure-results.json",
+      "sha256": "51d02fd929b4a3aa2348994f608723d85729b4fd03cc3499266f3e21e52c4139"
+    },
+    {
+      "original_locator": "/tmp/omega4-v3-step2-8h_zcqa8/commands.json",
+      "path": "step2/commands.json",
+      "sha256": "944d0da5cf87b70501f8087f672df4f816c9fe5cd7d1528ab8f7f2112994494d"
+    },
+    {
+      "original_locator": "/tmp/omega4-v3-step2.log",
+      "path": "step2/execution.log",
+      "sha256": "ef0d56443313bfc634ed59a87d28c354fec2f114b417e58c6d846ab7fc1e050e"
+    },
+    {
+      "original_locator": "/tmp/omega4-v3-step2-8h_zcqa8/existing-tests.json",
+      "path": "step2/existing-tests.json",
+      "sha256": "683da4c87c2ed8de749fc301e03df7b58961ff8e90baedbfc3c5e66a498f9ca8"
+    },
+    {
+      "original_locator": "/tmp/omega4-v3-step2-8h_zcqa8/existing-tests.log",
+      "path": "step2/existing-tests.log",
+      "sha256": "8bfdf303e5683776f51064b904df5221dd29e3af5b0a2a0152ecbff9657a2832"
+    },
+    {
+      "original_locator": "/tmp/omega4-v3-step2-8h_zcqa8/operator-verification.json",
+      "path": "step2/operator-verification.json",
+      "sha256": "d9452ff5c3fd4487c871e08a2b2ca3a62aa669a6f2a1a1299c6808ac0e211f68"
+    },
+    {
+      "original_locator": "/tmp/omega4-v3-step2.py",
+      "path": "step2/original-runner.py",
+      "sha256": "014e5c3df3f1a260d4978b294b57be749d699255f85fd8fb6214cd363beb4935"
+    },
+    {
+      "original_locator": "/tmp/omega4-v3-step2-8h_zcqa8/preservation.json",
+      "path": "step2/preservation.json",
+      "sha256": "3419cefd6612226c98541058734255ef3774a6f28c07079deb46dc04d4ee36d0"
+    },
+    {
+      "original_locator": "/tmp/omega4-v3-step2-8h_zcqa8/supplemental-tests.json",
+      "path": "step2/supplemental-tests.json",
+      "sha256": "f4f1409ef13dfde545064c4ecf67644a9ecf12340d54df400c412a5616b15da2"
+    },
+    {
+      "original_locator": "/tmp/omega4-v3-step2-8h_zcqa8/supplemental-tests.log",
+      "path": "step2/supplemental-tests.log",
+      "sha256": "9abc7be6c1759471ce1fc4f33b413df3a399ddfaf4b5ea261020feb44bbb571a"
+    }
+  ],
+  "tests_rerun_during_packaging": false,
+  "v2_validator_source": "Git index :validation/validate.py; archived original input, not a new implementation"
+}

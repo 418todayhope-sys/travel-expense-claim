@@ -1,0 +1,50 @@
+{
+  "admitted_request_net_cents": 10000,
+  "allowed_cents": 10000,
+  "approval_status": "supported",
+  "approval_times": [
+    "2026-09-03T12:00:00Z",
+    "2026-09-03T12:00:00Z",
+    "2026-09-03T12:00:00Z"
+  ],
+  "balance_cents": null,
+  "case": "finance-conflict-invalid-batch",
+  "claim_issue_ids": [
+    "repair:88cb30452b47cf13ffa0fbc1c0920efffb8ac6819b22705286ff096beefe251e",
+    "repair:a89925d39fe642648206a7acef9745372fa7df194d08662705a120835738c75c",
+    "repair:c3711cb5df16da33d78a652420136d6db9a72dca19a76e2ddd802c99296533c6"
+  ],
+  "description": "Finance activity row 31: F-C01-1 amount 100.00 -> 101.00; arrival batch 4 -> 0.",
+  "event_conflicting_delivery_ids": [],
+  "finance_arrival_diagnostics": [
+    {
+      "code": "finance_arrival",
+      "item_id": "finance-issue:cb4762bbcba61475fff22f7a22bbb0851af1338fb58872d250dce913363a94b0",
+      "owner": "Finance",
+      "reason": "Invalid arrival batch; delivery retained without admission.",
+      "resolution_needed": "Invalid arrival batch; delivery retained without admission.",
+      "rule_refs": [
+        "policy:finance_admission",
+        "policy:finance_reconciliation"
+      ],
+      "source_refs": [
+        "travel-registers:Finance activity:row:31"
+      ],
+      "status": "unresolved"
+    }
+  ],
+  "known_paid_cents": null,
+  "operator_items_for_row31": [
+    "finance_arrival_dependency"
+  ],
+  "ordinary_certificate_created": false,
+  "receipt_issued_date": "2026-09-01",
+  "request_diagnostics": [],
+  "request_uncertain_event_ids": [],
+  "row31_delivery_classification": [
+    "invalid_arrival"
+  ],
+  "snapshot_guard_passed": true,
+  "status": "held",
+  "synthetic": true
+}

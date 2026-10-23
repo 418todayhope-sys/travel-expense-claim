@@ -1,0 +1,63 @@
+{
+  "C01_after": {
+    "balance_cents": 0,
+    "known_paid_cents": 10000,
+    "status": "closed-reimbursed"
+  },
+  "C01_before": {
+    "balance_cents": null,
+    "known_paid_cents": null,
+    "status": "held"
+  },
+  "all_120_unselected_rows_unchanged": true,
+  "base_commit": "d87b8d563efadc06f9e3d1ad5497af3b840c4859",
+  "limitations": [
+    "No native-policy completeness certification",
+    "No containment/shared-blocker closure projection",
+    "Only explicit claim selection; unchanged domestic single-purchase path",
+    "No external verification or new payment authority"
+  ],
+  "original_registers_untouched": true,
+  "preservation": {
+    "baseline_files": 313,
+    "historical_evidence_decisions_interviews_unchanged": true,
+    "only_existing_files_changed": [
+      "README.md",
+      "operator_delivery/build.py",
+      "reconciliation/reconcile.py",
+      "validation/validate.py"
+    ],
+    "unchanged_existing_files": 309
+  },
+  "processing_exit_codes": {
+    "meaning": "Expected partial package; global requirements and other claims unresolved",
+    "operator_build": 2,
+    "reconciliation": 2,
+    "validation": 2
+  },
+  "repair_rechecks": 5,
+  "scope": "Authorized C01-only ordinary closure within retained evidence; package certification unresolved",
+  "standalone_verification": {
+    "actual_financial_closures": 1,
+    "current_claims": 121,
+    "exit_code": 0,
+    "open_repairs": 698,
+    "verified_files": 22,
+    "verified_snapshots": 4
+  },
+  "tests": {
+    "existing_business_disposition": 12,
+    "existing_validation": 27,
+    "full_suite_run": false,
+    "ordinary_closure": 25,
+    "total_passed": 64
+  },
+  "unchanged_financial_facts": {
+    "admitted_finance_events": 219,
+    "admitted_net_cents": 1203415,
+    "admitted_refund_cents": 3000,
+    "admitted_settled_cents": 1206415,
+    "normalization_diagnostics": 18,
+    "request_facts": 104
+  }
+}

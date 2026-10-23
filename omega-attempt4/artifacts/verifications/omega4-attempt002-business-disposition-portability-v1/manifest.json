@@ -1,0 +1,31 @@
+{
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "e066a5b966335bf6a22d0c8911329a3cbfe835a03d239e74bb5772171484d27a"
+    },
+    {
+      "path": "preservation-baseline.json",
+      "sha256": "60e2e3fda28ccac56629d7687f336dfb50d47a57bcd460de13604ad3c183742e"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "e1a84b73029860dfb7f1a0a6b12704fa7d54c381c3edf19a963ccc5299d33f6b"
+    },
+    {
+      "path": "verify-preservation.py",
+      "sha256": "cf407e0e139087f7a84f5cd4fa531dcae78358ec7b9afe007c4c18f7fcde3ed4"
+    }
+  ],
+  "input_bindings": [
+    {
+      "path": "artifacts/verifications/omega4-attempt002-business-disposition-v1/manifest.json",
+      "sha256": "d0d11e3ec5021c67b31f003212d0187f5a484f57f84e29f5e9a6e4d1b3c3d4d4"
+    },
+    {
+      "path": "tests/test_preservation_portability.py",
+      "sha256": "cde1527f5977907d0fd0e5819cd973d539320306194a6079dc351d16961d3007"
+    }
+  ],
+  "schema_version": "omega4-preservation-portability/1"
+}

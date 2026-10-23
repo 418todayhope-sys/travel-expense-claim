@@ -1,0 +1,71 @@
+{
+  "files": [
+    {
+      "path": "full-tests.log",
+      "sha256": "9c613ca3c7bcbbd0dabbd631934f0c414465437ed7e8fe5cd7abdcdd3b19b5bc"
+    },
+    {
+      "path": "preservation-baseline.json",
+      "sha256": "60e2e3fda28ccac56629d7687f336dfb50d47a57bcd460de13604ad3c183742e"
+    },
+    {
+      "path": "verification.json",
+      "sha256": "cdaae065e795208c61bf7b293ace2e8a60282ef991b6d50311265befaf6220c6"
+    },
+    {
+      "path": "verify-preservation.py",
+      "sha256": "f6d17a936491baa70f1e60e128aee635e4294a4ea9707c153aec4625c16250d5"
+    }
+  ],
+  "input_bindings": [
+    {
+      "path": "snapshot.schema.json",
+      "sha256": "f689977fb0ff49bb19a384f3879467f9bfb469bb06e4f73db41b39a29fbe8cad"
+    },
+    {
+      "path": "artifacts/runs/omega4-live-20261020-attempt002/sources.json",
+      "sha256": "fe965c1394907c9179f920a27ff70cc3f02a78de655a1500f15241a6e09417cc"
+    },
+    {
+      "path": "artifacts/normalizations/omega4-attempt002-normalization-v1/records.v1.json",
+      "sha256": "a5e96bcecdd5e4d44425f22524a32f05978b92adbc941141fba26c5fd477ba1a"
+    },
+    {
+      "path": "artifacts/validations/omega4-attempt002-business-disposition-validation-v1/findings.v1.json",
+      "sha256": "775600c4b1ccc05e5a48195d599e0abd99e606dd97b668251ec8d38907aae361"
+    },
+    {
+      "path": "artifacts/reconciliations/omega4-attempt002-business-disposition-reconciliation-v1/reconciliation.v1.json",
+      "sha256": "aca36eac4f11a948ea4da31710d172de32d0bcb33140fb299626fded038a6107"
+    },
+    {
+      "path": "decisions/decision-003-shared-blocker-linked-case-views.md",
+      "sha256": "9d87268d1a793bb53422d09e2f934038bffa04ed89c56c0a279ad51f18b6b2ea"
+    },
+    {
+      "path": "decisions/decision-004-interim-operator-handoff.md",
+      "sha256": "e9f6b0491035eaece9861497c9b2b366a687a12e130d21d2f860e80dccbb5e13"
+    },
+    {
+      "path": "decisions/decision-001-correction-finance-hold.md",
+      "sha256": "acb1e7dd37e118e07f25e1c017418f05213f1ed9461bf0020c0bf5f500fc1c8d"
+    },
+    {
+      "path": "decisions/decision-002-dependency-based-containment.md",
+      "sha256": "33e9ca83e01299e6d4ba5d9f86685b991291c2bf89773970865a038904ec22a2"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-business-disposition-operator-v1/operator-manifest.v1.json",
+      "sha256": "ce84e1802c165f5a88b619ac602d6cab2e84755b1c1ae403bae6227a8cb75743"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-business-disposition-containment-v1/operator-manifest.v1.json",
+      "sha256": "f8c9e4ad7f34cb9534e70b289ac77a2585958829a7107c877518a4cefb8169b5"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-business-disposition-shared-blockers-v1/shared-blocker-manifest.v1.json",
+      "sha256": "44b29a291b7ca2b558d95384edc07130a65d46b934da417fa8ef4f2aad3a9a50"
+    }
+  ],
+  "schema_version": "omega4-business-disposition-verification/1"
+}

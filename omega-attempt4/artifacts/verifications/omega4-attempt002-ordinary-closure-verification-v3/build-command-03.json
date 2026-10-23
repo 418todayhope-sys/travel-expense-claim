@@ -1,0 +1,25 @@
+{
+  "command": [
+    "/home/maxg/travel-expense-claim/.venv/bin/python",
+    "-B",
+    "-m",
+    "operator_delivery.build",
+    "build",
+    "--acquisition",
+    "/home/maxg/travel-expense-claim-omega4/artifacts/runs/omega4-live-20261020-attempt002",
+    "--normalized",
+    "/home/maxg/travel-expense-claim-omega4/artifacts/normalizations/omega4-attempt002-normalization-v1",
+    "--validated",
+    "/home/maxg/travel-expense-claim-omega4/artifacts/validations/omega4-attempt002-ordinary-closure-validation-v3",
+    "--reconciled",
+    "/home/maxg/travel-expense-claim-omega4/artifacts/reconciliations/omega4-attempt002-ordinary-closure-reconciliation-v3",
+    "--output",
+    "/home/maxg/travel-expense-claim-omega4/artifacts/runs/omega4-attempt002-ordinary-closure-operator-v3",
+    "--run-id",
+    "omega4-attempt002-ordinary-closure-operator-v3"
+  ],
+  "exit_code": 2,
+  "expected_exit_code": 2,
+  "stderr": "",
+  "stdout": "{\"admitted_finance_events\": 219, \"admitted_net_cents\": 1203415, \"admitted_refund_cents\": 3000, \"admitted_settled_cents\": 1206415, \"claim_revisions\": 127, \"current_claims\": 121, \"expense_occurrences\": 208, \"normalization_diagnostics\": 18, \"open_repairs\": 683, \"request_facts\": 104}\n"
+}

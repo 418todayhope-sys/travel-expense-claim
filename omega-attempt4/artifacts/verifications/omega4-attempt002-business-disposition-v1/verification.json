@@ -1,0 +1,168 @@
+{
+  "actual_financial_closures": 0,
+  "all_original_artifacts_decisions_and_sources_preserved": true,
+  "batches": [
+    {
+      "batch": 1,
+      "claims": 120,
+      "dependency_graph_bytes_unchanged": true,
+      "financial_facts_unchanged": true,
+      "repair_records": 774,
+      "repair_states": {
+        "open": 774
+      }
+    },
+    {
+      "batch": 2,
+      "claims": 120,
+      "dependency_graph_bytes_unchanged": true,
+      "financial_facts_unchanged": true,
+      "repair_records": 791,
+      "repair_states": {
+        "cleared_by_recheck": 199,
+        "open": 592
+      }
+    },
+    {
+      "batch": 3,
+      "claims": 121,
+      "dependency_graph_bytes_unchanged": true,
+      "financial_facts_unchanged": true,
+      "repair_records": 837,
+      "repair_states": {
+        "cleared_by_recheck": 205,
+        "open": 597,
+        "superseded": 35
+      }
+    },
+    {
+      "batch": 4,
+      "claims": 121,
+      "dependency_graph_bytes_unchanged": true,
+      "financial_facts_unchanged": true,
+      "repair_records": 845,
+      "repair_states": {
+        "cleared_by_recheck": 218,
+        "open": 582,
+        "superseded": 45
+      }
+    }
+  ],
+  "blocker_history_and_repair_mapping_unchanged_all_batches": true,
+  "changed_existing_files": [
+    "README.md",
+    "operator_delivery/README.md",
+    "operator_delivery/build.py",
+    "operator_delivery/shared-blockers.md",
+    "operator_delivery/shared_blockers.py",
+    "reconciliation/reconcile.py",
+    "snapshot.schema.json",
+    "tests/test_containment.py",
+    "tests/test_operator_delivery.py",
+    "tests/test_reconciliation.py",
+    "tests/test_shared_blockers.py",
+    "validation/validate.py"
+  ],
+  "checks": "passed",
+  "csv_changed_columns": [
+    "reason"
+  ],
+  "csv_changed_rows": [
+    "C13",
+    "C14"
+  ],
+  "final_financial_holds": 121,
+  "final_repair_states": {
+    "cleared_by_recheck": 218,
+    "open": 582,
+    "superseded": 45
+  },
+  "financial_before_after": {
+    "admitted_finance_events": [
+      219,
+      219
+    ],
+    "claim_revisions": [
+      127,
+      127
+    ],
+    "current_claims": [
+      121,
+      121
+    ],
+    "financial_closures": [
+      0,
+      0
+    ],
+    "financial_holds": [
+      121,
+      121
+    ],
+    "historical_repairs": [
+      845,
+      845
+    ],
+    "net_cents": [
+      1203415,
+      1203415
+    ],
+    "open_repairs": [
+      582,
+      582
+    ],
+    "refund_cents": [
+      3000,
+      3000
+    ],
+    "request_facts": [
+      104,
+      104
+    ],
+    "settled_cents": [
+      1206415,
+      1206415
+    ]
+  },
+  "full_suite": {
+    "command": "/home/maxg/travel-expense-claim/.venv/bin/python -B -m unittest discover -s tests -v",
+    "errors": 0,
+    "exit_code": 0,
+    "failures": 0,
+    "seconds": 245.393,
+    "targeted_new_regressions": 12,
+    "tests": 150
+  },
+  "new_code_documentation_files": [
+    "tests/test_business_disposition.py",
+    "operator_delivery/business-dispositions.md"
+  ],
+  "protected_original_files": 168,
+  "standalone_verification": [
+    {
+      "exit_code": 0,
+      "module": "operator_delivery.build",
+      "open_repairs": 703,
+      "run": "omega4-attempt002-business-disposition-operator-v1",
+      "verified_files": 22,
+      "verified_snapshots": 4
+    },
+    {
+      "exit_code": 0,
+      "module": "operator_delivery.build",
+      "open_repairs": 582,
+      "run": "omega4-attempt002-business-disposition-containment-v1",
+      "verified_files": 28,
+      "verified_snapshots": 4
+    },
+    {
+      "exit_code": 0,
+      "module": "operator_delivery.shared_blockers",
+      "open_repairs": 582,
+      "run": "omega4-attempt002-business-disposition-shared-blockers-v1",
+      "verified_files": 48,
+      "verified_snapshots": 4
+    }
+  ],
+  "verified_snapshot_chains": 3,
+  "verified_snapshots": 12
+}

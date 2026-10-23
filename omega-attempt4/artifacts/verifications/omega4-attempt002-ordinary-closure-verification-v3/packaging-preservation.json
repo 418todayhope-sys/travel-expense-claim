@@ -1,0 +1,41 @@
+{
+  "certificate_unchanged": true,
+  "copied_hashes_match": true,
+  "copied_original_evidence_files": 14,
+  "head_unchanged": true,
+  "index_bytes_unchanged": true,
+  "limitations": [
+    "No new full-suite execution, fresh native policy access, external bank completeness, grading outcome or external operator acceptance.",
+    "Historical original test-runner checkout/index locators are retained and not claimed to be portable execution requirements for the new v3 outputs.",
+    "V2 remains verifiable with its preserved staged/archived validator; do not rewrite old input bindings to match v3.",
+    "Snapshot/manifest integrity is not a cryptographic signature or remote authenticity attestation."
+  ],
+  "missing_required_temporary_evidence": [],
+  "new_paths_confined_to_four_v3_directories": true,
+  "preexisting_files_checked": 402,
+  "preexisting_files_unchanged": true,
+  "preserved_tests_passed": 88,
+  "privacy": {
+    "credential_pattern_hits": [],
+    "email_pattern_hits": [],
+    "ignored_files_added": false,
+    "limits": "Text pattern scan/manual review. Native evidence copies and historical machine/temporary locators retained unchanged. No Entire transcript, credential file or environment copied."
+  },
+  "readme_links_checked": 12,
+  "refs_unchanged": true,
+  "scope": "Step3 versioned evidence packaging only",
+  "source_and_sealed_v1_v2_files_preserved": true,
+  "staged_files_checked": 93,
+  "staged_inventory_hash_after": "bd413067415932b53803d840181f3d132f31794291541199d0645696c2c1a83b",
+  "staged_inventory_hash_before": "bd413067415932b53803d840181f3d132f31794291541199d0645696c2c1a83b",
+  "standalone_operator_verification": {
+    "actual_financial_closures": 4,
+    "current_claims": 121,
+    "open_repairs": 683,
+    "run_id": "omega4-attempt002-ordinary-closure-operator-v3",
+    "verified_files": 22,
+    "verified_snapshots": 4
+  },
+  "tests_rerun": false,
+  "unstaged_v3_selection_edit_unchanged": true
+}

@@ -1,0 +1,746 @@
+[
+  {
+    "bytes": 8634,
+    "git_blob": "377f7449578b2ec346ac4ff79adbb230b0c7c9ee",
+    "mode": "100644",
+    "path": "README.md",
+    "sha256": "38d6a8be60eaceac51b5668364ba4ad60922f7f33be74b89061130a11d0a7f90",
+    "status": "M"
+  },
+  {
+    "bytes": 3985530,
+    "git_blob": "c90312314db2b63c1bbf6b3fbf432aa243ca4ea3",
+    "mode": "100644",
+    "path": "artifacts/reconciliations/omega4-attempt002-ordinary-closure-reconciliation-v1/reconciliation.v1.json",
+    "sha256": "c5c7b665789457ecd47cc15f933480c834b9b215d104cbcbc86b3aa8fd2670ca",
+    "status": "A"
+  },
+  {
+    "bytes": 3985530,
+    "git_blob": "8553e7323d90d7c6cb584ded9ca7be92490b5d62",
+    "mode": "100644",
+    "path": "artifacts/reconciliations/omega4-attempt002-ordinary-closure-reconciliation-v2/reconciliation.v1.json",
+    "sha256": "24169304549aa26f96df0a4b0c09eab015cc0169c4a45cabc881389ebea494c7",
+    "status": "A"
+  },
+  {
+    "bytes": 8645,
+    "git_blob": "d7b06887c17036b5253a8d071bd02e421ce19ddc",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/acquisition-manifest.original.json",
+    "sha256": "fe965c1394907c9179f920a27ff70cc3f02a78de655a1500f15241a6e09417cc",
+    "status": "A"
+  },
+  {
+    "bytes": 4244625,
+    "git_blob": "1e920b7552072bce84be573d2d3b722bd0bc2e1e",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/batches/001.json",
+    "sha256": "fc6853d7a2ef077734639efe0360884fec733716fc093b1dc9f4457ba6b8c499",
+    "status": "A"
+  },
+  {
+    "bytes": 4571004,
+    "git_blob": "42c4c366dcc55d33b96e7dc30766a711929cefb2",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/batches/002.json",
+    "sha256": "f8267d2ef19be8087524bf7850e4130eaa07aefdc686c91940ac54d3bfff25e2",
+    "status": "A"
+  },
+  {
+    "bytes": 4768744,
+    "git_blob": "407064c4f47f4cf9cb4e7fcb2b0c901cdce3ffac",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/batches/003.json",
+    "sha256": "5507331827e386d91b04ac3300e1ae9fcb9e1b9186ff456065a04018271e36af",
+    "status": "A"
+  },
+  {
+    "bytes": 4825463,
+    "git_blob": "c9af57aec88575c4a0c7e58161dbd1ad2a98cde0",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/batches/004.json",
+    "sha256": "fae1cb9126b20818176e7db73c1ac916f3b89151c792bddca8c8e738d10f05cc",
+    "status": "A"
+  },
+  {
+    "bytes": 18442,
+    "git_blob": "1a69ba11c5975de0ec4dc54d6ba7ae9e0cbb9f59",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/claims.csv",
+    "sha256": "e4c69d6d809f5b76dc57cf5a36487be61ef882cc33b28e33825d569bd96de1a4",
+    "status": "A"
+  },
+  {
+    "bytes": 7528,
+    "git_blob": "afd6886e2d9317bca59c8c1e91c6e430e217aa06",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/operator-manifest.v1.json",
+    "sha256": "fffa4ffd0591898cd28d39910d9685b3fc7c75f8bca8e5e532a640f44019c698",
+    "status": "A"
+  },
+  {
+    "bytes": 1226751,
+    "git_blob": "b7eedc09f1299469fd3c87baf6d5fc48fde44ac3",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/queue/001.json",
+    "sha256": "e027c1b8ea3281a300a7ff200afddb572e452addaeb3ff5fe8f360c31fcb731e",
+    "status": "A"
+  },
+  {
+    "bytes": 1378936,
+    "git_blob": "a47d412625db8178a98fcef0c2c98481c30ad663",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/queue/002.json",
+    "sha256": "3178db46eaddee9f192f268edec72d41d5fdf73fb9272b845b28cc20d2a37891",
+    "status": "A"
+  },
+  {
+    "bytes": 1427570,
+    "git_blob": "a779df0d3b040fe7763bf3196df3ee7aab4574c5",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/queue/003.json",
+    "sha256": "6241da90f191409ee3c12cb3873642442724573154f0341c4ff6be5b58963d0d",
+    "status": "A"
+  },
+  {
+    "bytes": 1451261,
+    "git_blob": "e61ecdb64419adf3d373bf5339af44c0a3d8aebb",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/queue/004.json",
+    "sha256": "69125789084a1655569967a8c3dea83195bf52cda4cd06e7cf5a519ca49ef845",
+    "status": "A"
+  },
+  {
+    "bytes": 343133,
+    "git_blob": "a27bd8f91496f954d79f8e88a1889314c58e5132",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/repair-queue.csv",
+    "sha256": "c704649ed4c558744cff40ea74b58a788784e9bb4afe158e82db76c1d6809353",
+    "status": "A"
+  },
+  {
+    "bytes": 1451261,
+    "git_blob": "e61ecdb64419adf3d373bf5339af44c0a3d8aebb",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/repair-queue.json",
+    "sha256": "69125789084a1655569967a8c3dea83195bf52cda4cd06e7cf5a519ca49ef845",
+    "status": "A"
+  },
+  {
+    "bytes": 13860,
+    "git_blob": "9bad8c842159740d61731bc0e6ecf8b0d9f86df2",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/report.md",
+    "sha256": "1e000c2eb3f68117b9a285398cf9f65c206ba75df37adb71a0a3b23d10ac1e53",
+    "status": "A"
+  },
+  {
+    "bytes": 19925,
+    "git_blob": "d0384a4d0f18f35a11b12f44b348776b7f9a47ed",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/responses/policy.body",
+    "sha256": "f58d1d2b655687380d6c7d50ee2463edacb5ff4f1cad7fd9bb30eded2c56053c",
+    "status": "A"
+  },
+  {
+    "bytes": 2010,
+    "git_blob": "7e151b974d72acffd44886ca939ef28d4ee5f1ab",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/source-bindings.json",
+    "sha256": "4da06f1dab2cd65c5b6052a4767f5535f0360bcf69cc14abaf40c7d0516bd7c4",
+    "status": "A"
+  },
+  {
+    "bytes": 9063,
+    "git_blob": "b4610bb151a1c19a0d04e7c8f916003119955d45",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/sources.json",
+    "sha256": "370af6df53796689dd35d3cd938ff6a388cb0b12f4a50342f9b7243560c3104c",
+    "status": "A"
+  },
+  {
+    "bytes": 12336,
+    "git_blob": "011aaeb8dc3336c115fad30621138c947b5e8608",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/sources/claim-updates.pdf",
+    "sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+    "status": "A"
+  },
+  {
+    "bytes": 182878,
+    "git_blob": "92bf22a9395ce33cb041acb0f2f76c5de7aa25ae",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/sources/initial-claims.pdf",
+    "sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+    "status": "A"
+  },
+  {
+    "bytes": 166630,
+    "git_blob": "37ee53a9066e281edc2752fafe55a1f07637cd1d",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/sources/receipts.pdf",
+    "sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+    "status": "A"
+  },
+  {
+    "bytes": 136256,
+    "git_blob": "498ab56086bdb0edca130bbb84aba76757f44c2d",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/sources/travel-registers.xlsx",
+    "sha256": "b90c7cf0db738ed186d9a2302752eb8ded3c326aa9894f736c21d426814fb898",
+    "status": "A"
+  },
+  {
+    "bytes": 2057,
+    "git_blob": "a1fa0360a2ada5afdaa876c4a5db2c4a73902563",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/supplemental/POL-2026.2-20261020-browser-copy.provenance.json",
+    "sha256": "8e0d9fb0e30a6c5468e36ddc785842841eca8d6d922ecc1bd3baa90267c1359f",
+    "status": "A"
+  },
+  {
+    "bytes": 13506,
+    "git_blob": "6ae117aafc203001e858f596b1b6eaf8eb60ce1e",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/supplemental/POL-2026.2-20261020-browser-copy.txt",
+    "sha256": "04d8121a91986dc0839094b5e7f574c44f6261c60c1c3ba9aeeee1c279ee5993",
+    "status": "A"
+  },
+  {
+    "bytes": 8645,
+    "git_blob": "d7b06887c17036b5253a8d071bd02e421ce19ddc",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/acquisition-manifest.original.json",
+    "sha256": "fe965c1394907c9179f920a27ff70cc3f02a78de655a1500f15241a6e09417cc",
+    "status": "A"
+  },
+  {
+    "bytes": 4244625,
+    "git_blob": "af3680a30c20dffd571ab2332548a835d5effb25",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/batches/001.json",
+    "sha256": "8b7f81a886bd42c1643dfe752589601fb9d1f2ed220c7289399d1efb19681871",
+    "status": "A"
+  },
+  {
+    "bytes": 4571004,
+    "git_blob": "a6389a3ec3a152a92d09ff6a13d5a343ef6a7a3e",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/batches/002.json",
+    "sha256": "ec243eb5a135fe013cb1a6db0a9888758c24c6a7c390ae3c5d65f6a0ab5dd791",
+    "status": "A"
+  },
+  {
+    "bytes": 4768744,
+    "git_blob": "9b64d71ef56ce0551f21c2958f3182b171cb9217",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/batches/003.json",
+    "sha256": "9b594b592eb669440766421ac75b8db382615bc3358745bf7ba14192837315ae",
+    "status": "A"
+  },
+  {
+    "bytes": 4825463,
+    "git_blob": "4ff042097ba908393616d27bebcfc6d0bcbad7e2",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/batches/004.json",
+    "sha256": "1bed3ab25e1501e235ab71779da5a7b84438f0fef78750583bbb1e95a15ca8ee",
+    "status": "A"
+  },
+  {
+    "bytes": 18442,
+    "git_blob": "1a69ba11c5975de0ec4dc54d6ba7ae9e0cbb9f59",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/claims.csv",
+    "sha256": "e4c69d6d809f5b76dc57cf5a36487be61ef882cc33b28e33825d569bd96de1a4",
+    "status": "A"
+  },
+  {
+    "bytes": 7528,
+    "git_blob": "90d9ba3b0f4c123a035c6d875641dcb9d4f6adf5",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/operator-manifest.v1.json",
+    "sha256": "9ef14f10fc5b2421b20e9212f619ff44974bd432a24a188ce8a92a4367b2d41f",
+    "status": "A"
+  },
+  {
+    "bytes": 1226751,
+    "git_blob": "e35cccf06485cc80de96fc70ae4efdfbe594db54",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/queue/001.json",
+    "sha256": "7bb0a7f2846a4b4cbea9728d8ede3c366839175b614e7ba22f8ed64dd46548d9",
+    "status": "A"
+  },
+  {
+    "bytes": 1378936,
+    "git_blob": "63538433edb623ba7985da2625ac396799443086",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/queue/002.json",
+    "sha256": "62ab1ed3f9e432b6f8ca4b520d5dddc26521073f0d1cc36e4872a83bfe939870",
+    "status": "A"
+  },
+  {
+    "bytes": 1427570,
+    "git_blob": "f3b9f782d909ba36d590de3fc227be8231637ecd",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/queue/003.json",
+    "sha256": "d0e3f5ce67c9bb5d33b074fa80132a01df01b7770f612265d49a000ad77c65a8",
+    "status": "A"
+  },
+  {
+    "bytes": 1451261,
+    "git_blob": "3f8a684b179f7e5cfebe40e1edf80a83f6895693",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/queue/004.json",
+    "sha256": "95f06cf4e7e72c9799bd7e20f9479e80b4e37710c87b2ab54fddcb34fa967598",
+    "status": "A"
+  },
+  {
+    "bytes": 343133,
+    "git_blob": "a27bd8f91496f954d79f8e88a1889314c58e5132",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/repair-queue.csv",
+    "sha256": "c704649ed4c558744cff40ea74b58a788784e9bb4afe158e82db76c1d6809353",
+    "status": "A"
+  },
+  {
+    "bytes": 1451261,
+    "git_blob": "3f8a684b179f7e5cfebe40e1edf80a83f6895693",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/repair-queue.json",
+    "sha256": "95f06cf4e7e72c9799bd7e20f9479e80b4e37710c87b2ab54fddcb34fa967598",
+    "status": "A"
+  },
+  {
+    "bytes": 13860,
+    "git_blob": "b88a99f649fd2962212e4c777702015a8ead1ff0",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/report.md",
+    "sha256": "a363eedd097e975506c7749df7c0aa27fa3c2c4848ade89600442c711456f17e",
+    "status": "A"
+  },
+  {
+    "bytes": 19925,
+    "git_blob": "d0384a4d0f18f35a11b12f44b348776b7f9a47ed",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/responses/policy.body",
+    "sha256": "f58d1d2b655687380d6c7d50ee2463edacb5ff4f1cad7fd9bb30eded2c56053c",
+    "status": "A"
+  },
+  {
+    "bytes": 2010,
+    "git_blob": "7e151b974d72acffd44886ca939ef28d4ee5f1ab",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/source-bindings.json",
+    "sha256": "4da06f1dab2cd65c5b6052a4767f5535f0360bcf69cc14abaf40c7d0516bd7c4",
+    "status": "A"
+  },
+  {
+    "bytes": 9063,
+    "git_blob": "2e69d3506208112e0a0af4d19a92f125cc53c183",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/sources.json",
+    "sha256": "cb0469334ad2fa597199197eef2386029661b01abf3ff3e1d45e313c96182748",
+    "status": "A"
+  },
+  {
+    "bytes": 12336,
+    "git_blob": "011aaeb8dc3336c115fad30621138c947b5e8608",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/sources/claim-updates.pdf",
+    "sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b",
+    "status": "A"
+  },
+  {
+    "bytes": 182878,
+    "git_blob": "92bf22a9395ce33cb041acb0f2f76c5de7aa25ae",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/sources/initial-claims.pdf",
+    "sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7",
+    "status": "A"
+  },
+  {
+    "bytes": 166630,
+    "git_blob": "37ee53a9066e281edc2752fafe55a1f07637cd1d",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/sources/receipts.pdf",
+    "sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8",
+    "status": "A"
+  },
+  {
+    "bytes": 136256,
+    "git_blob": "498ab56086bdb0edca130bbb84aba76757f44c2d",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/sources/travel-registers.xlsx",
+    "sha256": "b90c7cf0db738ed186d9a2302752eb8ded3c326aa9894f736c21d426814fb898",
+    "status": "A"
+  },
+  {
+    "bytes": 2057,
+    "git_blob": "a1fa0360a2ada5afdaa876c4a5db2c4a73902563",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/supplemental/POL-2026.2-20261020-browser-copy.provenance.json",
+    "sha256": "8e0d9fb0e30a6c5468e36ddc785842841eca8d6d922ecc1bd3baa90267c1359f",
+    "status": "A"
+  },
+  {
+    "bytes": 13506,
+    "git_blob": "6ae117aafc203001e858f596b1b6eaf8eb60ce1e",
+    "mode": "100644",
+    "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/supplemental/POL-2026.2-20261020-browser-copy.txt",
+    "sha256": "04d8121a91986dc0839094b5e7f574c44f6261c60c1c3ba9aeeee1c279ee5993",
+    "status": "A"
+  },
+  {
+    "bytes": 3051219,
+    "git_blob": "585dd3daa92557338a9551c4edc864c138f48353",
+    "mode": "100644",
+    "path": "artifacts/validations/omega4-attempt002-ordinary-closure-validation-v1/findings.v1.json",
+    "sha256": "779596bcbb408c2b12e086f6d7ccda2c14fef129b950df0405db2fb2eb02b2d4",
+    "status": "A"
+  },
+  {
+    "bytes": 3053424,
+    "git_blob": "e74309e1f936348c522dffbf68012df118b45306",
+    "mode": "100644",
+    "path": "artifacts/validations/omega4-attempt002-ordinary-closure-validation-v2/findings.v1.json",
+    "sha256": "f17733bf05da868fa8dd8374bcf301296c626f3dd8c1f642c25b5d336fd22afd",
+    "status": "A"
+  },
+  {
+    "bytes": 6248,
+    "git_blob": "cb840678c30ed9f6daf81ea3946ef4be5bb8f32a",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/README.md",
+    "sha256": "0122b00d3fbf0ee84e7e15621573f2755a6d67d65055845c5a4acc51e0338077",
+    "status": "A"
+  },
+  {
+    "bytes": 60748,
+    "git_blob": "a8dccedddb6159086e017ee313d94d04b07b73a1",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/after.json",
+    "sha256": "91263cdef13c0444d7fe6c0d921ca2cf88dba95863eac8109bc67dabf23f5b62",
+    "status": "A"
+  },
+  {
+    "bytes": 60748,
+    "git_blob": "a8dccedddb6159086e017ee313d94d04b07b73a1",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/before.json",
+    "sha256": "91263cdef13c0444d7fe6c0d921ca2cf88dba95863eac8109bc67dabf23f5b62",
+    "status": "A"
+  },
+  {
+    "bytes": 4361,
+    "git_blob": "17ff76753ab13072f6c1d534f6dee669788372af",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/closure-verification.json",
+    "sha256": "465f31fe4511a2b2bebd5aaa9533d6a29e89f55c278c9e27a9befb93262db059",
+    "status": "A"
+  },
+  {
+    "bytes": 187,
+    "git_blob": "905c8cbe5b8694d947b499c11639da874c03c857",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/fixture-verification.json",
+    "sha256": "7d0414ef8a0adf49ba61e73ade3e9bd009322a546aea58ef1775cf1060a441c8",
+    "status": "A"
+  },
+  {
+    "bytes": 32748,
+    "git_blob": "f48a11ccd21e011607f01ef32af82a3c1183d071",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/full-regression.log",
+    "sha256": "61ff2893da3247489c3385bdbfd83b8f7c6f84e5e1b25ab768871c85fc58a341",
+    "status": "A"
+  },
+  {
+    "bytes": 5889,
+    "git_blob": "e33edf4ce6ca65cc7941947b586f9eb3b2226506",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/manifest.json",
+    "sha256": "01ea9a2be53940b5f25ad21c995e56990e47947235d59cf696cfd56612bbc30b",
+    "status": "A"
+  },
+  {
+    "bytes": 4574,
+    "git_blob": "60dbd520c0c9e486aeaadfafafaa7f2c9ab372ef",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/original-runner.py",
+    "sha256": "1cf08b72a1ab8d4d8e027405b37319f1a8870e190c7fd2a41fd015e98f51bd45",
+    "status": "A"
+  },
+  {
+    "bytes": 60748,
+    "git_blob": "ad335604ca35e351019b382373d7a2349e4eb1c1",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/packaging-baseline.json",
+    "sha256": "4ffe3d6723cf4a4ee125d9d8f5f59d0a2bc786ba8ecf23bd0584e6c68fbf05ae",
+    "status": "A"
+  },
+  {
+    "bytes": 2304,
+    "git_blob": "a68423a38547bcf4fb4df7c12f2eb031b7d6d9b5",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/packaging-verification.json",
+    "sha256": "4f61232a961fd8bee043f24cb177bb9074b97bfffb0591c93e8646c50998da5b",
+    "status": "A"
+  },
+  {
+    "bytes": 211,
+    "git_blob": "a3bb060a779679d4718e5c39ee6a86641172faa0",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/preservation.json",
+    "sha256": "38670eb09864e21a278cb22b3c3715551cfba1e7a6116d5eb2395bc709fc033e",
+    "status": "A"
+  },
+  {
+    "bytes": 1781,
+    "git_blob": "6dd525cf405cb19840c9531336a2fafddd356060",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/replay.py",
+    "sha256": "01d0910fd5871ee13f1fccf79df428f4884a5b59b07b1911e65222ed271b04e7",
+    "status": "A"
+  },
+  {
+    "bytes": 109,
+    "git_blob": "e6aedd4067b9cf627c67555cd80fc74e9c06262f",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-full-regression-v2/tests.json",
+    "sha256": "656c1b8e25dfd97b7a2e5aa55451e11da12be4477ed71bc428c3c3f67fc02d02",
+    "status": "A"
+  },
+  {
+    "bytes": 3750,
+    "git_blob": "047a35d1fe43f4945e6f98781cb654dd77eb962e",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/README.md",
+    "sha256": "d49d0593e93a65fd89e4cbc2cdac7ae499fc95cf5fc9d50aaa50bea6225b4050",
+    "status": "A"
+  },
+  {
+    "bytes": 798,
+    "git_blob": "15959c24c786cdeee1b5ec636bf05f77497663ed",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/baseline.result.json",
+    "sha256": "7f0ec5062c416b06f3dd3ec276614df75dd1c617459da03d1fb5d61ad5156f52",
+    "status": "A"
+  },
+  {
+    "bytes": 1792,
+    "git_blob": "6ec70b5fea842a7bba47215d6e3e10fad7f7cf5e",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/build.log",
+    "sha256": "87969d378d912e91fb5c1f78af2927c6f1f95013ae094862bb1c466499421d11",
+    "status": "A"
+  },
+  {
+    "bytes": 1664,
+    "git_blob": "6d4904ee72728af8b560c8a098ecd3254387fd6e",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/finance-conflict-invalid-batch.result.json",
+    "sha256": "02d6addb08cb05f264e456f2adbace80ee3cdac33e2be348c9706e0ddbbd3dee",
+    "status": "A"
+  },
+  {
+    "bytes": 1240,
+    "git_blob": "7e133e809618da7ffffc6b0dea7d1612aa671e7c",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/finance-conflict-valid-batch.result.json",
+    "sha256": "c468dcde3a52fa214ea446dbc54fcb0eed9dbd2606dfa7993d5a4dbbe4fdebb1",
+    "status": "A"
+  },
+  {
+    "bytes": 9035,
+    "git_blob": "0b747d7811694c1b815bcfb96d5cf4f6ea9e467d",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/manifest.json",
+    "sha256": "078b17daca52d79c7025176af2fd699bdc346b7589439fd9c026b2e768e6fccb",
+    "status": "A"
+  },
+  {
+    "bytes": 51594,
+    "git_blob": "9b3e09112e117607968a87ebb8b85db877103126",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/preservation-baseline.json",
+    "sha256": "caf866bb1cc44e00c26e5c148a126409586e407cd68a024fc056d813b53a9ef4",
+    "status": "A"
+  },
+  {
+    "bytes": 54009,
+    "git_blob": "156a04a1f1ca0545a7d77ea1c7554fc58149c4e0",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/prior-inputs/reconciliation/reconcile.py",
+    "sha256": "2f9dfea2718ab6b3afd0b26e2e04b5cf7f1e6fe91b1738e55854e3ed867a98c6",
+    "status": "A"
+  },
+  {
+    "bytes": 54332,
+    "git_blob": "b83b1d13e9309e26df2ce95b32971d09352cbfa5",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/prior-inputs/validation/validate.py",
+    "sha256": "414fa2932438cd4f128b0e869493acfdbbba024646282671c0459ed967128746",
+    "status": "A"
+  },
+  {
+    "bytes": 1467,
+    "git_blob": "411579d99f91e9898366ef124b27077f60124ad5",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/receipt-after-approval.result.json",
+    "sha256": "cd673f0d5344e841d49b93d341a21446a3731f419309d3a360f18dbd3b073a5a",
+    "status": "A"
+  },
+  {
+    "bytes": 1526,
+    "git_blob": "d71036ebd1e73764c3fe6c021b81c41f1d5d870b",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/receipt-after-case-clock.result.json",
+    "sha256": "3287dea9089efb1840cc4d45b46c9034b7eb810454408d47dff735533aeb8e71",
+    "status": "A"
+  },
+  {
+    "bytes": 770,
+    "git_blob": "acef0912fd1adc3480359599923ea31c7f3acf18",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/reproduction-summary.json",
+    "sha256": "2b630d79122b4ae3c4a7e86dceef901ff83623b531501aa79710bd1226d31fcc",
+    "status": "A"
+  },
+  {
+    "bytes": 1078,
+    "git_blob": "ac75286a8cf442e165fdc534427613e193893bb2",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/reproduction.log",
+    "sha256": "208097d60c4ad6fab9e84e5ec9ed359a8b3329f1991e440bfe98d99568ff6b3b",
+    "status": "A"
+  },
+  {
+    "bytes": 184,
+    "git_blob": "6c53142466e15711cd615d254740741871f70240",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/standalone-verification.log",
+    "sha256": "1f39eea33ca06d19410fc009ebcc3f7073014b0138352e99cd3db9a13bbca0f3",
+    "status": "A"
+  },
+  {
+    "bytes": 6231,
+    "git_blob": "49bf9ebe5acd01d9c7f915d7c47a7f8e1985a90c",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/targeted-tests.log",
+    "sha256": "d2c3ae315c39d405b8270f2d5fc118d4ba3181ea00873d809b80789be0d18b0a",
+    "status": "A"
+  },
+  {
+    "bytes": 1669,
+    "git_blob": "1e5a416af07b848ed1bf17762f10a288769e9d52",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/verification.json",
+    "sha256": "2f1afa42bee5696b8bccd2095a2f2cc42d69a9ca693907de62f52c0b14df4870",
+    "status": "A"
+  },
+  {
+    "bytes": 1528,
+    "git_blob": "0cb86f9328b39e12a87929e73203bba7b8425782",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/verify-preservation.py",
+    "sha256": "769a11072c55bc3eb5ae0e12c69a7142df097d0643508e251821d3f0c8f4fa63",
+    "status": "A"
+  },
+  {
+    "bytes": 7388,
+    "git_blob": "32498b99591cca722a1fe85f90db2c0d68557608",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-v1/manifest.json",
+    "sha256": "a14c9c7f327d943766cf7d835dba0234637e4af576f23ac2759e2b3956ad88ee",
+    "status": "A"
+  },
+  {
+    "bytes": 46645,
+    "git_blob": "0f379ef1f3ad2076f2fcdd8462f58864eb735d62",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-v1/preservation-baseline.json",
+    "sha256": "f8e97b0cbcafa859959740b40fc47665e494c76acbfa6e3772c72225585d2383",
+    "status": "A"
+  },
+  {
+    "bytes": 11904,
+    "git_blob": "5874ebbbd5634c2edbaefebf58c111cdc8729e5f",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-v1/repair-recheck-map.json",
+    "sha256": "23e5ed52156a2c28b58e17651a0db05ce3789c60efd08d76f0af3058486fc582",
+    "status": "A"
+  },
+  {
+    "bytes": 3852,
+    "git_blob": "99e75362ec039161c5c51dd9de80ba44e8afd882",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-v1/targeted-tests.txt",
+    "sha256": "a16ecae15653a9d6dfdf1513d4147133f1bf71304784e623539bfbfb373804f3",
+    "status": "A"
+  },
+  {
+    "bytes": 1888,
+    "git_blob": "d5fc964c4458bee87c0b415d6b428fabf06dcaf9",
+    "mode": "100644",
+    "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-v1/verification.json",
+    "sha256": "4ab40b29640f3a27ecf529d499a492a84922c2bbe4eae28ca283d4bd4f99c260",
+    "status": "A"
+  },
+  {
+    "bytes": 57263,
+    "git_blob": "3e384e852a257b2a8dac454fd0d11c0fe9e49673",
+    "mode": "100644",
+    "path": "operator_delivery/build.py",
+    "sha256": "c0e9b326e36209a3f5ab1b502392a267764df17a6e97a0c6471710e7a66007fc",
+    "status": "M"
+  },
+  {
+    "bytes": 5849,
+    "git_blob": "a6c813a86756de8ce24609bb3577c33f85fa9e4c",
+    "mode": "100644",
+    "path": "operator_delivery/ordinary-closure-v2-handoff.md",
+    "sha256": "c091dab934ff1ef6f49725e67d00788716a4d1c9045bf7ecd23022cd5244e027",
+    "status": "A"
+  },
+  {
+    "bytes": 4790,
+    "git_blob": "d2ecbe6a1bef4cfab17a15546bba90ff11bcfc87",
+    "mode": "100644",
+    "path": "operator_delivery/ordinary-closure.md",
+    "sha256": "b929418db98d91e571b2890151ae2155031c9e7f33512c8b2fbc5a5831fe2568",
+    "status": "A"
+  },
+  {
+    "bytes": 56067,
+    "git_blob": "2e5772231b8a603859f7e714b50b89f1e3bd6d7e",
+    "mode": "100644",
+    "path": "reconciliation/reconcile.py",
+    "sha256": "63e46cddfd56bb5fe05bed8b2f2d011dd74d46e4d17097bdbe7ca367e2d85c11",
+    "status": "M"
+  },
+  {
+    "bytes": 14396,
+    "git_blob": "88d3b34a7884fe09e47d613997743bb81f235198",
+    "mode": "100644",
+    "path": "tests/test_ordinary_closure.py",
+    "sha256": "cf83d8f1089ad90ea1f1479b1e7f9d7f5f3ad5dad621c15aece85d4ba5b54b5d",
+    "status": "A"
+  },
+  {
+    "bytes": 7409,
+    "git_blob": "7571c4ab7ca3344b0920483a3f6b9f46a2f21062",
+    "mode": "100644",
+    "path": "tests/test_ordinary_closure_safeguards.py",
+    "sha256": "2c96878cbcc9e9a9e5e33b2542ee2825010bf858f4fca2896474dec2c9a32191",
+    "status": "A"
+  },
+  {
+    "bytes": 55955,
+    "git_blob": "b20e3ef550ffe5af445bac7b48600ed15c4f21b1",
+    "mode": "100644",
+    "path": "validation/validate.py",
+    "sha256": "563c7448f15731fdedf2637e0294dd4ca316d21f286a4943f8458484ee26fd7b",
+    "status": "M"
+  }
+]

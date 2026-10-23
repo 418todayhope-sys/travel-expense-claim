@@ -1,0 +1,40 @@
+{
+  "admitted_request_net_cents": 10000,
+  "allowed_cents": null,
+  "approval_status": "unresolved",
+  "approval_times": [
+    "2026-09-03T12:00:00Z",
+    "2026-09-03T12:00:00Z",
+    "2026-09-03T12:00:00Z"
+  ],
+  "balance_cents": null,
+  "case": "receipt-after-case-clock",
+  "claim_issue_ids": [
+    "repair:0de527eaee0e67016934a34882a32ef5bbb60b321d76f2fe3f5b620259acf297",
+    "repair:18db3e8150d48408daa883ef9c2693db77b282f91f03d48ca5b0187b3fcc407a",
+    "repair:3af87205eafc9f87ba6b189d2ca69beef0cc53cedb4bdf91c04d51f7e92852dc",
+    "repair:88cb30452b47cf13ffa0fbc1c0920efffb8ac6819b22705286ff096beefe251e",
+    "repair:9ca869e3b31e08ffef3640bd7493c39d2d7750c3d124ca29e42ef700f18176db",
+    "repair:a4186097097dee6fe4b885531f6c0044bd5552c0859f98c4e37a08ec0142391d",
+    "repair:a89925d39fe642648206a7acef9745372fa7df194d08662705a120835738c75c",
+    "repair:f9be7802a6b526b6c1456c5cd81c8704f2b4d862ba592cc123d0ad93e49e25b3"
+  ],
+  "description": "Control: R-COST-01 issued date moved beyond the 2026-11-15 case clock.",
+  "event_conflicting_delivery_ids": [],
+  "finance_arrival_diagnostics": [],
+  "known_paid_cents": null,
+  "operator_items_for_row31": [
+    "request_revision_cost_binding",
+    "request_revision_cost_binding"
+  ],
+  "ordinary_certificate_created": false,
+  "receipt_issued_date": "2026-11-16",
+  "request_diagnostics": [],
+  "request_uncertain_event_ids": [],
+  "row31_delivery_classification": [
+    "repeated_delivery"
+  ],
+  "snapshot_guard_passed": true,
+  "status": "held",
+  "synthetic": true
+}

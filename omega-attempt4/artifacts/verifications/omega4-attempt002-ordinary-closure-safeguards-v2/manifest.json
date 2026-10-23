@@ -1,0 +1,185 @@
+{
+  "files": [
+    {
+      "path": "artifacts/reconciliations/omega4-attempt002-ordinary-closure-reconciliation-v2/reconciliation.v1.json",
+      "sha256": "24169304549aa26f96df0a4b0c09eab015cc0169c4a45cabc881389ebea494c7"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/acquisition-manifest.original.json",
+      "sha256": "fe965c1394907c9179f920a27ff70cc3f02a78de655a1500f15241a6e09417cc"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/batches/001.json",
+      "sha256": "8b7f81a886bd42c1643dfe752589601fb9d1f2ed220c7289399d1efb19681871"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/batches/002.json",
+      "sha256": "ec243eb5a135fe013cb1a6db0a9888758c24c6a7c390ae3c5d65f6a0ab5dd791"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/batches/003.json",
+      "sha256": "9b594b592eb669440766421ac75b8db382615bc3358745bf7ba14192837315ae"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/batches/004.json",
+      "sha256": "1bed3ab25e1501e235ab71779da5a7b84438f0fef78750583bbb1e95a15ca8ee"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/claims.csv",
+      "sha256": "e4c69d6d809f5b76dc57cf5a36487be61ef882cc33b28e33825d569bd96de1a4"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/operator-manifest.v1.json",
+      "sha256": "9ef14f10fc5b2421b20e9212f619ff44974bd432a24a188ce8a92a4367b2d41f"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/queue/001.json",
+      "sha256": "7bb0a7f2846a4b4cbea9728d8ede3c366839175b614e7ba22f8ed64dd46548d9"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/queue/002.json",
+      "sha256": "62ab1ed3f9e432b6f8ca4b520d5dddc26521073f0d1cc36e4872a83bfe939870"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/queue/003.json",
+      "sha256": "d0e3f5ce67c9bb5d33b074fa80132a01df01b7770f612265d49a000ad77c65a8"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/queue/004.json",
+      "sha256": "95f06cf4e7e72c9799bd7e20f9479e80b4e37710c87b2ab54fddcb34fa967598"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/repair-queue.csv",
+      "sha256": "c704649ed4c558744cff40ea74b58a788784e9bb4afe158e82db76c1d6809353"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/repair-queue.json",
+      "sha256": "95f06cf4e7e72c9799bd7e20f9479e80b4e37710c87b2ab54fddcb34fa967598"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/report.md",
+      "sha256": "a363eedd097e975506c7749df7c0aa27fa3c2c4848ade89600442c711456f17e"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/responses/policy.body",
+      "sha256": "f58d1d2b655687380d6c7d50ee2463edacb5ff4f1cad7fd9bb30eded2c56053c"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/source-bindings.json",
+      "sha256": "4da06f1dab2cd65c5b6052a4767f5535f0360bcf69cc14abaf40c7d0516bd7c4"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/sources/claim-updates.pdf",
+      "sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/sources/initial-claims.pdf",
+      "sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/sources/receipts.pdf",
+      "sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/sources/travel-registers.xlsx",
+      "sha256": "b90c7cf0db738ed186d9a2302752eb8ded3c326aa9894f736c21d426814fb898"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/sources.json",
+      "sha256": "cb0469334ad2fa597199197eef2386029661b01abf3ff3e1d45e313c96182748"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/supplemental/POL-2026.2-20261020-browser-copy.provenance.json",
+      "sha256": "8e0d9fb0e30a6c5468e36ddc785842841eca8d6d922ecc1bd3baa90267c1359f"
+    },
+    {
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v2/supplemental/POL-2026.2-20261020-browser-copy.txt",
+      "sha256": "04d8121a91986dc0839094b5e7f574c44f6261c60c1c3ba9aeeee1c279ee5993"
+    },
+    {
+      "path": "artifacts/validations/omega4-attempt002-ordinary-closure-validation-v2/findings.v1.json",
+      "sha256": "f17733bf05da868fa8dd8374bcf301296c626f3dd8c1f642c25b5d336fd22afd"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/README.md",
+      "sha256": "d49d0593e93a65fd89e4cbc2cdac7ae499fc95cf5fc9d50aaa50bea6225b4050"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/baseline.result.json",
+      "sha256": "7f0ec5062c416b06f3dd3ec276614df75dd1c617459da03d1fb5d61ad5156f52"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/build.log",
+      "sha256": "87969d378d912e91fb5c1f78af2927c6f1f95013ae094862bb1c466499421d11"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/finance-conflict-invalid-batch.result.json",
+      "sha256": "02d6addb08cb05f264e456f2adbace80ee3cdac33e2be348c9706e0ddbbd3dee"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/finance-conflict-valid-batch.result.json",
+      "sha256": "c468dcde3a52fa214ea446dbc54fcb0eed9dbd2606dfa7993d5a4dbbe4fdebb1"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/preservation-baseline.json",
+      "sha256": "caf866bb1cc44e00c26e5c148a126409586e407cd68a024fc056d813b53a9ef4"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/prior-inputs/reconciliation/reconcile.py",
+      "sha256": "2f9dfea2718ab6b3afd0b26e2e04b5cf7f1e6fe91b1738e55854e3ed867a98c6"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/prior-inputs/validation/validate.py",
+      "sha256": "414fa2932438cd4f128b0e869493acfdbbba024646282671c0459ed967128746"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/receipt-after-approval.result.json",
+      "sha256": "cd673f0d5344e841d49b93d341a21446a3731f419309d3a360f18dbd3b073a5a"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/receipt-after-case-clock.result.json",
+      "sha256": "3287dea9089efb1840cc4d45b46c9034b7eb810454408d47dff735533aeb8e71"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/reproduction-summary.json",
+      "sha256": "2b630d79122b4ae3c4a7e86dceef901ff83623b531501aa79710bd1226d31fcc"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/reproduction.log",
+      "sha256": "208097d60c4ad6fab9e84e5ec9ed359a8b3329f1991e440bfe98d99568ff6b3b"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/standalone-verification.log",
+      "sha256": "1f39eea33ca06d19410fc009ebcc3f7073014b0138352e99cd3db9a13bbca0f3"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/targeted-tests.log",
+      "sha256": "d2c3ae315c39d405b8270f2d5fc118d4ba3181ea00873d809b80789be0d18b0a"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/verification.json",
+      "sha256": "2f1afa42bee5696b8bccd2095a2f2cc42d69a9ca693907de62f52c0b14df4870"
+    },
+    {
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-safeguards-v2/verify-preservation.py",
+      "sha256": "769a11072c55bc3eb5ae0e12c69a7142df097d0643508e251821d3f0c8f4fa63"
+    },
+    {
+      "path": "reconciliation/reconcile.py",
+      "sha256": "63e46cddfd56bb5fe05bed8b2f2d011dd74d46e4d17097bdbe7ca367e2d85c11"
+    },
+    {
+      "path": "tests/test_ordinary_closure.py",
+      "sha256": "cf83d8f1089ad90ea1f1479b1e7f9d7f5f3ad5dad621c15aece85d4ba5b54b5d"
+    },
+    {
+      "path": "tests/test_ordinary_closure_safeguards.py",
+      "sha256": "2c96878cbcc9e9a9e5e33b2542ee2825010bf858f4fca2896474dec2c9a32191"
+    },
+    {
+      "path": "validation/validate.py",
+      "sha256": "563c7448f15731fdedf2637e0294dd4ca316d21f286a4943f8458484ee26fd7b"
+    }
+  ],
+  "schema_version": "omega4-ordinary-closure-safeguards-verification/1"
+}

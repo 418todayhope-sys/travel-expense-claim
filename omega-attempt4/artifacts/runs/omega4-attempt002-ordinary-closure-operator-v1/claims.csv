@@ -1,0 +1,122 @@
+claim_id,revision,trip_id,status,allowed_cents,paid_cents,balance_cents,next_owner,reason
+C01,1,T01,closed-reimbursed,10000,10000,0,,"Closed within retained evidence: current approvals, unique unchanged cost/request basis, accepted obligation and confirmed net settlement agree. Native-policy completeness remains unverified."
+C02,1,T02,held,54000,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C03,1,T03,held,20000,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C04,1,T04,held,10000,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C05,1,T05,held,100000,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C06,1,T06,held,100001,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C07,1,T07,held,30000,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C08,1,T08,held,,,,EMP-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C10,1,T10,held,,,,ADMIN-01,Held: policy/review block or Decision 001 original-request hold; see owned repairs.
+C11,1,T11,held,6000,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C13,1,T13,held,5000,,,ADMIN-01,Business disposition: withdrawn: Employee withdrew before review. Financial processing held; see owned repairs. Evidence: initial-claims:page:13:claim
+C14,1,T14,held,4000,,,FIN-01,"Business disposition: rejected: Client work was cancelled. Financial processing held; see owned repairs. Evidence: initial-claims:page:14:claim, travel-registers:People:row:6, travel-registers:Review ledger:row:40, travel-registers:Review packets:row:40, travel-registers:Trips:row:19"
+C15,1,T15,held,0,,,LEAD-01,Held: policy/review block or Decision 001 original-request hold; see owned repairs.
+C16,1,T16,held,10000,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C17,1,T17,held,10000,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C20,1,T20,held,10000,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C21,1,T21,held,8000,,,SUP-01,Held: policy/review block or Decision 001 original-request hold; see owned repairs.
+C22,1,T22,held,,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C23,1,T23,held,,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C25,1,T25,held,,,,LEAD-01,Held: policy/review block or Decision 001 original-request hold; see owned repairs.
+C26,1,T26,held,10000,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C27,1,T27,held,3500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C28,1,T28,held,4500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C29,1,T29,held,5500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C30,1,T30,held,6500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C31,1,T31,held,7500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C32,1,T32,held,8500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C33,1,T33,held,3500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C34,1,T34,held,4500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C35,1,T35,held,5500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C36,1,T36,held,6500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C37,1,T37,held,7500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C38,1,T38,held,8500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C39,1,T39,held,3500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C40,1,T40,held,4500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C41,1,T41,held,5500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C42,1,T42,held,6500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C43,1,T43,held,7500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C44,1,T44,held,8500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C45,1,T45,held,3500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C46,1,T46,held,4500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C47,1,T47,held,5500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C48,1,T48,held,6500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C49,1,T49,held,7500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C50,1,T50,held,8500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C51,1,T51,held,3500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C52,1,T52,held,4500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C53,1,T53,held,5500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C54,1,T54,held,6500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C55,1,T55,held,7500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C56,1,T56,held,8500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C57,1,T57,held,3500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C58,1,T58,held,4500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C59,1,T59,held,5500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C60,1,T60,held,6500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C61,1,T61,held,7500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C62,1,T62,held,8500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C63,1,T63,held,3500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C64,1,T64,held,4500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C65,1,T65,held,5500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C66,1,T66,held,6500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C67,1,T67,held,7500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C68,1,T68,held,8500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C69,1,T69,held,3500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C70,1,T70,held,4500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C71,1,T71,held,5500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C72,1,T72,held,6500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C73,1,T73,held,7500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C74,1,T74,held,8500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C75,1,T75,held,3500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C76,1,T76,held,4500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C77,1,T77,held,5500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C78,1,T78,held,6500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C79,1,T79,held,7500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C80,1,T80,held,8500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C81,1,T81,held,3500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C82,1,T82,held,4500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C83,1,T83,held,5500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C84,1,T84,held,6500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C85,1,T85,held,7500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C86,1,T86,held,8500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C87,1,T87,held,3500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C88,1,T88,held,4500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C89,1,T89,held,5500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C90,1,T90,held,6500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C91,1,T91,held,7500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C92,1,T92,held,8500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C93,1,T93,held,3500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C94,1,T94,held,4500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C95,1,T95,held,5500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C96,1,T96,held,6500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C97,1,T97,held,7500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C98,1,T98,held,8500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C99,1,T99,held,99999,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C100,1,T100,held,100000,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C101,1,T101,held,100001,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C102,1,T102,held,14999,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C103,1,T103,held,15000,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C104,1,T104,held,15000,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C105,1,T105,held,3999,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C106,1,T106,held,4000,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C107,1,T107,held,4000,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C108,1,T108,held,208,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C109,1,T109,held,208,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C110,1,T110,held,2500,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C111,1,T111,held,2500,,,FIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C112,1,T112,held,,,,ADMIN-01,Held: policy/review block or Decision 001 original-request hold; see owned repairs.
+C113,1,T113,held,,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C114,1,T114,held,,,,EMP-03,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C115,1,T115,held,1500,,,FIN-01,Held: policy/review block or Decision 001 original-request hold; see owned repairs.
+C116,1,T116,held,,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C117,1,T117,held,,,,EMP-03,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C118,1,T118,held,0,,,LEAD-01,Held: policy/review block or Decision 001 original-request hold; see owned repairs.
+C119,1,T119,held,100001,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C120,1,T120,held,7500,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C09,2,T09B,held,8000,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C24,1,T03,held,25000,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C18,2,T18B,held,10000,,,FIN-01,Held: policy/review block or Decision 001 original-request hold; see owned repairs.
+C12,2,T12,held,7000,,,Facilitator,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C121,2,T121,held,2000,,,ADMIN-01,Held: revision/cost payment attribution and current approval evidence are insufficient; request-level money is separate.
+C19,3,T19,held,8000,,,FIN-01,Held: policy/review block or Decision 001 original-request hold; see owned repairs.

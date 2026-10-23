@@ -1,0 +1,45 @@
+{
+  "manifest_version": "omega4-source-bindings/1",
+  "sources": [
+    {
+      "source_id": "initial-claims",
+      "kind": "pdf",
+      "url": "https://drive.google.com/file/d/13sRj6s_kMeP1hsYGstWWmfkb6SCN1YOS/view",
+      "retrieval_route": "https://drive.google.com/uc?export=download&id=13sRj6s_kMeP1hsYGstWWmfkb6SCN1YOS",
+      "locator": "Complete initial claim binder PDF",
+      "filename": "initial-claims.pdf"
+    },
+    {
+      "source_id": "claim-updates",
+      "kind": "pdf",
+      "url": "https://drive.google.com/file/d/16829RwrGrMCK9oq5TnWuytFewGk_8xQP/view",
+      "retrieval_route": "https://drive.google.com/uc?export=download&id=16829RwrGrMCK9oq5TnWuytFewGk_8xQP",
+      "locator": "Complete claim updates binder PDF",
+      "filename": "claim-updates.pdf"
+    },
+    {
+      "source_id": "receipts",
+      "kind": "pdf",
+      "url": "https://drive.google.com/file/d/1Ynn1VLH-faRIy91xy95rOWwCBhy5mjjM/view",
+      "retrieval_route": "https://drive.google.com/uc?export=download&id=1Ynn1VLH-faRIy91xy95rOWwCBhy5mjjM",
+      "locator": "Complete receipt binder PDF",
+      "filename": "receipts.pdf"
+    },
+    {
+      "source_id": "travel-registers",
+      "kind": "xlsx",
+      "url": "https://docs.google.com/spreadsheets/d/1338nvKD6rgAdLgGRhYCMMlQyDNLK0sE8pvFWrZAaaxg/edit",
+      "retrieval_route": "https://docs.google.com/spreadsheets/d/1338nvKD6rgAdLgGRhYCMMlQyDNLK0sE8pvFWrZAaaxg/export?format=xlsx",
+      "locator": "Complete workbook export; all ten tabs",
+      "filename": "travel-registers.xlsx"
+    },
+    {
+      "source_id": "policy",
+      "kind": "notion",
+      "url": "https://private-pecorino-70e.notion.site/Project-D-Alderbridge-travel-reimbursement-policy-POL-2026-1-3d80b700541e81ed93ebd386abc1dcb0",
+      "retrieval_route": "https://private-pecorino-70e.notion.site/Project-D-Alderbridge-travel-reimbursement-policy-POL-2026-1-3d80b700541e81ed93ebd386abc1dcb0",
+      "locator": "Complete native Notion policy body",
+      "filename": "policy.html"
+    }
+  ]
+}

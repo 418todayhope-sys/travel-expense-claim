@@ -1,0 +1,28 @@
+{
+  "admitted_request_net_cents": 10000,
+  "allowed_cents": 10000,
+  "approval_status": "supported",
+  "approval_times": [
+    "2026-09-03T12:00:00Z",
+    "2026-09-03T12:00:00Z",
+    "2026-09-03T12:00:00Z"
+  ],
+  "balance_cents": 0,
+  "case": "baseline",
+  "claim_issue_ids": [],
+  "description": "Original verified normalized records; no business changes.",
+  "event_conflicting_delivery_ids": [],
+  "finance_arrival_diagnostics": [],
+  "known_paid_cents": 10000,
+  "operator_items_for_row31": [],
+  "ordinary_certificate_created": true,
+  "receipt_issued_date": "2026-09-01",
+  "request_diagnostics": [],
+  "request_uncertain_event_ids": [],
+  "row31_delivery_classification": [
+    "repeated_delivery"
+  ],
+  "snapshot_guard_passed": true,
+  "status": "closed-reimbursed",
+  "synthetic": true
+}

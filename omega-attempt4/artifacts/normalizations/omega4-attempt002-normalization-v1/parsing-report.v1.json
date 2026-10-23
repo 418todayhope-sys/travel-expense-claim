@@ -1,0 +1,218 @@
+{
+  "claim_records": 127,
+  "expense_occurrences": 208,
+  "issue_count": 18,
+  "issues": [
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "initial-claims:page:8:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "Merchant-payment identity match missing or ambiguous",
+      "record_id": "initial-claims:page:8:claim:expense:1",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "repair"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "initial-claims:page:10:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "initial-claims:page:12:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "initial-claims:page:13:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "initial-claims:page:15:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "initial-claims:page:22:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "initial-claims:page:23:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "initial-claims:page:24:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "initial-claims:page:25:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "initial-claims:page:111:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "initial-claims:page:112:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "initial-claims:page:113:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "Merchant-payment identity match missing or ambiguous",
+      "record_id": "initial-claims:page:113:claim:expense:2",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "repair"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "initial-claims:page:115:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "initial-claims:page:116:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "initial-claims:page:117:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    },
+    {
+      "field": null,
+      "owner": "source-data reviewer",
+      "reason": "No review-ledger row for this exact claim/revision; no review validity inferred",
+      "record_id": "claim-updates:page:4:claim",
+      "resolution_needed": "Inspect bound source; supply or clarify the fact without changing retained evidence.",
+      "severity": "observation"
+    }
+  ],
+  "limitations": [
+    "Native policy remains unavailable; supplemental browser policy is not native access.",
+    "Finance rows have claim/request references but no explicit claim revision or expense ID; candidates are not attributed to current revisions.",
+    "PDF text extraction is not a visual-fidelity guarantee. Full page text and raw table/field values remain available.",
+    "No reimbursement eligibility, review validity, event admission, obligation calculation, Finance closure or final operations report is performed."
+  ],
+  "normalized_records_sha256": "a5e96bcecdd5e4d44425f22524a32f05978b92adbc941141fba26c5fd477ba1a",
+  "normalized_schema_version": "omega4-normalized/1",
+  "receipt_records": 203,
+  "repeated_events": [
+    {
+      "classification": "repeated_delivery",
+      "delivery_count": 2,
+      "delivery_record_ids": [
+        "travel-registers:Finance activity:row:6",
+        "travel-registers:Finance activity:row:31"
+      ],
+      "event_id": "F-C01-1",
+      "payload_comparison": "decoded raw field values; only Arrival batch excluded; no admission/effects applied",
+      "sheet": "Finance activity",
+      "source_id": "travel-registers"
+    },
+    {
+      "classification": "repeated_delivery",
+      "delivery_count": 2,
+      "delivery_record_ids": [
+        "travel-registers:Travel cancellations:row:7",
+        "travel-registers:Travel cancellations:row:14"
+      ],
+      "event_id": "TC122-confirmed",
+      "payload_comparison": "decoded raw field values; only Arrival batch excluded; no admission/effects applied",
+      "sheet": "Travel cancellations",
+      "source_id": "travel-registers"
+    }
+  ],
+  "result": "parsed-with-repairs",
+  "schema_version": "omega4-parsing-report/1",
+  "source_counts": {
+    "claim-updates": {
+      "pages": 7,
+      "pages_with_text": 7,
+      "records": 7
+    },
+    "initial-claims": {
+      "pages": 120,
+      "pages_with_text": 120,
+      "records": 120
+    },
+    "receipts": {
+      "pages": 102,
+      "pages_with_text": 102,
+      "records": 203
+    },
+    "travel-registers": {
+      "Budget": 3,
+      "Caps": 2,
+      "FX": 2,
+      "Finance activity": 220,
+      "Merchant payments": 201,
+      "People": 14,
+      "Review ledger": 307,
+      "Review packets": 307,
+      "Travel cancellations": 9,
+      "Trips": 123
+    }
+  },
+  "workbook_rows": 1188
+}

@@ -1,0 +1,179 @@
+{
+  "files": [
+    {
+      "bytes": 8634,
+      "path": "README.md",
+      "sha256": "38d6a8be60eaceac51b5668364ba4ad60922f7f33be74b89061130a11d0a7f90"
+    },
+    {
+      "bytes": 3985530,
+      "path": "artifacts/reconciliations/omega4-attempt002-ordinary-closure-reconciliation-v1/reconciliation.v1.json",
+      "sha256": "c5c7b665789457ecd47cc15f933480c834b9b215d104cbcbc86b3aa8fd2670ca"
+    },
+    {
+      "bytes": 8645,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/acquisition-manifest.original.json",
+      "sha256": "fe965c1394907c9179f920a27ff70cc3f02a78de655a1500f15241a6e09417cc"
+    },
+    {
+      "bytes": 4244625,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/batches/001.json",
+      "sha256": "fc6853d7a2ef077734639efe0360884fec733716fc093b1dc9f4457ba6b8c499"
+    },
+    {
+      "bytes": 4571004,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/batches/002.json",
+      "sha256": "f8267d2ef19be8087524bf7850e4130eaa07aefdc686c91940ac54d3bfff25e2"
+    },
+    {
+      "bytes": 4768744,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/batches/003.json",
+      "sha256": "5507331827e386d91b04ac3300e1ae9fcb9e1b9186ff456065a04018271e36af"
+    },
+    {
+      "bytes": 4825463,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/batches/004.json",
+      "sha256": "fae1cb9126b20818176e7db73c1ac916f3b89151c792bddca8c8e738d10f05cc"
+    },
+    {
+      "bytes": 18442,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/claims.csv",
+      "sha256": "e4c69d6d809f5b76dc57cf5a36487be61ef882cc33b28e33825d569bd96de1a4"
+    },
+    {
+      "bytes": 7528,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/operator-manifest.v1.json",
+      "sha256": "fffa4ffd0591898cd28d39910d9685b3fc7c75f8bca8e5e532a640f44019c698"
+    },
+    {
+      "bytes": 1226751,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/queue/001.json",
+      "sha256": "e027c1b8ea3281a300a7ff200afddb572e452addaeb3ff5fe8f360c31fcb731e"
+    },
+    {
+      "bytes": 1378936,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/queue/002.json",
+      "sha256": "3178db46eaddee9f192f268edec72d41d5fdf73fb9272b845b28cc20d2a37891"
+    },
+    {
+      "bytes": 1427570,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/queue/003.json",
+      "sha256": "6241da90f191409ee3c12cb3873642442724573154f0341c4ff6be5b58963d0d"
+    },
+    {
+      "bytes": 1451261,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/queue/004.json",
+      "sha256": "69125789084a1655569967a8c3dea83195bf52cda4cd06e7cf5a519ca49ef845"
+    },
+    {
+      "bytes": 343133,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/repair-queue.csv",
+      "sha256": "c704649ed4c558744cff40ea74b58a788784e9bb4afe158e82db76c1d6809353"
+    },
+    {
+      "bytes": 1451261,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/repair-queue.json",
+      "sha256": "69125789084a1655569967a8c3dea83195bf52cda4cd06e7cf5a519ca49ef845"
+    },
+    {
+      "bytes": 13860,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/report.md",
+      "sha256": "1e000c2eb3f68117b9a285398cf9f65c206ba75df37adb71a0a3b23d10ac1e53"
+    },
+    {
+      "bytes": 19925,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/responses/policy.body",
+      "sha256": "f58d1d2b655687380d6c7d50ee2463edacb5ff4f1cad7fd9bb30eded2c56053c"
+    },
+    {
+      "bytes": 2010,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/source-bindings.json",
+      "sha256": "4da06f1dab2cd65c5b6052a4767f5535f0360bcf69cc14abaf40c7d0516bd7c4"
+    },
+    {
+      "bytes": 12336,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/sources/claim-updates.pdf",
+      "sha256": "03c15787d18e2928457cd0164b573dc03a3baade0ed26a391ba79c73a568da3b"
+    },
+    {
+      "bytes": 182878,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/sources/initial-claims.pdf",
+      "sha256": "b42a28754b1877363e1a25ed4fa1f3865915f44ec9995f7ed15fc9b6eefb08b7"
+    },
+    {
+      "bytes": 166630,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/sources/receipts.pdf",
+      "sha256": "4c3dc47f187ccc5cdd0112e18afaadd3b6363bbb4d96793205ef8f3d4c06fcc8"
+    },
+    {
+      "bytes": 136256,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/sources/travel-registers.xlsx",
+      "sha256": "b90c7cf0db738ed186d9a2302752eb8ded3c326aa9894f736c21d426814fb898"
+    },
+    {
+      "bytes": 9063,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/sources.json",
+      "sha256": "370af6df53796689dd35d3cd938ff6a388cb0b12f4a50342f9b7243560c3104c"
+    },
+    {
+      "bytes": 2057,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/supplemental/POL-2026.2-20261020-browser-copy.provenance.json",
+      "sha256": "8e0d9fb0e30a6c5468e36ddc785842841eca8d6d922ecc1bd3baa90267c1359f"
+    },
+    {
+      "bytes": 13506,
+      "path": "artifacts/runs/omega4-attempt002-ordinary-closure-operator-v1/supplemental/POL-2026.2-20261020-browser-copy.txt",
+      "sha256": "04d8121a91986dc0839094b5e7f574c44f6261c60c1c3ba9aeeee1c279ee5993"
+    },
+    {
+      "bytes": 3051219,
+      "path": "artifacts/validations/omega4-attempt002-ordinary-closure-validation-v1/findings.v1.json",
+      "sha256": "779596bcbb408c2b12e086f6d7ccda2c14fef129b950df0405db2fb2eb02b2d4"
+    },
+    {
+      "bytes": 46645,
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-v1/preservation-baseline.json",
+      "sha256": "f8e97b0cbcafa859959740b40fc47665e494c76acbfa6e3772c72225585d2383"
+    },
+    {
+      "bytes": 11904,
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-v1/repair-recheck-map.json",
+      "sha256": "23e5ed52156a2c28b58e17651a0db05ce3789c60efd08d76f0af3058486fc582"
+    },
+    {
+      "bytes": 3852,
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-v1/targeted-tests.txt",
+      "sha256": "a16ecae15653a9d6dfdf1513d4147133f1bf71304784e623539bfbfb373804f3"
+    },
+    {
+      "bytes": 1888,
+      "path": "artifacts/verifications/omega4-attempt002-ordinary-closure-v1/verification.json",
+      "sha256": "4ab40b29640f3a27ecf529d499a492a84922c2bbe4eae28ca283d4bd4f99c260"
+    },
+    {
+      "bytes": 57263,
+      "path": "operator_delivery/build.py",
+      "sha256": "c0e9b326e36209a3f5ab1b502392a267764df17a6e97a0c6471710e7a66007fc"
+    },
+    {
+      "bytes": 4790,
+      "path": "operator_delivery/ordinary-closure.md",
+      "sha256": "b929418db98d91e571b2890151ae2155031c9e7f33512c8b2fbc5a5831fe2568"
+    },
+    {
+      "bytes": 54009,
+      "path": "reconciliation/reconcile.py",
+      "sha256": "2f9dfea2718ab6b3afd0b26e2e04b5cf7f1e6fe91b1738e55854e3ed867a98c6"
+    },
+    {
+      "bytes": 14396,
+      "path": "tests/test_ordinary_closure.py",
+      "sha256": "cf83d8f1089ad90ea1f1479b1e7f9d7f5f3ad5dad621c15aece85d4ba5b54b5d"
+    },
+    {
+      "bytes": 54332,
+      "path": "validation/validate.py",
+      "sha256": "414fa2932438cd4f128b0e869493acfdbbba024646282671c0459ed967128746"
+    }
+  ]
+}
